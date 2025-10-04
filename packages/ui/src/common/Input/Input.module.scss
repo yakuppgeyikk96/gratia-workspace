@@ -1,0 +1,154 @@
+@use "../../styles/core/colors" as *;
+@use "../../styles/core/spacing" as *;
+@use "../../styles/core/border" as *;
+@use "../../styles/core/variables" as *;
+@use "../../styles/layout/flex.scss" as *;
+@use "../../styles/components/input.scss" as *;
+
+.inputContainer {
+  position: relative;
+  @include flex($align: center);
+  width: 100%;
+  border-radius: $radius-md;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: $font-family-sans;
+  color: $text-primary-color;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+  }
+
+  &-sm {
+    height: $input-height-sm;
+    padding: $input-padding-sm;
+    font-size: $input-font-sm;
+    font-weight: $input-font-weight-sm;
+    border-radius: $radius-md;
+
+    &::placeholder {
+      font-size: $input-placeholder-sm;
+      font-weight: $input-font-weight-sm;
+    }
+  }
+
+  &-md {
+    height: 40px;
+    padding: $input-padding-md;
+    font-size: $input-font-md;
+    font-weight: $input-font-weight-md;
+    border-radius: $radius-md;
+
+    &::placeholder {
+      font-size: $input-placeholder-md;
+      font-weight: $input-font-weight-md;
+    }
+  }
+
+  &-lg {
+    height: $input-height-lg;
+    padding: $input-padding-lg;
+    font-size: $input-font-lg;
+    font-weight: $input-font-weight-lg;
+    border-radius: $radius-md;
+
+    &::placeholder {
+      font-size: $input-placeholder-lg;
+      font-weight: $input-font-weight-lg;
+    }
+  }
+
+  &-filled {
+    background: rgba($primary-color, $input-bg-opacity-md);
+    border: none;
+
+    &.input-sm {
+      background: rgba($primary-color, $input-bg-opacity-sm);
+    }
+
+    &.input-lg {
+      background: rgba($primary-color, $input-bg-opacity-lg);
+    }
+  }
+
+  &-outlined {
+    background: $bg-color;
+    border: 1px solid $border-medium;
+
+    &:focus {
+      border-color: $primary-color;
+    }
+  }
+
+  &-with-start-icon {
+    &.input-sm {
+      padding-left: calc($input-icon-spacing-sm + 12px + $input-icon-spacing-sm);
+    }
+    &.input-md {
+      padding-left: calc($input-icon-spacing-md + 12px + $input-icon-spacing-md);
+    }
+    &.input-lg {
+      padding-left: calc($input-icon-spacing-lg + 12px + $input-icon-spacing-lg);
+    }
+  }
+
+  &-with-end-icon {
+    &.input-sm {
+      padding-right: calc($input-icon-spacing-sm + 12px + $input-icon-spacing-sm);
+    }
+    &.input-md {
+      padding-right: calc($input-icon-spacing-md + 12px + $input-icon-spacing-md);
+    }
+    &.input-lg {
+      padding-right: calc($input-icon-spacing-lg + 12px + $input-icon-spacing-lg);
+    }
+  }
+
+  &Error {
+    border-color: $text-error-color !important;
+
+    &.input-filled {
+      background: rgba($text-error-color, 0.05);
+    }
+  }
+}
+
+.startIcon {
+  position: absolute;
+  @include flex-center;
+  color: $text-muted-color;
+  z-index: 1;
+}
+
+.startIcon-sm {
+  left: $input-icon-spacing-sm;
+}
+
+.startIcon-md {
+  left: $input-icon-spacing-md;
+}
+
+.startIcon-lg {
+  left: $input-icon-spacing-lg;
+}
+
+.endIcon {
+  position: absolute;
+}
+
+.endIcon-sm {
+  right: $input-icon-spacing-sm;
+}
+
+.endIcon-md {
+  right: $input-icon-spacing-md;
+}
+
+.endIcon-lg {
+  right: $input-icon-spacing-lg;
+}

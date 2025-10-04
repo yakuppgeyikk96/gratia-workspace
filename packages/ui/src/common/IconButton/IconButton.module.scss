@@ -1,0 +1,96 @@
+@use "../../styles/core/colors" as *;
+@use "../../styles/core/spacing" as *;
+@use "../../styles/core/border" as *;
+@use "../../styles/core/variables" as *;
+@use "../../styles/layout/flex.scss" as *;
+@use "../../styles/components/icon-button.scss" as *;
+
+
+.iconButton {
+  @include flex(row, center, center);
+  position: relative;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba($primary-color, 0.05);
+  box-sizing: border-box;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.05);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &-sm {
+    width: $icon-button-sm;
+    height: $icon-button-sm;
+    min-width: $icon-button-sm;
+    min-height: $icon-button-sm;
+
+    .icon {
+      width: $icon-button-icon-sm;
+      height: $icon-button-icon-sm;
+    }
+  }
+
+  &-md {
+    width: $icon-button-md;
+    height: $icon-button-md;
+    min-width: $icon-button-md;
+    min-height: $icon-button-md;
+
+    .icon {
+      width: $icon-button-icon-md;
+      height: $icon-button-icon-md;
+    }
+  }
+
+  &-lg {
+    width: $icon-button-lg;
+    height: $icon-button-lg;
+    min-width: $icon-button-lg;
+    min-height: $icon-button-lg;
+
+    .icon {
+      width: $icon-button-icon-lg;
+      height: $icon-button-icon-lg;
+    }
+  }
+}
+
+.icon {
+  @include flex(row, center, center);
+  color: $text-primary-color;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.badgeContainer {
+  position: absolute;
+  right: $icon-button-badge-offset-md;
+  top: $icon-button-badge-offset-md;
+  z-index: 1;
+
+  .iconButton-sm & {
+    right: $icon-button-badge-offset-sm;
+    top: $icon-button-badge-offset-sm;
+  }
+
+  .iconButton-md & {
+    right: $icon-button-badge-offset-md;
+    top: $icon-button-badge-offset-md;
+  }
+
+  .iconButton-lg & {
+    right: $icon-button-badge-offset-lg;
+    top: $icon-button-badge-offset-lg;
+  }
+}

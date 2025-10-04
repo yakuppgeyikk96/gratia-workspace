@@ -1,0 +1,49 @@
+@use "../../styles/layout/flex.scss" as *;
+
+.flex {
+  @include flex-row;
+
+  &.direction-row {
+    @include flex-row;
+  }
+
+  &.direction-column {
+    @include flex-column;
+  }
+
+  &.align-start {
+    @include align-start;
+  }
+
+  &.align-center {
+    @include align-center;
+  }
+
+  &.align-end {
+    @include align-end;
+  }
+
+  &.align-stretch {
+    @include align-stretch;
+  }
+
+  &.justify-start {
+    @include justify-start;
+  }
+
+  &.justify-center {
+    @include justify-center;
+  }
+
+  &.justify-end {
+    @include justify-end;
+  }
+
+  &.justify-between {
+    @include justify-between;
+  }
+
+  &.justify-around {
+    @include justify-around;
+  }
+}

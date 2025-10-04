@@ -1,0 +1,26 @@
+@use "../../styles/core/variables.scss" as *;
+
+// IconButton sizes
+$icon-button-sm: 32px;
+$icon-button-md: 40px;
+$icon-button-lg: 48px;
+
+// IconButton icon sizes
+$icon-button-icon-sm: 14px;
+$icon-button-icon-md: 16px;
+$icon-button-icon-lg: 20px;
+
+// IconButton badge sizes
+$icon-button-badge-sm: 16px;
+$icon-button-badge-md: 20px;
+$icon-button-badge-lg: 24px;
+
+// IconButton badge font sizes
+$icon-button-badge-font-sm: 10px;
+$icon-button-badge-font-md: 12px;
+$icon-button-badge-font-lg: 14px;
+
+// IconButton badge positioning
+$icon-button-badge-offset-sm: -2px;
+$icon-button-badge-offset-md: -3px;
+$icon-button-badge-offset-lg: -4px;

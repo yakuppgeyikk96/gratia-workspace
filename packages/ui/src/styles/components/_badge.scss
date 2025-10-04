@@ -1,0 +1,17 @@
+@use "../../styles/core/variables.scss" as *;
+
+// Badge sizes
+$badge-sm: 16px;
+$badge-md: 20px;
+$badge-lg: 24px;
+
+// Badge font sizes
+$badge-font-sm: 10px;
+$badge-font-md: 12px;
+$badge-font-lg: 14px;
+
+// Badge font weights
+$badge-font-weight: $font-semibold;
+
+// Badge border radius
+$badge-radius: 50%;

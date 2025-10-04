@@ -1,0 +1,120 @@
+// Spacing scale
+$spacing-0: 0;
+$spacing-1: 0.25rem;   // 4px
+$spacing-2: 0.5rem;    // 8px
+$spacing-3: 0.75rem;   // 12px
+$spacing-4: 1rem;      // 16px
+$spacing-5: 1.25rem;   // 20px
+$spacing-6: 1.5rem;    // 24px
+$spacing-8: 2rem;      // 32px
+$spacing-10: 2.5rem;   // 40px
+$spacing-12: 3rem;     // 48px
+$spacing-16: 4rem;     // 64px
+$spacing-20: 5rem;     // 80px
+$spacing-24: 6rem;     // 96px
+$spacing-28: 7rem;     // 112px
+$spacing-32: 8rem;     // 128px
+$spacing-36: 9rem;     // 144px
+$spacing-40: 10rem;    // 160px
+$spacing-44: 11rem;    // 176px
+$spacing-48: 12rem;    // 192px
+$spacing-52: 13rem;    // 208px
+
+// Spacing map
+$spacings: (
+  0: $spacing-0,
+  1: $spacing-1,
+  2: $spacing-2,
+  3: $spacing-3,
+  4: $spacing-4,
+  5: $spacing-5,
+  6: $spacing-6,
+  8: $spacing-8,
+  10: $spacing-10,
+  12: $spacing-12,
+  16: $spacing-16,
+  20: $spacing-20,
+  24: $spacing-24,
+  28: $spacing-28,
+  32: $spacing-32,
+  36: $spacing-36,
+  40: $spacing-40,
+  44: $spacing-44,
+  48: $spacing-48,
+  52: $spacing-52,
+);
+
+// Padding utilities
+@mixin p($size) {
+  padding: map-get($spacings, $size);
+}
+
+@mixin px($size) {
+  padding-left: map-get($spacings, $size);
+  padding-right: map-get($spacings, $size);
+}
+
+@mixin py($size) {
+  padding-top: map-get($spacings, $size);
+  padding-bottom: map-get($spacings, $size);
+}
+
+@mixin pt($size) {
+  padding-top: map-get($spacings, $size);
+}
+
+@mixin pr($size) {
+  padding-right: map-get($spacings, $size);
+}
+
+@mixin pb($size) {
+  padding-bottom: map-get($spacings, $size);
+}
+
+@mixin pl($size) {
+  padding-left: map-get($spacings, $size);
+}
+
+// Margin utilities
+@mixin m($size) {
+  margin: map-get($spacings, $size);
+}
+
+@mixin mx($size) {
+  margin-left: map-get($spacings, $size);
+  margin-right: map-get($spacings, $size);
+}
+
+@mixin my($size) {
+  margin-top: map-get($spacings, $size);
+  margin-bottom: map-get($spacings, $size);
+}
+
+@mixin mt($size) {
+  margin-top: map-get($spacings, $size);
+}
+
+@mixin mr($size) {
+  margin-right: map-get($spacings, $size);
+}
+
+@mixin mb($size) {
+  margin-bottom: map-get($spacings, $size);
+}
+
+@mixin ml($size) {
+  margin-left: map-get($spacings, $size);
+}
+
+// Gap utilities
+@mixin gap($size) {
+  gap: map-get($spacings, $size);
+}
+
+@mixin gap-x($size) {
+  column-gap: map-get($spacings, $size);
+}
+
+@mixin gap-y($size) {
+  row-gap: map-get($spacings, $size);
+}

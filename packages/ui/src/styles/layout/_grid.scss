@@ -1,0 +1,235 @@
+@use "../../styles/core/spacing.scss" as *;
+@use "../../styles/core/breakpoints.scss" as *;
+
+// Grid container
+@mixin grid-container {
+  display: grid;
+  width: 100%;
+}
+
+// Grid columns
+@mixin grid-cols-1 {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+@mixin grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@mixin grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@mixin grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@mixin grid-cols-6 {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+@mixin grid-cols-12 {
+  grid-template-columns: repeat(12, 1fr);
+}
+
+// Grid gap
+@mixin grid-gap-0 {
+  gap: 0;
+}
+
+@mixin grid-gap-1 {
+  gap: $spacing-1;
+}
+
+@mixin grid-gap-2 {
+  gap: $spacing-2;
+}
+
+@mixin grid-gap-3 {
+  gap: $spacing-3;
+}
+
+@mixin grid-gap-4 {
+  gap: $spacing-4;
+}
+
+@mixin grid-gap-6 {
+  gap: $spacing-6;
+}
+
+@mixin grid-gap-8 {
+  gap: $spacing-8;
+}
+
+// Column span
+@mixin col-span-1 {
+  grid-column: span 1;
+}
+
+@mixin col-span-2 {
+  grid-column: span 2;
+}
+
+@mixin col-span-3 {
+  grid-column: span 3;
+}
+
+@mixin col-span-4 {
+  grid-column: span 4;
+}
+
+@mixin col-span-6 {
+  grid-column: span 6;
+}
+
+@mixin col-span-12 {
+  grid-column: span 12;
+}
+
+// Row span
+@mixin row-span-1 {
+  grid-row: span 1;
+}
+
+@mixin row-span-2 {
+  grid-row: span 2;
+}
+
+@mixin row-span-3 {
+  grid-row: span 3;
+}
+
+// Grid areas
+@mixin grid-area($area) {
+  grid-area: $area;
+}
+
+// Responsive grid - Düzeltilmiş versiyon
+@mixin responsive-grid($cols, $gap: 4) {
+  @include grid-container;
+  @include grid-cols-1;
+
+  // Gap için if-else kullanıyoruz
+  @if $gap == 0 {
+    @include grid-gap-0;
+  } @else if $gap == 1 {
+    @include grid-gap-1;
+  } @else if $gap == 2 {
+    @include grid-gap-2;
+  } @else if $gap == 3 {
+    @include grid-gap-3;
+  } @else if $gap == 4 {
+    @include grid-gap-4;
+  } @else if $gap == 6 {
+    @include grid-gap-6;
+  } @else if $gap == 8 {
+    @include grid-gap-8;
+  } @else {
+    @include grid-gap-4; // Default
+  }
+
+  @include media-sm {
+    @if $cols >= 2 {
+      @include grid-cols-2;
+    }
+  }
+
+  @include media-md {
+    @if $cols >= 3 {
+      @include grid-cols-3;
+    } @else if $cols == 2 {
+      @include grid-cols-2;
+    }
+  }
+
+  @include media-lg {
+    @if $cols >= 4 {
+      @include grid-cols-4;
+    } @else if $cols == 3 {
+      @include grid-cols-3;
+    } @else if $cols == 2 {
+      @include grid-cols-2;
+    }
+  }
+}
+
+// Form-specific grid mixins
+@mixin form-grid {
+  @include grid-container;
+  @include grid-cols-1;
+  @include grid-gap-4;
+
+  @include media-sm {
+    @include grid-cols-2;
+  }
+}
+
+@mixin form-grid-2-col {
+  @include grid-container;
+  @include grid-cols-2;
+  @include grid-gap-4;
+
+  @include media-sm {
+    @include grid-cols-1;
+  }
+
+  @include media-md {
+    @include grid-cols-2;
+  }
+}
+
+@mixin form-grid-3-col {
+  @include grid-container;
+  @include grid-cols-1;
+  @include grid-gap-4;
+
+  @include media-sm {
+    @include grid-cols-2;
+  }
+
+  @include media-md {
+    @include grid-cols-3;
+  }
+}
+
+// Utility classes for common patterns
+@mixin full-width {
+  @include col-span-12;
+}
+
+@mixin half-width {
+  @include col-span-6;
+}
+
+@mixin third-width {
+  @include col-span-4;
+}
+
+@mixin quarter-width {
+  @include col-span-3;
+}
+
+// Form field specific
+@mixin form-field {
+  @include col-span-12;
+}
+
+@mixin form-field-half {
+  @include col-span-12;
+
+  @include media-sm {
+    @include col-span-6;
+  }
+}
+
+@mixin form-field-third {
+  @include col-span-12;
+
+  @include media-sm {
+    @include col-span-6;
+  }
+
+  @include media-md {
+    @include col-span-4;
+  }
+}

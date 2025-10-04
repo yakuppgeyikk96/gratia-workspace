@@ -1,0 +1,55 @@
+@use "../../styles/core/colors.scss" as *;
+
+$checkbox-size-sm: 16px;
+$checkbox-size-md: 20px;
+$checkbox-size-lg: 24px;
+
+$checkbox-tick-sm: 12px;
+$checkbox-tick-md: 16px;
+$checkbox-tick-lg: 20px;
+
+$checkbox-radius: 3px;
+
+$checkbox-label-sm: 14px;
+$checkbox-label-md: 16px;
+$checkbox-label-lg: 18px;
+
+$checkbox-gap-sm: 8px;
+$checkbox-gap-md: 10px;
+$checkbox-gap-lg: 12px;
+
+$checkbox-bg: $bg-color;
+$checkbox-border: $border-medium;
+$checkbox-border-checked: $primary-color;
+$checkbox-bg-checked: $primary-color;
+$checkbox-tick-color: $text-on-primary-color;
+
+$checkbox-border-hover: $primary-color-light;
+$checkbox-bg-hover: rgba($primary-color, 0.05);
+
+$checkbox-focus-ring: $interactive-focus-ring;
+
+$checkbox-bg-disabled: $border-light;
+$checkbox-border-disabled: $border-light;
+$checkbox-text-disabled: $text-muted-color;
+
+$checkbox-sizes: (
+  sm: (
+    size: $checkbox-size-sm,
+    tick: $checkbox-tick-sm,
+    label: $checkbox-label-sm,
+    gap: $checkbox-gap-sm
+  ),
+  md: (
+    size: $checkbox-size-md,
+    tick: $checkbox-tick-md,
+    label: $checkbox-label-md,
+    gap: $checkbox-gap-md
+  ),
+  lg: (
+    size: $checkbox-size-lg,
+    tick: $checkbox-tick-lg,
+    label: $checkbox-label-lg,
+    gap: $checkbox-gap-lg
+  )
+);

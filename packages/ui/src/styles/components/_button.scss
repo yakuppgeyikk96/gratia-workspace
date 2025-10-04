@@ -1,0 +1,34 @@
+@use "../../styles/core/variables.scss" as *;
+
+// Button sizes
+$button-height-sm: 32px;
+$button-height-md: 40px;
+$button-height-lg: 48px;
+
+// Button padding
+$button-padding-sm: 8px 12px;
+$button-padding-md: 12px 16px;
+$button-padding-lg: 16px 20px;
+
+// Button font sizes
+$button-font-sm: 14px;
+$button-font-md: 16px;
+$button-font-lg: 18px;
+
+// Button font weights
+$button-font-weight-sm: $font-medium;
+$button-font-weight-md: $font-medium;
+$button-font-weight-lg: $font-semibold;
+
+// Button icon sizes
+$button-icon-sm: 14px;
+$button-icon-md: 16px;
+$button-icon-lg: 18px;
+
+// Button icon spacing
+$button-icon-spacing-sm: 6px;
+$button-icon-spacing-md: 8px;
+$button-icon-spacing-lg: 10px;
+
+// Button border radius
+$button-radius: 6px;

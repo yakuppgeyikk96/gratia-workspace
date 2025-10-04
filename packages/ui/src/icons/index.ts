@@ -1,0 +1,13 @@
+export { default as IconAt } from "./IconAt";
+export { default as IconBell } from "./IconBell";
+export { default as IconChevronDown } from "./IconChevronDown";
+export { default as IconHeart } from "./IconHeart";
+export { default as IconInstagram } from "./IconInstagram";
+export { default as IconPassword } from "./IconPassword";
+export { default as IconPerson } from "./IconPerson";
+export { default as IconSearch } from "./IconSearch";
+export { default as IconShoppingBag } from "./IconShoppingBag";
+export { default as IconTick } from "./IconTick";
+export { default as IconVisibility } from "./IconVisibility";
+export { default as IconWhatsapp } from "./IconWhatsapp";
+export { default as IconX } from "./IconX";

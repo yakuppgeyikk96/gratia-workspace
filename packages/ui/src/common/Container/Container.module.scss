@@ -1,0 +1,17 @@
+@use "../../styles/layout/container.scss" as *;
+
+.container {
+  @include container-default;
+
+  &.narrow {
+    @include container-narrow;
+  }
+
+  &.wide {
+    @include container-wide;
+  }
+
+  &.fluid {
+    @include container-fluid;
+  }
+}

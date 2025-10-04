@@ -1,0 +1,82 @@
+@use "../../styles/core/colors.scss" as *;
+
+// Border width
+$border-0: 0;
+$border-1: 1px;
+$border-2: 2px;
+$border-4: 4px;
+$border-8: 8px;
+
+// Border radius
+$radius-none: 0;
+$radius-sm: 0.125rem;   // 2px
+$radius-md: 0.375rem;   // 6px
+$radius-lg: 0.5rem;     // 8px
+$radius-xl: 0.75rem;    // 12px
+$radius-2xl: 1rem;      // 16px
+$radius-3xl: 1.5rem;    // 24px
+$radius-full: 9999px;
+
+// Border utilities
+@mixin border($width: $border-1, $color: $border-light) {
+  border: $width solid $color;
+}
+
+@mixin border-t($width: $border-1, $color: $border-light) {
+  border-top: $width solid $color;
+}
+
+@mixin border-r($width: $border-1, $color: $border-light) {
+  border-right: $width solid $color;
+}
+
+@mixin border-b($width: $border-1, $color: $border-light) {
+  border-bottom: $width solid $color;
+}
+
+@mixin border-l($width: $border-1, $color: $border-light) {
+  border-left: $width solid $color;
+}
+
+@mixin border-x($width: $border-1, $color: $border-light) {
+  border-left: $width solid $color;
+  border-right: $width solid $color;
+}
+
+@mixin border-y($width: $border-1, $color: $border-light) {
+  border-top: $width solid $color;
+  border-bottom: $width solid $color;
+}
+
+// Border radius utilities
+@mixin rounded($radius: $radius-md) {
+  border-radius: $radius;
+}
+
+@mixin rounded-t($radius: $radius-md) {
+  border-top-left-radius: $radius;
+  border-top-right-radius: $radius;
+}
+
+@mixin rounded-r($radius: $radius-md) {
+  border-top-right-radius: $radius;
+  border-bottom-right-radius: $radius;
+}
+
+@mixin rounded-b($radius: $radius-md) {
+  border-bottom-left-radius: $radius;
+  border-bottom-right-radius: $radius;
+}
+
+@mixin rounded-l($radius: $radius-md) {
+  border-top-left-radius: $radius;
+  border-bottom-left-radius: $radius;
+}
+
+@mixin rounded-none {
+  border-radius: $radius-none;
+}
+
+@mixin rounded-full {
+  border-radius: $radius-full;
+}

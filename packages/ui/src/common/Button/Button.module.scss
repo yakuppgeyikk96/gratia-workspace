@@ -1,0 +1,169 @@
+@use "../../styles/components/_button.scss" as *;
+@use "../../styles/layout/_flex.scss" as *;
+@use "../../styles/core/_variables.scss" as *;
+@use "../../styles/core/colors" as *;
+
+.button {
+  @include flex(row, center, center);
+  position: relative;
+  border: none;
+  border-radius: $button-radius;
+  cursor: pointer;
+  font-family: $font-family-sans;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-sizing: border-box;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  &.loading {
+    cursor: not-allowed;
+  }
+
+  // Size variants
+  &-sm {
+    height: $button-height-sm;
+    padding: $button-padding-sm;
+    font-size: $button-font-sm;
+    font-weight: $button-font-weight-sm;
+  }
+
+  &-md {
+    height: $button-height-md;
+    padding: $button-padding-md;
+    font-size: $button-font-md;
+    font-weight: $button-font-weight-md;
+  }
+
+  &-lg {
+    height: $button-height-lg;
+    padding: $button-padding-lg;
+    font-size: $button-font-lg;
+    font-weight: $button-font-weight-lg;
+  }
+
+  &-primary {
+    background: $primary-color;
+    color: $text-on-primary-color;
+
+    &:hover:not(:disabled) {
+      background: $primary-color-dark;
+    }
+  }
+
+  &-secondary {
+    background: $secondary-color;
+    color: $text-on-secondary-color;
+
+    &:hover:not(:disabled) {
+      background: $secondary-color-dark;
+    }
+  }
+
+  &-outlined {
+    background: transparent;
+    color: $primary-color;
+    border: 1px solid $primary-color;
+
+    &:hover:not(:disabled) {
+      background: rgba($primary-color, 0.05);
+    }
+  }
+
+  &-ghost {
+    background: rgba($primary-color, 0.05);
+    color: $text-secondary-color;
+
+    &:hover:not(:disabled) {
+      background: rgba($primary-color, 0.1);
+    }
+  }
+}
+
+.text {
+  flex: 1;
+  text-align: center;
+}
+
+.icon {
+  @include flex(row, center, center);
+  flex-shrink: 0;
+
+  &-left {
+    margin-right: $button-icon-spacing-sm;
+  }
+
+  &-right {
+    margin-left: $button-icon-spacing-sm;
+  }
+
+  // Size variants for icon spacing
+  .button-sm & {
+    &-left {
+      margin-right: $button-icon-spacing-sm;
+    }
+
+    &-right {
+      margin-left: $button-icon-spacing-sm;
+    }
+  }
+
+  .button-md & {
+    &-left {
+      margin-right: $button-icon-spacing-md;
+    }
+
+    &-right {
+      margin-left: $button-icon-spacing-md;
+    }
+  }
+
+  .button-lg & {
+    &-left {
+      margin-right: $button-icon-spacing-lg;
+    }
+
+    &-right {
+      margin-left: $button-icon-spacing-lg;
+    }
+  }
+}
+
+.loadingSpinner {
+  position: absolute;
+  @include flex(row, center, center);
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+}
+
+// Icon size variants
+.button-sm .icon {
+  width: $button-icon-sm;
+  height: $button-icon-sm;
+}
+
+.button-md .icon {
+  width: $button-icon-md;
+  height: $button-icon-md;
+}
+
+.button-lg .icon {
+  width: $button-icon-lg;
+  height: $button-icon-lg;
+}
