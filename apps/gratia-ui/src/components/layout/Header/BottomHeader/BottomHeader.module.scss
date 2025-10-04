@@ -1,0 +1,23 @@
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.bottomHeader {
+  @include flex();
+  gap: 19px;
+  @include pt(2);
+  @include pb(4);
+
+  @media screen and (max-width: $breakpoint-xl) {
+    @include px(4);
+  }
+}
+
+.categoryDropdown {
+
+  .label {
+    font-size: $text-sm;
+    font-weight: $font-medium;
+  }
+}

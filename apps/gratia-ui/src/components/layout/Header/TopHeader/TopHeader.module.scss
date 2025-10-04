@@ -1,0 +1,23 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.topHeader {
+  height: fit-content;
+
+  @media screen and (max-width: $breakpoint-xl) {
+    @include px(4);
+  }
+}
+
+.topHeaderInner {
+  @include flex-between();
+  @include py(3);
+}
+
+.topHeaderLinks {
+  @include flex();
+  gap: 61px;
+}

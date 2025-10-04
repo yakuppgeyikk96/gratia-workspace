@@ -1,0 +1,37 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.link {
+  display: inline-block;
+  padding: $spacing-2 $spacing-3;
+  border-radius: $radius-md;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  font-family: $font-family-sans;
+  color: $text-secondary-color;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: $text-primary-color;
+    background: $interactive-hover-bg;
+  }
+
+  &:focus {
+    outline: 2px solid $interactive-focus-ring;
+    outline-offset: 2px;
+    color: $text-primary-color;
+    background: $interactive-hover-bg;
+  }
+
+  &:active {
+    background: $interactive-active-bg;
+  }
+}

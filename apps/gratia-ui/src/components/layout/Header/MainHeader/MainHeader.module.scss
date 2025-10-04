@@ -1,0 +1,20 @@
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.mainHeader {
+  @include py(4);
+  @include flex($align: center, $gap: 36px);
+
+  @media screen and (max-width: $breakpoint-xl) {
+    @include px(4);
+  }
+}
+
+.mainHeaderLogo {
+  font-family: $font-family-logo;
+  font-size: $text-4xl;
+  font-weight: $font-bold;
+  color: var(--text-primary);
+}

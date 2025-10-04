@@ -1,0 +1,8 @@
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+
+.container {
+  @include flex(row, flex-start, center);
+  @include gap(4);
+  flex-wrap: wrap;
+}
