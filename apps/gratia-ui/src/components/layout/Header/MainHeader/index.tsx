@@ -1,18 +1,10 @@
 "use client";
 
 import SearchInput from "@/components/features/search/SearchInput";
-import {
-  Badge,
-  Button,
-  Container,
-  Flex,
-  IconBell,
-  IconButton,
-  IconHeart,
-  IconShoppingBag,
-} from "@gratia/ui";
+import { Container, Flex, IconBell, IconButton, IconHeart } from "@gratia/ui";
+import HeaderCartButton from "./HeaderCartButton";
+import HeaderLoginButton from "./HeaderLoginButton";
 import styles from "./MainHeader.module.scss";
-import MainHeaderButton from "./MainHeaderButton";
 
 export default function MainHeader() {
   return (
@@ -24,13 +16,8 @@ export default function MainHeader() {
         <IconButton icon={<IconHeart />} onClick={() => {}} ariaLabel="Heart" />
       </Flex>
       <Flex gap={16} align="center">
-        <Button variant="ghost" icon={<IconShoppingBag />} ariaLabel="Cart">
-          <Flex align="center" gap={8}>
-            <span>Cart</span>
-            <Badge count={10} size="sm" color="secondary" />
-          </Flex>
-        </Button>
-        <MainHeaderButton />
+        <HeaderCartButton />
+        <HeaderLoginButton />
       </Flex>
     </Container>
   );

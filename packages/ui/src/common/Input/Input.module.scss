@@ -87,25 +87,37 @@
 
   &-with-start-icon {
     &.input-sm {
-      padding-left: calc($input-icon-spacing-sm + 12px + $input-icon-spacing-sm);
+      padding-left: calc(
+        $input-icon-spacing-sm + 12px + $input-icon-spacing-sm
+      );
     }
     &.input-md {
-      padding-left: calc($input-icon-spacing-md + 12px + $input-icon-spacing-md);
+      padding-left: calc(
+        $input-icon-spacing-md + 12px + $input-icon-spacing-md
+      );
     }
     &.input-lg {
-      padding-left: calc($input-icon-spacing-lg + 12px + $input-icon-spacing-lg);
+      padding-left: calc(
+        $input-icon-spacing-lg + 12px + $input-icon-spacing-lg
+      );
     }
   }
 
   &-with-end-icon {
     &.input-sm {
-      padding-right: calc($input-icon-spacing-sm + 12px + $input-icon-spacing-sm);
+      padding-right: calc(
+        $input-icon-spacing-sm + 12px + $input-icon-spacing-sm
+      );
     }
     &.input-md {
-      padding-right: calc($input-icon-spacing-md + 12px + $input-icon-spacing-md);
+      padding-right: calc(
+        $input-icon-spacing-md + 12px + $input-icon-spacing-md
+      );
     }
     &.input-lg {
-      padding-right: calc($input-icon-spacing-lg + 12px + $input-icon-spacing-lg);
+      padding-right: calc(
+        $input-icon-spacing-lg + 12px + $input-icon-spacing-lg
+      );
     }
   }
 
@@ -122,7 +134,6 @@
   position: absolute;
   @include flex-center;
   color: $text-muted-color;
-  z-index: 1;
 }
 
 .startIcon-sm {

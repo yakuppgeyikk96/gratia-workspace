@@ -15,27 +15,35 @@
   box-sizing: border-box;
 
   &:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: $shadow-md;
   }
 
   &:active:not(:disabled) {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
   }
 
   &.disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    transform: none !important;
-    box-shadow: none !important;
+    box-shadow: none;
   }
 
   &.loading {
     cursor: not-allowed;
+
+    .text {
+      opacity: 0.3;
+    }
+
+    .icon {
+      opacity: 0.3;
+    }
+
+    .loadingSpinner {
+      opacity: 1;
+    }
   }
 
-  // Size variants
   &-sm {
     height: $button-height-sm;
     padding: $button-padding-sm;
@@ -98,11 +106,13 @@
 .text {
   flex: 1;
   text-align: center;
+  transition: opacity 0.2s ease;
 }
 
 .icon {
   @include flex(row, center, center);
   flex-shrink: 0;
+  transition: opacity 0.2s ease;
 
   &-left {
     margin-right: $button-icon-spacing-sm;
@@ -150,6 +160,8 @@
   width: 16px;
   height: 16px;
   color: currentColor;
+  opacity: 1;
+  transition: opacity 0.2s ease;
 }
 
 // Icon size variants

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Concert_One, Inter } from "next/font/google";
 
 import Header from "@/components/layout/Header";
+import { ToastContainer, ToastContextProvider } from "@gratia/ui";
 import "./globals.scss";
 
 const inter = Inter({
@@ -28,8 +29,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${concertOne.variable}`}>
-        <Header />
-        {children}
+        <ToastContextProvider>
+          <Header />
+          {children}
+          <ToastContainer />
+        </ToastContextProvider>
       </body>
     </html>
   );

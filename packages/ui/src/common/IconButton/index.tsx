@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import Badge from "../Badge";
 import styles from "./IconButton.module.scss";
 

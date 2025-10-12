@@ -1,42 +1,58 @@
 "use client";
 
+import { sendVerificationEmail } from "@/actions/auth";
 import { COLORS } from "@/constants/colors";
+import {
+  registerSchema,
+  type RegisterFormData,
+} from "@/schemas/registerSchema";
 import {
   Button,
   Checkbox,
+  FormField,
   IconAt,
   IconPassword,
   IconVisibility,
   Input,
+  useToastContext,
 } from "@gratia/ui";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import styles from "./RegisterForm.module.scss";
 
 export default function RegisterForm() {
+  const { addToast } = useToastContext();
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<{
-    firstname: string;
-    lastname: string;
-    email: string;
-    password: string;
-    terms: boolean;
-  }>();
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    mode: "onBlur",
+  });
 
-  const onSubmit = (data: {
-    firstname: string;
-    lastname: string;
-    email: string;
-    password: string;
-    terms: boolean;
-  }) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<RegisterFormData> = async (
+    data: RegisterFormData
+  ) => {
+    const { firstName, lastName, email, password } = data;
+
+    const response = await sendVerificationEmail({
+      firstName,
+      lastName,
+      email,
+      password,
+    });
+
+    if (!response.success) {
+      addToast({
+        description: response.message,
+        variant: "error",
+        duration: 2000,
+      });
+    }
   };
-
-  console.log(errors);
 
   return (
     <div className={styles.container}>
@@ -47,60 +63,88 @@ export default function RegisterForm() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.formContent}>
             <div className={styles.formField}>
-              <Input
-                {...register("firstname")}
-                variant="outlined"
-                size="lg"
-                placeholder="Enter your firstname"
-              />
+              <FormField
+                error={errors.firstName?.message}
+                required
+                name="firstName"
+              >
+                <Input
+                  {...register("firstName")}
+                  variant="outlined"
+                  size="lg"
+                  placeholder="Enter your firstname"
+                  error={!!errors.firstName}
+                />
+              </FormField>
             </div>
 
             <div className={styles.formField}>
-              <Input
-                {...register("lastname")}
-                variant="outlined"
-                size="lg"
-                placeholder="Enter your lastname"
-              />
+              <FormField
+                error={errors.lastName?.message}
+                required
+                name="lastName"
+              >
+                <Input
+                  {...register("lastName")}
+                  variant="outlined"
+                  size="lg"
+                  placeholder="Enter your lastname"
+                  error={!!errors.lastName}
+                />
+              </FormField>
             </div>
 
             <div className={styles.formFieldFull}>
-              <Input
-                {...register("email", { required: true })}
-                variant="outlined"
-                size="lg"
-                startIcon={<IconAt color={COLORS.ICON_MUTED} size={16} />}
-                placeholder="Enter your email"
-                error={!!errors.email}
-              />
+              <FormField error={errors.email?.message} required name="email">
+                <Input
+                  {...register("email")}
+                  variant="outlined"
+                  size="lg"
+                  startIcon={<IconAt color={COLORS.ICON_MUTED} size={16} />}
+                  placeholder="Enter your email"
+                  error={!!errors.email}
+                />
+              </FormField>
             </div>
 
             <div className={styles.formFieldFull}>
-              <Input
-                {...register("password", { required: true })}
-                variant="outlined"
-                size="lg"
-                startIcon={<IconPassword color={COLORS.ICON_MUTED} size={16} />}
-                endIcon={<IconVisibility color={COLORS.ICON_MUTED} size={16} />}
-                placeholder="Enter your password"
-                error={!!errors.password}
-              />
+              <FormField
+                error={errors.password?.message}
+                required
+                name="password"
+              >
+                <Input
+                  {...register("password")}
+                  variant="outlined"
+                  size="lg"
+                  startIcon={
+                    <IconPassword color={COLORS.ICON_MUTED} size={16} />
+                  }
+                  endIcon={
+                    <IconVisibility color={COLORS.ICON_MUTED} size={16} />
+                  }
+                  placeholder="Enter your password"
+                  error={!!errors.password}
+                />
+              </FormField>
             </div>
 
             <div className={styles.formFieldFull}>
-              <Checkbox
-                {...register("terms", { required: true })}
-                size="sm"
-                error={!!errors.terms}
-                label={
-                  <span>
-                    I agree to{" "}
-                    <Link href="#" className={styles.termsPolicyLink}>
-                      Terms & Privacy Policy
-                    </Link>
-                  </span>
-                }
-              />
+              <FormField error={errors.terms?.message} name="terms">
+                <Checkbox
+                  {...register("terms")}
+                  size="sm"
+                  error={!!errors.terms}
+                  label={
+                    <span>
+                      I agree to{" "}
+                      <Link href="#" className={styles.termsPolicyLink}>
+                        Terms & Privacy Policy
+                      </Link>
+                    </span>
+                  }
+                />
+              </FormField>
             </div>
 
             <div className={styles.formFieldFull}>
@@ -108,6 +152,7 @@ export default function RegisterForm() {
                 type="submit"
                 variant="primary"
                 className={styles.submitButton}
+                loading={isSubmitting}
               >
                 Create Account
               </Button>

@@ -1,0 +1,165 @@
+@use "../../styles/core/variables.scss" as *;
+@use "../../styles/core/colors.scss" as *;
+@use "../../styles/core/spacing.scss" as *;
+@use "../../styles/core/border.scss" as *;
+@use "../../styles/layout/flex.scss" as *;
+
+.toast {
+  background: $bg-color;
+  @include rounded($radius-lg);
+  box-shadow: $shadow-lg;
+  border: $border-1 solid $border-light;
+  @include p(4);
+  @include mb(2);
+  position: relative;
+  overflow: hidden;
+  max-width: $width-400;
+  min-width: $width-300;
+
+  &[data-state="open"] {
+    animation: slideIn 150ms ease-out;
+  }
+
+  &[data-state="closed"] {
+    animation: slideOut 150ms ease-in;
+  }
+
+  &[data-swipe="move"] {
+    transform: translateX(var(--radix-toast-swipe-move-x));
+  }
+
+  &[data-swipe="cancel"] {
+    transform: translateX(0);
+    transition: transform $transition-normal;
+  }
+
+  &[data-swipe="end"] {
+    animation: slideRight 100ms ease-out;
+  }
+
+  // Type variants
+  &--success {
+    @include border-l($border-4, $text-success-color);
+
+    .toastTitle {
+      color: $text-success-color;
+    }
+  }
+
+  &--error {
+    @include border-l($border-4, $text-error-color);
+
+    .toastTitle {
+      color: $text-error-color;
+    }
+  }
+
+  &--warning {
+    @include border-l($border-4, $text-warning-color);
+
+    .toastTitle {
+      color: $text-warning-color;
+    }
+  }
+
+  &--info {
+    @include border-l($border-4, $text-info-color);
+
+    .toastTitle {
+      color: $text-info-color;
+    }
+  }
+}
+
+.toastContent {
+  @include flex(row, flex-start, space-between);
+  @include gap(3);
+}
+
+.toastBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.toastTitle {
+  font-weight: $font-semibold;
+  font-size: $text-sm;
+  line-height: $leading-tight;
+  margin: 0 0 $spacing-1 0;
+  color: $text-primary-color;
+}
+
+.toastDescription {
+  font-size: $text-sm;
+  line-height: $leading-tight;
+  color: $text-secondary-color;
+  margin: 0;
+  @include mt(1);
+}
+
+.toastClose {
+  background: none;
+  border: none;
+  @include p(1);
+  @include rounded($radius-sm);
+  cursor: pointer;
+  color: $text-muted-color;
+  transition: all $transition-fast;
+  flex-shrink: 0;
+
+  &:hover {
+    background: $interactive-hover-bg;
+    color: $text-primary-color;
+  }
+
+  &:focus {
+    outline: $border-2 solid $interactive-focus-ring;
+    outline-offset: $border-2;
+  }
+}
+
+.toastViewport {
+  position: fixed;
+  top: 0;
+  right: 0;
+  @include flex(column);
+  @include p(4);
+  @include gap(2);
+  width: $width-400;
+  max-width: 100vw;
+  margin: 0;
+  list-style: none;
+  z-index: $z-toast;
+  outline: none;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideRight {
+  from {
+    transform: translateX(var(--radix-toast-swipe-end-x));
+  }
+  to {
+    transform: translateX(100%);
+  }
+}

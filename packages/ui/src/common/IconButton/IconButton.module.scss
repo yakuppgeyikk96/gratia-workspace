@@ -5,7 +5,6 @@
 @use "../../styles/layout/flex.scss" as *;
 @use "../../styles/components/icon-button.scss" as *;
 
-
 .iconButton {
   @include flex(row, center, center);
   position: relative;
@@ -15,14 +14,6 @@
   transition: all 0.2s ease;
   background: rgba($primary-color, 0.05);
   box-sizing: border-box;
-
-  &:hover:not(:disabled) {
-    transform: scale(1.05);
-  }
-
-  &:active:not(:disabled) {
-    transform: scale(0.95);
-  }
 
   &.disabled {
     opacity: 0.5;

@@ -1,4 +1,5 @@
-import React, { ButtonHTMLAttributes, ReactNode } from "react";
+import { ButtonHTMLAttributes, ReactNode } from "react";
+import LoadingSpinner from "../LoadingSpinner";
 import styles from "./Button.module.scss";
 
 interface ButtonProps
@@ -52,50 +53,20 @@ export default function Button({
       aria-label={ariaLabel}
       {...props}
     >
-      {icon && iconPosition === "left" && (
-        <span className={iconClass}>{icon}</span>
-      )}
-
-      <span className={styles.text}>{children}</span>
-
-      {icon && iconPosition === "right" && (
+      {icon && iconPosition === "left" && !loading && (
         <span className={iconClass}>{icon}</span>
       )}
 
       {loading && (
         <span className={styles.loadingSpinner}>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle
-              cx="8"
-              cy="8"
-              r="6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeDasharray="31.416"
-              strokeDashoffset="31.416"
-            >
-              <animate
-                attributeName="stroke-dasharray"
-                dur="2s"
-                values="0 31.416;15.708 15.708;0 31.416"
-                repeatCount="indefinite"
-              />
-              <animate
-                attributeName="stroke-dashoffset"
-                dur="2s"
-                values="0;-15.708;-31.416"
-                repeatCount="indefinite"
-              />
-            </circle>
-          </svg>
+          <LoadingSpinner size={size} />
         </span>
+      )}
+
+      <span className={styles.text}>{children}</span>
+
+      {icon && iconPosition === "right" && !loading && (
+        <span className={iconClass}>{icon}</span>
       )}
     </button>
   );

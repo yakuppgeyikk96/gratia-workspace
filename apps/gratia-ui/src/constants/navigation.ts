@@ -1,4 +1,4 @@
-import { NavigationLink } from "@/types/Navigation.types";
+import { NavigationLink } from "@/types";
 
 export const TOP_HEADER_LINKS: NavigationLink[] = [
   {

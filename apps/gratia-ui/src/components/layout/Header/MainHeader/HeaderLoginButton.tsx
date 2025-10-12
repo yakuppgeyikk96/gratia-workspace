@@ -3,7 +3,7 @@
 import { Button, IconPerson } from "@gratia/ui";
 import { useRouter } from "next/navigation";
 
-export default function MainHeaderButton() {
+export default function HeaderLoginButton() {
   const router = useRouter();
 
   const handleLogin = () => {

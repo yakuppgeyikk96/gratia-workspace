@@ -1,19 +1,25 @@
 // Typography
-$font-family-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-$font-family-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+$font-family-sans:
+  var(--font-inter),
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  "Roboto",
+  sans-serif;
+$font-family-mono: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
 $font-family-logo: var(--font-concert-one), cursive;
 
 // Font sizes
-$text-xs: 0.75rem;    // 12px
-$text-sm: 0.875rem;   // 14px
-$text-base: 1rem;     // 16px
-$text-lg: 1.125rem;   // 18px
-$text-xl: 1.25rem;    // 20px
-$text-2xl: 1.5rem;    // 24px
-$text-3xl: 1.875rem;  // 30px
-$text-4xl: 2rem;      // 32px
-$text-5xl: 2.25rem;   // 36px
-$text-6xl: 3rem;      // 48px
+$text-xs: 0.75rem; // 12px
+$text-sm: 0.875rem; // 14px
+$text-base: 1rem; // 16px
+$text-lg: 1.125rem; // 18px
+$text-xl: 1.25rem; // 20px
+$text-2xl: 1.5rem; // 24px
+$text-3xl: 1.875rem; // 30px
+$text-4xl: 2rem; // 32px
+$text-5xl: 2.25rem; // 36px
+$text-6xl: 3rem; // 48px
 
 // Font weights
 $font-thin: 100;
@@ -41,3 +47,27 @@ $z-modal-backdrop: 1040;
 $z-modal: 1050;
 $z-popover: 1060;
 $z-tooltip: 1070;
+$z-toast: 2147483647; // Toast için yüksek z-index
+
+// Width scale
+$width-300: 300px;
+$width-400: 400px;
+$width-500: 500px;
+$width-600: 600px;
+
+// Transition scale
+$transition-fast: 0.15s ease;
+$transition-normal: 0.2s ease;
+$transition-slow: 0.3s ease;
+
+// Shadow scale
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md:
+  0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg:
+  0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl:
+  0 20px 25px -5px rgba(0, 0, 0, 0.1),
+  0 10px 10px -5px rgba(0, 0, 0, 0.04);

@@ -1,0 +1,82 @@
+@use "../../styles/core/variables.scss" as *;
+@use "../../styles/core/colors.scss" as *;
+@use "../../styles/core/spacing.scss" as *;
+@use "../../styles/core/breakpoints.scss" as *;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  width: 100%;
+}
+
+.label {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-primary-color;
+  margin-bottom: $spacing-1;
+  display: block;
+}
+
+.required {
+  color: $text-error-color;
+  margin-left: $spacing-1;
+  font-weight: $font-bold;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.error {
+  font-size: $text-xs;
+  color: $text-error-color;
+  margin-top: $spacing-1;
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-weight: $font-medium;
+
+  &::before {
+    content: "⚠";
+    font-size: $text-xs;
+    flex-shrink: 0;
+  }
+}
+
+.hint {
+  font-size: $text-xs;
+  color: $text-muted-color;
+  margin-top: $spacing-1;
+  line-height: $leading-tight;
+}
+
+.fieldError {
+  .inputWrapper {
+    :global(.input),
+    :global(.inputError) {
+      border-color: $text-error-color !important;
+      box-shadow: 0 0 0 1px $text-error-color !important;
+    }
+
+    :global(.inputContainer) {
+      .input {
+        border-color: $text-error-color !important;
+        box-shadow: 0 0 0 1px $text-error-color !important;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: $breakpoint-sm) {
+  .label {
+    font-size: $text-xs;
+  }
+
+  .error,
+  .hint {
+    font-size: 10px;
+  }
+}

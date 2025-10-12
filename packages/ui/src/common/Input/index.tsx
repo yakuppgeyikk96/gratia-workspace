@@ -1,4 +1,4 @@
-import React, { forwardRef, InputHTMLAttributes, ReactNode } from "react";
+import { forwardRef, InputHTMLAttributes, ReactNode } from "react";
 import styles from "./Input.module.scss";
 
 export interface InputProps
@@ -35,8 +35,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ]
       .filter(Boolean)
       .join(" ");
-
-    console.log(error);
 
     return (
       <div className={styles.inputContainer}>

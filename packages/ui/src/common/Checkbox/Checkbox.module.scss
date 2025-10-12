@@ -26,6 +26,10 @@
     color: $checkbox-tick-color;
   }
 
+  &:checked + .label .checkboxVisual svg {
+    opacity: 1;
+  }
+
   &:hover:not(:disabled):not(:checked) + .label .checkboxVisual {
     border-color: $checkbox-border-hover;
     background: $checkbox-bg-hover;
@@ -73,53 +77,46 @@
   background: $checkbox-bg;
   flex-shrink: 0;
   position: relative;
+  transition: all 0.2s ease;
 
   svg {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
   }
+}
 
-  .checkbox-sm + .label & {
-    width: $checkbox-size-sm;
-    height: $checkbox-size-sm;
-    min-width: $checkbox-size-sm;
-    min-height: $checkbox-size-sm;
-  }
+// Size variants - düzeltildi
+.checkbox-sm + .label .checkboxVisual {
+  width: $checkbox-size-sm;
+  height: $checkbox-size-sm;
+  min-width: $checkbox-size-sm;
+  min-height: $checkbox-size-sm;
+}
 
-  .checkbox-md + .label & {
-    width: $checkbox-size-md;
-    height: $checkbox-size-md;
-    min-width: $checkbox-size-md;
-    min-height: $checkbox-size-md;
-  }
+.checkbox-md + .label .checkboxVisual {
+  width: $checkbox-size-md;
+  height: $checkbox-size-md;
+  min-width: $checkbox-size-md;
+  min-height: $checkbox-size-md;
+}
 
-  .checkbox-lg + .label & {
-    width: $checkbox-size-lg;
-    height: $checkbox-size-lg;
-    min-width: $checkbox-size-lg;
-    min-height: $checkbox-size-lg;
-  }
+.checkbox-lg + .label .checkboxVisual {
+  width: $checkbox-size-lg;
+  height: $checkbox-size-lg;
+  min-width: $checkbox-size-lg;
+  min-height: $checkbox-size-lg;
 }
 
 .labelText {
   flex: 1;
   line-height: 1.5;
-
-  .label-sm & {
-    font-size: $checkbox-label-sm;
-  }
-
-  .label-md & {
-    font-size: $checkbox-label-md;
-  }
-
-  .label-lg & {
-    font-size: $checkbox-label-lg;
-  }
 }
 
+// Size variants için label
 .checkbox-sm + .label {
   gap: $checkbox-gap-sm;
   font-size: $checkbox-label-sm;

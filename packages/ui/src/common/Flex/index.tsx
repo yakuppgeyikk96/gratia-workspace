@@ -1,4 +1,4 @@
-import React, { JSX, ReactNode } from "react";
+import { JSX, ReactNode } from "react";
 import styles from "./Flex.module.scss";
 
 interface FlexProps {

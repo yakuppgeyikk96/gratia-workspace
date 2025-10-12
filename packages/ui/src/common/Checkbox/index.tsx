@@ -1,10 +1,9 @@
-"use client";
-
-import React, { forwardRef, ReactNode, useState } from "react";
+import React, { forwardRef, ReactNode, useId } from "react";
 import IconTick from "../../icons/IconTick";
 import styles from "./Checkbox.module.scss";
 
 export interface CheckboxProps {
+  checked?: boolean;
   defaultChecked?: boolean;
   disabled?: boolean;
   size?: "sm" | "md" | "lg";
@@ -21,6 +20,7 @@ export interface CheckboxProps {
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   (
     {
+      checked,
       defaultChecked = false,
       disabled = false,
       size = "md",
@@ -36,17 +36,17 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     },
     ref
   ) => {
-    const [checked, setChecked] = useState(defaultChecked);
+    const generatedId = useId();
+    const checkboxId = id || generatedId;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newChecked = e.target.checked;
-      setChecked(newChecked);
       onChange?.(e);
       onValueChange?.(newChecked);
     };
 
-    const checkboxId =
-      id || `checkbox-${Math.random().toString(36).substr(2, 9)}`;
+    const isControlled = checked !== undefined;
+    const defaultInputProps = isControlled ? { checked } : { defaultChecked };
 
     return (
       <div className={`${styles.checkboxContainer} ${className}`}>
@@ -57,12 +57,12 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             id={checkboxId}
             name={name}
             value={value}
-            checked={checked}
             onChange={handleChange}
             disabled={disabled}
             className={`${styles.checkbox} ${styles[`checkbox-${size}`]} ${
               error ? styles.checkboxError : ""
             } ${disabled ? styles.disabled : ""}`}
+            {...defaultInputProps}
             {...props}
           />
           <label
@@ -72,12 +72,10 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             }`}
           >
             <span className={styles.checkboxVisual}>
-              {checked && (
-                <IconTick
-                  size={size === "sm" ? 12 : size === "md" ? 16 : 20}
-                  color="currentColor"
-                />
-              )}
+              <IconTick
+                size={size === "sm" ? 12 : size === "md" ? 16 : 20}
+                color="currentColor"
+              />
             </span>
             {label && (
               <span className={styles.labelText}>
