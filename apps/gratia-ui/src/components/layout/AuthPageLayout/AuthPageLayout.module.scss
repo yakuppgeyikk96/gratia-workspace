@@ -1,15 +1,14 @@
 @use "@gratia/ui/styles/layout/_flex.scss" as *;
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
 
-
-.registerPageWrapper {
+.authPageWrapper {
   @include flex-center;
 
   height: calc(100vh - $spacing-52);
   width: 100vw;
 }
 
-.registerPageFormContainer {
+.authPageFormContainer {
   @include flex-center;
   height: 100%;
 }

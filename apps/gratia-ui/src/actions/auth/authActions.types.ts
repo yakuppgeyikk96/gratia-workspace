@@ -17,3 +17,13 @@ export type IRegisterUserResponse = IApiResponse<{
   user: IUser;
   token: string;
 }>;
+
+export interface ILoginUserRequest {
+  email: string;
+  password: string;
+}
+
+export type ILoginUserResponse = IApiResponse<{
+  user: IUser;
+  token: string;
+}>;

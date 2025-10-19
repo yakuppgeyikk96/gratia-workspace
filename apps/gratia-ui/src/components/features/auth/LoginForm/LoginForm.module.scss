@@ -17,7 +17,7 @@
   border: 1px solid $border-medium;
   border-radius: $radius-md;
   padding: $spacing-10;
-  width: $width-400;
+  min-width: $width-400;
 
   @include media-xs {
     width: 100%;
@@ -48,10 +48,6 @@
 
 .formField {
   @include form-field-half;
-
-  @include media-xs {
-    @include form-field;
-  }
 }
 
 .formFieldFull {

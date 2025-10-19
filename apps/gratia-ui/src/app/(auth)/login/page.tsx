@@ -1,9 +1,10 @@
-import Link from "next/link";
+import LoginForm from "@/components/features/auth/LoginForm";
+import AuthPageLayout from "@/components/layout/AuthPageLayout";
 
 export default function LoginPage() {
   return (
-    <div>
-      <Link href="/register">Redirect to Register Page</Link>
-    </div>
+    <AuthPageLayout>
+      <LoginForm />
+    </AuthPageLayout>
   );
 }

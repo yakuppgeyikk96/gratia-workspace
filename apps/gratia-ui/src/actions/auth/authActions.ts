@@ -4,6 +4,8 @@ import { apiClient } from "@/lib/apiClient";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import {
+  ILoginUserRequest,
+  ILoginUserResponse,
   IRegisterUserRequest,
   IRegisterUserResponse,
   ISendVerificationEmailRequest,
@@ -48,6 +50,28 @@ export async function registerUser(
     cookieStore.set("gratia-user", JSON.stringify(user));
 
     redirect(`/`);
+  }
+
+  return response;
+}
+
+export async function loginUser(
+  request: ILoginUserRequest
+): Promise<ILoginUserResponse> {
+  const response: ILoginUserResponse = await apiClient.post(
+    `${API_BASE_ROUTE}/login`,
+    request
+  );
+
+  if (response.success && response.data?.user && response.data?.token) {
+    const { user, token } = response.data;
+
+    const cookieStore = await cookies();
+
+    cookieStore.set("gratia-token", token);
+    cookieStore.set("gratia-user", JSON.stringify(user));
+
+    redirect("/");
   }
 
   return response;
