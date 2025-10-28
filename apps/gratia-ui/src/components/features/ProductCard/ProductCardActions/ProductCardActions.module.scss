@@ -1,0 +1,54 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+
+.actionsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $bg-secondary-color;
+  padding: $spacing-3 $spacing-4;
+  @include rounded($radius-lg);
+  @include mx(2);
+}
+
+.priceSection {
+  display: flex;
+  flex-direction: column;
+  @include gap(1);
+}
+
+.currentPrice {
+  font-size: $text-lg;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+  line-height: $leading-none;
+}
+
+.originalPrice {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-muted-color;
+  text-decoration: line-through;
+  line-height: $leading-none;
+}
+
+.addToCartButton {
+  button {
+    background-color: $bg-color !important;
+    border: 1px solid $border-light !important;
+
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: $shadow-md;
+      transition: all $transition-fast;
+    }
+
+    &:active {
+      transform: scale(1);
+      box-shadow: $shadow-sm;
+      transition: all $transition-fast;
+    }
+  }
+}

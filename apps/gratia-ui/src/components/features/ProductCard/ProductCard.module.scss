@@ -1,0 +1,36 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.productCard {
+  @include flex-column;
+  @include gap(3);
+  background-color: $bg-color;
+  @include border($border-1, $border-light);
+  @include rounded($radius-lg);
+  @include pb(2);
+  overflow: hidden;
+  transition:
+    transform $transition-normal,
+    box-shadow $transition-normal;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: $shadow-md;
+    transition: all $transition-fast;
+  }
+}
+
+.infoLink {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity $transition-fast;
+  display: block;
+  @include px(2);
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

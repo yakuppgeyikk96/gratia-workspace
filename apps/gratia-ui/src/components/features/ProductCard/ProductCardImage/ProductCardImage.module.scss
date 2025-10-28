@@ -1,0 +1,117 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1; // Kare görünüm
+  overflow: hidden;
+  background-color: $bg-secondary-color;
+}
+
+// Embla Carousel Styles
+.emblaViewport {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.emblaContainer {
+  @include flex-row;
+  height: 100%;
+}
+
+.emblaSlide {
+  flex: 0 0 100%;
+  min-width: 0;
+  position: relative;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform $transition-normal;
+  user-select: none;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.placeholderImage {
+  width: 100%;
+  height: 100%;
+  @include flex-center;
+  background: linear-gradient(
+    135deg,
+    $bg-secondary-color 0%,
+    $border-light 100%
+  );
+}
+
+.placeholderText {
+  color: $text-muted-color;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.favoriteButton {
+  position: absolute;
+  top: $spacing-3;
+  right: $spacing-3;
+  z-index: 10;
+
+  button {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    box-shadow: $shadow-sm;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 1);
+      box-shadow: $shadow-md;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.dotsContainer {
+  position: absolute;
+  bottom: $spacing-3;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: $spacing-2;
+  z-index: 10;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: $radius-full;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: none;
+  cursor: pointer;
+  transition: all $transition-fast;
+  padding: 0;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+  }
+
+  &.dotActive {
+    background-color: rgba(255, 255, 255, 1);
+    width: 24px;
+  }
+}
