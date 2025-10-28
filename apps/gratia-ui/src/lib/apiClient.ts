@@ -23,7 +23,6 @@ class ApiClient {
 
     const url = `${this.baseUrl}${endpoint}`;
 
-    // Timeout controller
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
@@ -40,7 +39,6 @@ class ApiClient {
 
       clearTimeout(timeoutId);
 
-      // Response content type kontrolü
       const contentType = response.headers.get("content-type");
 
       if (!contentType || !contentType.includes("application/json")) {
@@ -106,7 +104,6 @@ class ApiClient {
     }
   }
 
-  // HTTP Methods
   async get<T>(
     endpoint: string,
     options?: Omit<IApiRequestOptions, "method" | "body">

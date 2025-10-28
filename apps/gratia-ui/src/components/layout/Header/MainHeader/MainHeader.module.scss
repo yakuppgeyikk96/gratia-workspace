@@ -18,3 +18,12 @@
   font-weight: $font-bold;
   color: var(--text-primary);
 }
+
+.mainHeaderSearchInput {
+  min-width: 400px;
+
+  @media screen and (max-width: $breakpoint-md) {
+    min-width: unset;
+    width: 100%;
+  }
+}

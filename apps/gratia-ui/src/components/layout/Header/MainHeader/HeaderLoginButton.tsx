@@ -1,16 +1,24 @@
 "use client";
 
-import { Button, IconPerson } from "@gratia/ui";
+import ProfileDropdown from "@/components/common/dropdowns/ProfileDropdown";
+import { Button } from "@gratia/ui/components";
+import { IconPerson } from "@gratia/ui/icons";
 import { useRouter } from "next/navigation";
 
-export default function HeaderLoginButton() {
+interface HeaderLoginButtonProps {
+  isAuthenticatedUser: boolean;
+}
+
+export default function HeaderLoginButton(props: HeaderLoginButtonProps) {
   const router = useRouter();
 
   const handleLogin = () => {
     router.push("/login");
   };
 
-  return (
+  return props.isAuthenticatedUser ? (
+    <ProfileDropdown />
+  ) : (
     <Button variant="ghost" icon={<IconPerson />} onClick={handleLogin}>
       Login
     </Button>

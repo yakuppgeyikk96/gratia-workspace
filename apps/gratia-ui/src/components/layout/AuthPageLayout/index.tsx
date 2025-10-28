@@ -1,4 +1,4 @@
-import { Container } from "@gratia/ui";
+import { Container } from "@gratia/ui/components";
 import styles from "./AuthPageLayout.module.scss";
 
 export default function AuthPageLayout({

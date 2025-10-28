@@ -1,16 +1,11 @@
 import {
   CurrencyDropdown,
   LanguageDropdown,
-} from "@/components/common/Dropdown";
+} from "@/components/common/dropdowns";
 import TopHeaderLinks from "@/components/layout/Header/TopHeaderLinks";
 import { COLORS } from "@/constants/colors";
-import {
-  Container,
-  Flex,
-  IconInstagram,
-  IconWhatsapp,
-  IconX,
-} from "@gratia/ui";
+import { Container, Flex } from "@gratia/ui/components";
+import { IconInstagram, IconWhatsapp, IconX } from "@gratia/ui/icons";
 import styles from "./TopHeader.module.scss";
 
 export default function TopHeader() {

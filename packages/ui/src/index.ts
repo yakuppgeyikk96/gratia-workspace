@@ -1,3 +1,3 @@
-export * from "./common";
+export * from "./components";
 export * from "./icons";
-export * from "./interfaces/IconComponent";
+export * from "./interfaces";

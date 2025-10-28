@@ -5,8 +5,9 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./common/*": "./src/common/*",
+    "./components": "./src/components/index.ts",
+    "./components/*": "./src/components/*",
+    "./icons": "./src/icons/index.ts",
     "./icons/*": "./src/icons/*",
     "./styles/*": "./src/styles/*"
   },
@@ -39,8 +40,10 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-one-time-password-field": "^0.1.8",
     "@radix-ui/react-toast": "^1.2.15",
+    "classnames": "^2.5.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "sass": "^1.93.0"

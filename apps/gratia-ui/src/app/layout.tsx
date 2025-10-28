@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Concert_One, Inter } from "next/font/google";
 
 import Header from "@/components/layout/Header";
-import { ToastContainer, ToastContextProvider } from "@gratia/ui";
+import { ToastContainer, ToastContextProvider } from "@gratia/ui/components";
 import "./globals.scss";
 
 const inter = Inter({

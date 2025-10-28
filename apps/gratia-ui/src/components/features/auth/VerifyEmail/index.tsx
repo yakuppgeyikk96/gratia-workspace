@@ -1,7 +1,11 @@
 "use client";
 
 import { registerUser } from "@/actions/auth/authActions";
-import { Container, OneTimePassword, useToastContext } from "@gratia/ui";
+import {
+  Container,
+  OneTimePassword,
+  useToastContext,
+} from "@gratia/ui/components";
 import styles from "./VerifyEmail.module.scss";
 
 interface VerifyEmailProps {

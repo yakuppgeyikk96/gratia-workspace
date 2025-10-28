@@ -6,12 +6,10 @@ import { loginSchema, type LoginFormData } from "@/schemas/loginSchema";
 import {
   Button,
   FormField,
-  IconAt,
-  IconPassword,
-  IconVisibility,
   Input,
   useToastContext,
-} from "@gratia/ui";
+} from "@gratia/ui/components";
+import { IconAt, IconPassword, IconVisibility } from "@gratia/ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";

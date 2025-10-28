@@ -1,5 +1,5 @@
 import { TOP_HEADER_LINKS } from "@/constants";
-import { Flex } from "@gratia/ui";
+import { Flex } from "@gratia/ui/components";
 import TopHeaderLinkItem from "./TopHeaderLinkItem";
 import styles from "./TopHeaderLinks.module.scss";
 

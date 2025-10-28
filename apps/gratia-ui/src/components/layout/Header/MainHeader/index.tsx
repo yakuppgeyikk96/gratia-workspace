@@ -1,23 +1,27 @@
-"use client";
-
+import { isAuthenticatedUser } from "@/actions/auth";
 import SearchInput from "@/components/features/search/SearchInput";
-import { Container, Flex, IconBell, IconButton, IconHeart } from "@gratia/ui";
+import { Container, Flex } from "@gratia/ui/components";
 import HeaderCartButton from "./HeaderCartButton";
 import HeaderLoginButton from "./HeaderLoginButton";
 import styles from "./MainHeader.module.scss";
+import MainHeaderIcons from "./MainHeaderIcons";
 
-export default function MainHeader() {
+export default async function MainHeader() {
+  const isAuthenticated = await isAuthenticatedUser();
+
   return (
     <Container className={styles.mainHeader}>
       <h1 className={styles.mainHeaderLogo}>GRATIA</h1>
-      <SearchInput placeholder="Search your favorite products..." />
+      <SearchInput
+        className={styles.mainHeaderSearchInput}
+        placeholder="Search your favorite products..."
+      />
       <Flex gap={16} align="center">
-        <IconButton icon={<IconBell />} onClick={() => {}} ariaLabel="Bell" />
-        <IconButton icon={<IconHeart />} onClick={() => {}} ariaLabel="Heart" />
+        <MainHeaderIcons />
       </Flex>
       <Flex gap={16} align="center">
         <HeaderCartButton />
-        <HeaderLoginButton />
+        <HeaderLoginButton isAuthenticatedUser={isAuthenticated} />
       </Flex>
     </Container>
   );

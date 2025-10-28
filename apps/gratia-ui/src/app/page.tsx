@@ -1,4 +1,4 @@
-import { Button } from "@gratia/ui";
+import { Button } from "@gratia/ui/components";
 
 export default async function Home() {
   return (

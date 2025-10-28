@@ -76,3 +76,17 @@ export async function loginUser(
 
   return response;
 }
+
+export async function logoutUser(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete("gratia-token");
+  cookieStore.delete("gratia-user");
+  redirect("/");
+}
+
+export async function isAuthenticatedUser(): Promise<boolean> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("gratia-token")?.value;
+
+  return !!token;
+}

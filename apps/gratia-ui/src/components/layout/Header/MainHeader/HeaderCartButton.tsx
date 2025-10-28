@@ -1,4 +1,5 @@
-import { Badge, Button, Flex, IconShoppingBag } from "@gratia/ui";
+import { Badge, Button, Flex } from "@gratia/ui/components";
+import { IconShoppingBag } from "@gratia/ui/icons";
 
 export default function HeaderCartButton() {
   return (

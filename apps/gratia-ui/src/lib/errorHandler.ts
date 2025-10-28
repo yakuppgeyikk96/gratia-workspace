@@ -39,7 +39,6 @@ export function logError(error: unknown, context?: string): void {
   });
 }
 
-// Toast-specific error messages
 export function getToastError(error: unknown): {
   title: string;
   description: string;

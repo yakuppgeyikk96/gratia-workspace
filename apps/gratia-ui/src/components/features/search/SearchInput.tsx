@@ -1,7 +1,8 @@
 "use client";
 
 import { COLORS } from "@/constants/colors";
-import { IconSearch, Input } from "@gratia/ui";
+import { Input } from "@gratia/ui/components";
+import { IconSearch } from "@gratia/ui/icons";
 import { useState } from "react";
 
 interface SearchInputProps {

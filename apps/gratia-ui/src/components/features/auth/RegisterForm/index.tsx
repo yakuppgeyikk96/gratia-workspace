@@ -10,12 +10,10 @@ import {
   Button,
   Checkbox,
   FormField,
-  IconAt,
-  IconPassword,
-  IconVisibility,
   Input,
   useToastContext,
-} from "@gratia/ui";
+} from "@gratia/ui/components";
+import { IconAt, IconPassword, IconVisibility } from "@gratia/ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -30,7 +28,6 @@ export default function RegisterForm() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-    mode: "onBlur",
   });
 
   const onSubmit: SubmitHandler<RegisterFormData> = async (
