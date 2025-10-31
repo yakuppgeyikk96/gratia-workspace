@@ -1,0 +1,6 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+
+.productLayout {
+  margin-top: calc(195px + $spacing-8);
+  margin-bottom: $spacing-8;
+}

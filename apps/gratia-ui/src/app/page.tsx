@@ -1,7 +1,7 @@
-import { ProductCardData } from "@/components/features/ProductCard/ProductCard.types";
 import ProductList from "@/components/features/ProductList";
+import { Product } from "@/types";
 
-const mockProducts: ProductCardData[] = [
+const mockProducts: Partial<Product>[] = [
   {
     _id: "1",
     name: "Premium Cotton T-Shirt",

@@ -1,0 +1,10 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: $bg-color;
+}

@@ -1,3 +1,6 @@
+import { getProducts } from "@/actions/product";
+import ProductList from "@/components/features/ProductList";
+
 export default async function CategoryProductsPage({
   params,
 }: {
@@ -7,5 +10,7 @@ export default async function CategoryProductsPage({
 
   console.log(categorySlug);
 
-  return <div>CategoryProductsPage</div>;
+  const { data } = await getProducts({ categorySlug });
+
+  return <ProductList products={data?.products ?? []} title="" />;
 }

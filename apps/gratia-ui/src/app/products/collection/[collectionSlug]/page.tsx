@@ -1,9 +1,14 @@
+import { getProducts } from "@/actions/product";
+import ProductList from "@/components/features/ProductList";
+
 export default async function CollectionProductsPage({
   params,
 }: {
   params: Promise<{ collectionSlug: string }>;
 }) {
   const { collectionSlug } = await params;
-  console.log(collectionSlug);
-  return <div>CollectionProductsPage</div>;
+
+  const { data } = await getProducts({ collectionSlug });
+
+  return <ProductList products={data?.products ?? []} title="" />;
 }

@@ -25,23 +25,23 @@ export default function ProductCard({
     <article className={`${styles.productCard} ${className}`}>
       {/* Image Section with Carousel */}
       <ProductCardImage
-        images={product.images}
-        productName={product.name}
+        images={product.images ?? []}
+        productName={product.name ?? ""}
         onAddToFavorites={handleAddToFavorites}
       />
 
       {/* Product Info Section - Clickable */}
       <Link href={`/products/${product.slug}`} className={styles.infoLink}>
         <ProductCardInfo
-          name={product.name}
+          name={product.name ?? ""}
           description={product.description}
         />
       </Link>
 
       {/* Actions Section */}
       <ProductCardActions
-        price={product.basePrice}
-        discountedPrice={product.baseDiscountedPrice}
+        price={product.basePrice ?? 0}
+        discountedPrice={product.baseDiscountedPrice ?? 0}
         onAddToCart={handleAddToCart}
       />
     </article>

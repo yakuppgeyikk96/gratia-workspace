@@ -1,15 +1,7 @@
-export interface ProductCardData {
-  _id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  images: string[];
-  basePrice: number;
-  baseDiscountedPrice?: number;
-}
+import { Product } from "@/types";
 
 export interface ProductCardProps {
-  product: ProductCardData;
+  product: Partial<Product>;
   className?: string;
 }
 
