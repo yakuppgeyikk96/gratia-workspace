@@ -14,13 +14,13 @@ export default async function HeaderCategoryLinks({
   const collectionLinks =
     navigationItems?.collections.map((collection) => ({
       title: collection.name,
-      href: `/collections/${collection.slug}`,
+      href: `/products/collection/${collection.slug}`,
     })) ?? [];
 
   const categoryLinks =
     navigationItems?.categories.map((category) => ({
       title: category.name,
-      href: `/categories/${category.slug}`,
+      href: `/products/category/${category.slug}`,
     })) ?? [];
 
   return (
