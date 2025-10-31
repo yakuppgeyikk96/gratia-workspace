@@ -1,6 +1,6 @@
 "use client";
 
-import { registerUser } from "@/actions/auth/authActions";
+import { registerUser } from "@/actions";
 import {
   Container,
   OneTimePassword,

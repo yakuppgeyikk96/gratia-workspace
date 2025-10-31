@@ -1,6 +1,6 @@
 "use client";
 
-import { sendVerificationEmail } from "@/actions/auth";
+import { sendVerificationEmail } from "@/actions";
 import { COLORS } from "@/constants/colors";
 import {
   registerSchema,

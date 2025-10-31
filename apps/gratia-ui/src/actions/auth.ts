@@ -1,8 +1,6 @@
 "use server";
 
 import { apiClient } from "@/lib/apiClient";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import {
   ILoginUserRequest,
   ILoginUserResponse,
@@ -10,7 +8,9 @@ import {
   IRegisterUserResponse,
   ISendVerificationEmailRequest,
   ISendVerificationEmailResponse,
-} from "./authActions.types";
+} from "@/types";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const API_BASE_ROUTE = "/auth";
 

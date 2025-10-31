@@ -1,6 +1,6 @@
 "use client";
 
-import { loginUser } from "@/actions/auth/authActions";
+import { loginUser } from "@/actions/auth";
 import { COLORS } from "@/constants/colors";
 import { loginSchema, type LoginFormData } from "@/schemas/loginSchema";
 import {
