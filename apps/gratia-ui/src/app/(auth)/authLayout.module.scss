@@ -1,0 +1,5 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+
+.authLayout {
+  margin-top: calc(195px + $spacing-8);
+}
