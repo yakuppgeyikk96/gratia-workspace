@@ -1,0 +1,139 @@
+@use "../../styles/core/_colors.scss" as *;
+@use "../../styles/core/_spacing.scss" as *;
+@use "../../styles/core/_variables.scss" as *;
+@use "../../styles/core/_border.scss" as *;
+@use "../../styles/layout/_flex.scss" as *;
+@use "../../styles/components/_drawer.scss" as drawer;
+
+// Overlay
+.drawerOverlay {
+  position: fixed;
+  inset: 0;
+  background: drawer.$drawer-overlay-bg;
+  z-index: drawer.$drawer-overlay-z;
+  animation: fadeIn drawer.$drawer-overlay-transition;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Drawer Content
+.drawerContent {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: drawer.$drawer-width;
+  max-width: drawer.$drawer-max-width;
+  background: $bg-color;
+  z-index: drawer.$drawer-content-z;
+  box-shadow: $shadow-xl;
+  transition: drawer.$drawer-transition;
+  outline: none;
+
+  @include flex($direction: column);
+
+  &.drawer-left {
+    left: 0;
+    transform: translateX(-100%);
+
+    &.open {
+      transform: translateX(0);
+    }
+  }
+
+  &.drawer-right {
+    right: 0;
+    transform: translateX(100%);
+
+    &.open {
+      transform: translateX(0);
+    }
+  }
+}
+
+// Header
+.drawerHeader {
+  @include flex($justify: space-between, $align: center);
+  padding: drawer.$drawer-header-padding;
+  border-bottom: 1px solid $border-light;
+  flex-shrink: 0;
+  min-height: drawer.$drawer-header-height;
+}
+
+.drawerHeaderLeft,
+.drawerHeaderRight {
+  width: drawer.$drawer-header-button-width;
+  @include flex($justify: center, $align: center);
+}
+
+.drawerTitle {
+  flex: 1;
+  text-align: center;
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  margin: 0;
+}
+
+// List
+.drawerList {
+  flex: 1;
+  overflow-y: auto;
+  padding: drawer.$drawer-list-padding;
+}
+
+// Item
+.drawerItem {
+  @include flex($align: center, $gap: drawer.$drawer-item-gap);
+  width: 100%;
+  padding: drawer.$drawer-item-padding;
+  background: transparent;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: background-color $transition-normal;
+  text-align: left;
+
+  &:hover:not(.disabled) {
+    background: $interactive-hover-bg;
+  }
+
+  &:active:not(.disabled) {
+    background: $interactive-active-bg;
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.itemIcon {
+  @include flex($justify: center, $align: center);
+  width: drawer.$drawer-icon-size;
+  height: drawer.$drawer-icon-size;
+  font-size: $text-xl;
+  flex-shrink: 0;
+}
+
+.itemLabel {
+  flex: 1;
+  font-size: $text-base;
+  font-weight: $font-medium;
+  color: $text-primary-color;
+}
+
+.itemArrow {
+  @include flex($justify: center, $align: center);
+  width: drawer.$drawer-arrow-size;
+  height: drawer.$drawer-arrow-size;
+  color: $text-muted-color;
+  margin-left: auto;
+  flex-shrink: 0;
+}

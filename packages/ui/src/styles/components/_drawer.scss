@@ -1,0 +1,30 @@
+// packages/ui/src/styles/components/_drawer.scss
+@use "../core/variables.scss" as *;
+@use "../core/spacing.scss" as *;
+
+// Drawer dimensions
+$drawer-width: 320px;
+$drawer-max-width: 85vw;
+$drawer-header-height: 60px;
+
+// Drawer z-index (use from variables)
+$drawer-overlay-z: $z-modal-backdrop;
+$drawer-content-z: $z-modal;
+
+// Drawer spacing
+$drawer-header-padding: $spacing-4;
+$drawer-list-padding: $spacing-2;
+$drawer-item-padding: $spacing-4;
+$drawer-item-gap: $spacing-3;
+
+// Drawer icon sizes
+$drawer-icon-size: 24px;
+$drawer-arrow-size: 20px;
+$drawer-header-button-width: 40px;
+
+// Drawer animations
+$drawer-transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$drawer-overlay-transition: $transition-normal;
+
+// Drawer overlay
+$drawer-overlay-bg: rgba(0, 0, 0, 0.5);

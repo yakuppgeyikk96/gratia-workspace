@@ -1,8 +1,14 @@
-$container-max-width: 1200px;
+@use "../../styles/core/breakpoints.scss" as *;
+
+$container-max-width: 1440px;
 $container-padding: 1.5rem;
 $container-padding-mobile: 1rem;
 
-@mixin container($max-width: $container-max-width, $padding: $container-padding, $padding-mobile: $container-padding-mobile) {
+@mixin container(
+  $max-width: $container-max-width,
+  $padding: $container-padding,
+  $padding-mobile: $container-padding-mobile
+) {
   width: 100%;
   max-width: $max-width;
   margin: 0 auto;

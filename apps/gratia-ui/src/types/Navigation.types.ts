@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface NavigationLink {
   title: string;
   href: string;
@@ -24,8 +26,6 @@ export interface NavigationResponse {
 
 export interface BottomBarItem {
   id: string;
-  label: string;
-  icon: React.ReactNode;
-  href: string;
-  badge?: number;
+  label: React.ReactNode;
+  onClick?: () => void;
 }

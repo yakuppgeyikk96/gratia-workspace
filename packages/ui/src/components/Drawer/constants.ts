@@ -1,0 +1,1 @@
+export const DRAWER_ANIMATION_DURATION = 300;

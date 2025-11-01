@@ -24,14 +24,7 @@
     background: $interactive-hover-bg;
   }
 
-  &:focus {
-    outline: 2px solid $interactive-focus-ring;
-    outline-offset: 2px;
-    color: $text-primary-color;
-    background: $interactive-hover-bg;
-  }
-
   &:active {
-    background: $interactive-active-bg;
+    transform: scale(0.98);
   }
 }

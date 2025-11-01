@@ -1,3 +1,4 @@
+import { Button } from "@gratia/ui/components";
 import Link from "next/link";
 import { ReactNode } from "react";
 import styles from "./HeaderCategoryLinkItem.module.scss";
@@ -26,8 +27,8 @@ export default function HeaderCategoryLinkItem({
   }
 
   return (
-    <button className={linkClass} onClick={onClick}>
+    <Button variant="ghost" className={linkClass} onClick={onClick}>
       {children}
-    </button>
+    </Button>
   );
 }

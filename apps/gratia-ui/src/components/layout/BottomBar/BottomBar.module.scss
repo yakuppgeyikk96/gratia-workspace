@@ -1,8 +1,8 @@
-@use "@gratia/ui/styles/core/_variables.scss" as *;
-@use "@gratia/ui/styles/core/_spacing.scss" as *;
 @use "@gratia/ui/styles/core/_colors.scss" as *;
-@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
 @use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
 .bottomBar {
   display: none;
@@ -33,20 +33,32 @@
   background: none;
   border: none;
   cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+  color: $text-muted-color;
+  position: relative;
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Content wrapper - label içindeki Link/div için
+.bottomBarItemContent {
+  @include flex($direction: column, $align: center, $gap: 4px);
   @include px(8);
   @include py(4);
-  transition: all 0.2s ease;
-  color: $text-primary-color;
-  font-size: $text-sm;
-  font-weight: $font-medium;
-  position: relative;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
 }
 
 .bottomBarItemIcon {
   position: relative;
   @include flex($justify: center, $align: center);
-  width: $text-base;
-  height: $text-base;
+  width: 24px;
+  height: 24px;
+  transition: color 0.2s ease;
 }
 
 .bottomBarItemBadge {
