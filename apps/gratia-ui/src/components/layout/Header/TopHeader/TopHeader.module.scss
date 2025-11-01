@@ -10,14 +10,34 @@
   @media screen and (max-width: $breakpoint-xl) {
     @include px(4);
   }
+
+  @media screen and (max-width: $breakpoint-sm) {
+    display: none;
+  }
 }
 
 .topHeaderInner {
   @include flex-between();
   @include py(3);
+
+  @media screen and (max-width: $breakpoint-md) {
+    @include py(2);
+  }
 }
 
 .topHeaderLinks {
   @include flex();
   gap: 61px;
+
+  @media screen and (max-width: $breakpoint-lg) {
+    gap: 32px;
+  }
+
+  @media screen and (max-width: $breakpoint-md) {
+    gap: 16px;
+
+    > ul {
+      display: none;
+    }
+  }
 }

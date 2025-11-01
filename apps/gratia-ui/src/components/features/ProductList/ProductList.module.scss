@@ -5,6 +5,10 @@
 
 .container {
   margin-top: $spacing-8;
+
+  @media screen and (max-width: $breakpoint-xl) {
+    padding-inline: $spacing-4;
+  }
 }
 
 .title {

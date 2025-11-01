@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Concert_One, Inter } from "next/font/google";
 
+import BottomBar from "@/components/layout/BottomBar";
 import Header from "@/components/layout/Header";
 import { ToastContainer, ToastContextProvider } from "@gratia/ui/components";
 import "./globals.scss";
@@ -32,6 +33,7 @@ export default function RootLayout({
         <ToastContextProvider>
           <Header />
           {children}
+          <BottomBar />
           <ToastContainer />
         </ToastContextProvider>
       </body>

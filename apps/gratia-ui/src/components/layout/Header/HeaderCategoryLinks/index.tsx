@@ -1,6 +1,5 @@
 import { getNavigationItems } from "@/actions";
-import HeaderCategoryLinkItem from "./HeaderCategoryLinkItem";
-import styles from "./HeaderCategoryLinks.module.scss";
+import HeaderCategoryLinksClient from "./HeaderCategoryLinksClient";
 
 interface HeaderCategoryLinksProps {
   className?: string;
@@ -23,13 +22,7 @@ export default async function HeaderCategoryLinks({
       href: `/products/category/${category.slug}`,
     })) ?? [];
 
-  return (
-    <nav className={`${styles.container} ${className}`}>
-      {[...collectionLinks, ...categoryLinks].map((link) => (
-        <HeaderCategoryLinkItem key={link.href} href={link.href}>
-          {link.title}
-        </HeaderCategoryLinkItem>
-      ))}
-    </nav>
-  );
+  const allLinks = [...collectionLinks, ...categoryLinks];
+
+  return <HeaderCategoryLinksClient links={allLinks} className={className} />;
 }

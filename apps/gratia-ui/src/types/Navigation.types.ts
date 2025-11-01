@@ -21,3 +21,11 @@ export interface NavigationResponse {
   collections: NavigationCollectionItem[];
   categories: NavigationCategoryItem[];
 }
+
+export interface BottomBarItem {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  href: string;
+  badge?: number;
+}

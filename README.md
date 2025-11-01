@@ -1,135 +1,161 @@
-# Turborepo starter
+# Gratia E-Commerce Platform
 
-This Turborepo starter is maintained by the Turborepo core team.
+A modern e-commerce application built with Next.js 14, featuring a monorepo architecture powered by Turborepo.
 
-## Using this example
+## 🚀 Quick Start
 
-Run the following command:
+### Prerequisites
 
-```sh
-npx create-turbo@latest
+- Node.js 18+
+- pnpm (recommended package manager)
+
+### Installation
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
 ```
 
-## What's inside?
+The application will be available at `http://localhost:3000`
 
-This Turborepo includes the following packages/apps:
+## 📦 Project Structure
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@gratia/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@gratia/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@gratia/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+This is a monorepo containing:
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+gratia-workspace/
+├── apps/
+│   └── gratia-ui/          # Main Next.js application
+├── packages/
+│   ├── ui/                 # Shared UI component library
+│   ├── eslint-config/      # Shared ESLint configurations
+│   └── typescript-config/  # Shared TypeScript configurations
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## ✨ Features
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+### Currently Implemented
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+- ✅ **Authentication System**
+  - User registration
+  - Email verification
+  - Login/Logout functionality
+  - Protected routes
 
-### Develop
+- ✅ **Product Catalog**
+  - Browse products by category
+  - Browse products by collection
+  - Product listing with cards
+  - Responsive product grid
 
-To develop all apps and packages, run the following command:
+- ✅ **Navigation & Layout**
+  - Multi-tier header (Top, Main, Bottom)
+  - Responsive category navigation
+  - Dynamic overflow menu for categories
+  - Search functionality
 
-```
-cd my-turborepo
+- ✅ **UI Component Library**
+  - Button, Badge, Dropdown components
+  - Form components (Input, Checkbox, FormField)
+  - Toast notifications
+  - Icon system
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+### 🚧 In Progress
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+- ⚠️ **Mobile Responsive Design**
+  - Bottom navigation bar implemented
+  - Header responsive behavior in development
+  - Full mobile optimization in progress
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+- 🔜 **Upcoming Features**
+  - Product detail pages
+  - Shopping cart
+  - Checkout flow
+  - User profile management
+  - Order history
+  - Wishlist functionality
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+## 🛠️ Technology Stack
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Styling:** SCSS Modules
+- **UI Components:** Custom component library + Radix UI
+- **Build Tool:** Turborepo
+- **Package Manager:** pnpm
 
-### Remote Caching
+## 📱 Responsive Breakpoints
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+```scss
+$breakpoint-xs: 480px;
+$breakpoint-sm: 640px; // Mobile
+$breakpoint-md: 768px; // Tablet
+$breakpoint-lg: 1024px; // Desktop
+$breakpoint-xl: 1280px; // Large Desktop
+$breakpoint-2xl: 1536px; // Extra Large
 ```
 
-## Useful Links
+## 🧪 Development
 
-Learn more about the power of Turborepo:
+### Run specific package
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+```bash
+# Run only the main UI app
+pnpm dev --filter=gratia-ui
+
+# Build the UI component library
+pnpm build --filter=@gratia/ui
+```
+
+### Project Commands
+
+```bash
+# Development
+pnpm dev              # Start all apps in development mode
+pnpm dev:ui           # Start only the main UI app
+
+# Build
+pnpm build            # Build all packages and apps
+pnpm build:ui         # Build only the main UI app
+
+# Linting
+pnpm lint             # Run ESLint on all packages
+```
+
+## 🎨 UI Component Library
+
+The project includes a custom UI component library (`@gratia/ui`) with:
+
+- **Layout:** Container, Flex, Divider
+- **Forms:** Input, Checkbox, FormField, OneTimePassword
+- **Actions:** Button, IconButton, Dropdown
+- **Feedback:** Badge, Toast, LoadingSpinner
+- **Icons:** Custom SVG icon system
+
+## 📝 Environment Variables
+
+Create a `.env.local` file in `apps/gratia-ui/`:
+
+```env
+# API Configuration
+NEXT_PUBLIC_API_URL=your_api_url
+
+# Add other environment variables as needed
+```
+
+## 🤝 Contributing
+
+This is an active development project. Features and implementations are subject to change.
+
+## 📄 License
+
+[Add your license here]
+
+## 🔗 Useful Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Turborepo Documentation](https://turborepo.com/docs)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs)

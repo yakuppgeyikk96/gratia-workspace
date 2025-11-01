@@ -10,6 +10,25 @@
   @media screen and (max-width: $breakpoint-xl) {
     @include px(4);
   }
+
+  // Large Tablet - reduce gap
+  @media screen and (max-width: $breakpoint-lg) {
+    gap: 24px;
+  }
+
+  // Tablet - reduce gap
+  @media screen and (max-width: $breakpoint-md) {
+    gap: 16px;
+    @include py(3);
+  }
+
+  // Mobile - only logo and search
+  @media screen and (max-width: $breakpoint-sm) {
+    gap: 12px;
+    flex-wrap: wrap;
+    @include py(2);
+    justify-content: center;
+  }
 }
 
 .mainHeaderLogo {
@@ -17,13 +36,51 @@
   font-size: $text-4xl;
   font-weight: $font-bold;
   color: var(--text-primary);
+
+  @media screen and (max-width: $breakpoint-lg) {
+    font-size: $text-3xl;
+  }
+
+  @media screen and (max-width: $breakpoint-md) {
+    font-size: $text-2xl;
+  }
+
+  @media screen and (max-width: $breakpoint-sm) {
+    width: 100%;
+    text-align: center;
+    font-size: $text-xl;
+  }
 }
 
 .mainHeaderSearchInput {
   min-width: 400px;
 
+  @media screen and (max-width: $breakpoint-lg) {
+    min-width: 300px;
+  }
+
   @media screen and (max-width: $breakpoint-md) {
-    min-width: unset;
+    min-width: 200px;
+    flex: 1;
+  }
+
+  @media screen and (max-width: $breakpoint-sm) {
+    order: 10;
     width: 100%;
+    min-width: 100%;
+  }
+}
+
+// Desktop Icons - Hidden on tablet
+.mainHeaderDesktopIcons {
+  @media screen and (max-width: $breakpoint-md) {
+    display: none !important;
+  }
+}
+
+// Primary Actions - Hidden on mobile (will be in bottomBar)
+.mainHeaderPrimaryActions {
+  @media screen and (max-width: $breakpoint-sm) {
+    display: none !important;
   }
 }

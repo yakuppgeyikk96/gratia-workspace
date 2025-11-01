@@ -12,10 +12,13 @@
   @media screen and (max-width: $breakpoint-xl) {
     @include px(4);
   }
+
+  @media screen and (max-width: $breakpoint-sm) {
+    display: none;
+  }
 }
 
 .categoryDropdown {
-
   .label {
     font-size: $text-sm;
     font-weight: $font-medium;

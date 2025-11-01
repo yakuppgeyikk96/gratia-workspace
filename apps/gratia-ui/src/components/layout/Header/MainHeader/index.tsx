@@ -11,15 +11,22 @@ export default async function MainHeader() {
 
   return (
     <Container className={styles.mainHeader}>
+      {/* Logo */}
       <h1 className={styles.mainHeaderLogo}>GRATIA</h1>
+
+      {/* Search Input */}
       <SearchInput
         className={styles.mainHeaderSearchInput}
         placeholder="Search your favorite products..."
       />
-      <Flex gap={16} align="center">
+
+      {/* Desktop Icons (Bell, Heart) - Hidden on tablet */}
+      <Flex gap={16} align="center" className={styles.mainHeaderDesktopIcons}>
         <MainHeaderIcons />
       </Flex>
-      <Flex gap={16} align="center">
+
+      {/* Primary Actions - Hidden on mobile */}
+      <Flex gap={16} align="center" className={styles.mainHeaderPrimaryActions}>
         <HeaderCartButton />
         <HeaderLoginButton isAuthenticatedUser={isAuthenticated} />
       </Flex>
