@@ -1,5 +1,9 @@
 export { default as IconAt } from "./IconAt";
 export { default as IconBell } from "./IconBell";
+export { default as IconBox } from "./IconBox";
+export { default as IconBoxArrowLeft } from "./IconBoxArrowLeft";
+export { default as IconBoxArrowRight } from "./IconBoxArrowRight";
+export { default as IconCash } from "./IconCash";
 export { default as IconChevronDown } from "./IconChevronDown";
 export { default as IconChevronLeft } from "./IconChevronLeft";
 export { default as IconChevronRight } from "./IconChevronRight";
@@ -15,6 +19,7 @@ export { default as IconSearch } from "./IconSearch";
 export { default as IconShoppingBag } from "./IconShoppingBag";
 export { default as IconThreeDotsVertical } from "./IconThreeDotsVertical";
 export { default as IconTick } from "./IconTick";
+export { default as IconTranslate } from "./IconTranslate";
 export { default as IconVisibility } from "./IconVisibility";
 export { default as IconWhatsapp } from "./IconWhatsapp";
 export { default as IconX } from "./IconX";
