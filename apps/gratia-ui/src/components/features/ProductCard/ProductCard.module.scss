@@ -34,3 +34,23 @@
     opacity: 0.8;
   }
 }
+
+.variantLink {
+  @include px(2);
+
+  a {
+    display: inline-block;
+    text-decoration: none;
+  }
+}
+
+.variantLinkText {
+  font-size: 0.813rem;
+  color: $text-link-color;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $primary-color;
+    border-bottom-color: $primary-color;
+  }
+}

@@ -1,5 +1,7 @@
 "use client";
 
+import { useCartStore } from "@/store/cartStore";
+import { useToast } from "@gratia/ui/components";
 import Link from "next/link";
 import styles from "./ProductCard.module.scss";
 import { ProductCardProps } from "./ProductCard.types";
@@ -11,14 +13,61 @@ export default function ProductCard({
   product,
   className = "",
 }: ProductCardProps) {
+  const addItem = useCartStore((state) => state.addItem);
+  const { addToast } = useToast();
+
+  const hasVariants = (product.variants?.length ?? 0) > 0;
+
   const handleAddToCart = () => {
-    // TODO: Implement add to cart logic
-    console.log("Add to cart:", product._id);
+    if (!product.baseStock || product.baseStock <= 0) {
+      addToast({
+        title: "Stok Yok",
+        description: "Bu ürün şu anda stokta bulunmamaktadır.",
+        variant: "warning",
+      });
+      return;
+    }
+
+    if (
+      product._id &&
+      product.sku &&
+      product.basePrice &&
+      product.baseDiscountedPrice &&
+      product.baseAttributes
+    ) {
+      addItem({
+        productId: product._id,
+        sku: product.sku,
+        quantity: 1,
+        price: product.basePrice,
+        discountedPrice: product.baseDiscountedPrice,
+        productName: product.name ?? "",
+        productImages: product.images ?? [],
+        attributes: product.baseAttributes,
+        isVariant: false,
+      });
+    } else {
+      addToast({
+        title: "Hata",
+        description: "Bu ürün sepete eklenebilir değil.",
+        variant: "error",
+      });
+      return;
+    }
+
+    addToast({
+      title: "Sepete Eklendi",
+      description: `${product.name} sepetinize eklendi.`,
+      variant: "success",
+    });
   };
 
   const handleAddToFavorites = () => {
-    // TODO: Implement add to favorites logic
-    console.log("Add to favorites:", product._id);
+    addToast({
+      title: "Favorilere Eklendi",
+      description: `${product.name} favorilerinize eklendi.`,
+      variant: "success",
+    });
   };
 
   return (
@@ -37,6 +86,17 @@ export default function ProductCard({
           description={product.description}
         />
       </Link>
+
+      {/* Variant Options Link - Only shown if variants exist */}
+      {hasVariants && (
+        <div className={styles.variantLink}>
+          <Link href={`/products/${product.slug}`}>
+            <span className={styles.variantLinkText}>
+              Show Variants • {product.variants?.length ?? 0} variant
+            </span>
+          </Link>
+        </div>
+      )}
 
       {/* Actions Section */}
       <ProductCardActions

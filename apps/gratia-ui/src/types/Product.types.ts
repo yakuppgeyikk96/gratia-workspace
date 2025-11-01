@@ -10,11 +10,12 @@ export interface ProductVariantAttributes {
 }
 
 export interface ProductVariant {
-  attributes: ProductVariantAttributes;
   sku: string;
   stock: number;
   price?: number;
   discountedPrice?: number;
+  attributes: ProductVariantAttributes;
+  images?: string[];
 }
 
 export interface Product {
@@ -24,12 +25,17 @@ export interface Product {
   description?: string;
   sku: string;
   categoryId: string | Partial<Category>;
-  categoryPath?: string; // Example: "men#shoes#sneakers"
+  categoryPath?: string;
   collectionSlugs?: string[];
+
   basePrice: number;
   baseDiscountedPrice?: number;
+  baseStock: number;
+  baseAttributes: ProductVariantAttributes;
+
   images: string[];
   variants: ProductVariant[];
+
   metaTitle?: string;
   metaDescription?: string;
   isActive: boolean;
