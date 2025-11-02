@@ -32,7 +32,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${concertOne.variable}`}>
         <ToastContextProvider>
           <Header />
-          {children}
+          <main>{children}</main>
           <BottomBar />
           <ToastContainer />
         </ToastContextProvider>

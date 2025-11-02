@@ -12,6 +12,14 @@ $container-padding-mobile: 1rem;
   width: 100%;
   max-width: $max-width;
   margin: 0 auto;
+
+  @media screen and (max-width: 1440px) {
+    padding-inline: $container-padding;
+  }
+
+  @media screen and (max-width: $breakpoint-sm) {
+    padding-inline: $container-padding-mobile;
+  }
 }
 
 @mixin container-default {

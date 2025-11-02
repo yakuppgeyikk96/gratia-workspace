@@ -1,15 +1,6 @@
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
-.productLayout {
-  margin-top: calc(195px + $spacing-8);
-  margin-bottom: $spacing-8;
-
-  @media screen and (max-width: $breakpoint-sm) {
-    margin-top: calc(100px + $spacing-8);
-  }
-}
-
 .skeletonContainer {
   padding: 1rem;
 }

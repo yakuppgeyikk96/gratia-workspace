@@ -1,0 +1,20 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.cartItem {
+  @include flex(row, flex-start, flex-start);
+  @include gap(4);
+  @include p(4);
+  background-color: $bg-color;
+  @include border($border-1, $border-light);
+  @include rounded($radius-lg);
+  transition: box-shadow $transition-normal;
+  width: 100%;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}

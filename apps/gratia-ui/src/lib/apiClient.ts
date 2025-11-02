@@ -14,12 +14,7 @@ class ApiClient {
     endpoint: string,
     options: IApiRequestOptions = {}
   ): Promise<IApiResponse<T>> {
-    const {
-      method = "GET",
-      headers = {},
-      body,
-      timeout = this.defaultTimeout,
-    } = options;
+    const { method = "GET", body, timeout = this.defaultTimeout } = options;
 
     const url = `${this.baseUrl}${endpoint}`;
 
@@ -31,7 +26,7 @@ class ApiClient {
         method,
         headers: {
           "Content-Type": "application/json",
-          ...headers,
+          ...options?.headers,
         },
         body: body ? JSON.stringify(body) : undefined,
         signal: controller.signal,

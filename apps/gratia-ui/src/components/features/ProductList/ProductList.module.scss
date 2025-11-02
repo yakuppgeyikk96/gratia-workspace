@@ -3,14 +3,6 @@
 @use "@gratia/ui/styles/core/_variables.scss" as *;
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
-.container {
-  margin-top: $spacing-8;
-
-  @media screen and (max-width: $breakpoint-xl) {
-    padding-inline: $spacing-4;
-  }
-}
-
 .title {
   font-size: $text-3xl;
   font-weight: $font-bold;

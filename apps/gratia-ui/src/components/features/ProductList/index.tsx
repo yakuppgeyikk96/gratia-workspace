@@ -10,7 +10,7 @@ interface ProductListProps {
 
 export default function ProductList({ products, title }: ProductListProps) {
   return (
-    <Container className={styles.container}>
+    <Container>
       {title && <h1 className={styles.title}>{title}</h1>}
       <div className={styles.productsGrid}>
         {products.map((product) => (

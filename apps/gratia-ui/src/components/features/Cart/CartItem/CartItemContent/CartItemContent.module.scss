@@ -1,0 +1,68 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.contentContainer {
+  @include flex(row, space-between, flex-start);
+  flex: 1;
+  min-width: 0; // Allows text truncation
+}
+
+.infoSection {
+  @include flex-column;
+  @include gap(2);
+  flex: 1;
+  min-width: 0;
+}
+
+.productName {
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  line-height: $leading-tight;
+  margin: 0;
+
+  // Single line with ellipsis
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.priceInfo {
+  @include flex-column;
+  @include gap(1);
+}
+
+.unitPrice {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-secondary-color;
+  line-height: $leading-none;
+
+  .quantity {
+    color: $text-muted-color;
+    font-weight: $font-normal;
+  }
+}
+
+.originalUnitPrice {
+  font-size: $text-xs;
+  font-weight: $font-normal;
+  color: $text-muted-color;
+  text-decoration: line-through;
+  line-height: $leading-none;
+}
+
+.totalSection {
+  @include flex(column, center, flex-end);
+  flex-shrink: 0;
+}
+
+.totalPrice {
+  font-size: $text-lg;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+  line-height: $leading-none;
+  white-space: nowrap;
+}

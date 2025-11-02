@@ -1,23 +1,12 @@
-import { ProductVariantAttributes } from "@/types";
+import { CartItem } from "@/types/Cart.types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-
-export interface CartItem {
-  productId: string;
-  sku: string;
-  quantity: number;
-  price: number;
-  discountedPrice?: number;
-  productName: string;
-  productImages: string[];
-  attributes: ProductVariantAttributes;
-  isVariant: boolean;
-}
 
 interface CartStore {
   items: CartItem[];
 
   addItem: (item: Omit<CartItem, "quantity"> & { quantity?: number }) => void;
+  incrementQuantity: (sku: string, quantity: number) => void;
   removeItem: (sku: string) => void;
   updateQuantity: (sku: string, quantity: number) => void;
   clearCart: () => void;
@@ -35,9 +24,21 @@ export const useCartStore = create<CartStore>()(
       addItem: (item) => {
         const quantity = item.quantity || 1;
         set((state) => {
-          const existingIndex = state.items.findIndex(
-            (i) => i.sku === item.sku
-          );
+          const existingItem = state.items.find((i) => i.sku === item.sku);
+
+          if (existingItem) {
+            return state;
+          }
+
+          return {
+            items: [...state.items, { ...item, quantity }],
+          };
+        });
+      },
+
+      incrementQuantity: (sku: string, quantity: number = 1) => {
+        set((state) => {
+          const existingIndex = state.items.findIndex((i) => i.sku === sku);
 
           if (existingIndex > -1) {
             const newItems = [...state.items];
@@ -45,9 +46,7 @@ export const useCartStore = create<CartStore>()(
             return { items: newItems };
           }
 
-          return {
-            items: [...state.items, { ...item, quantity }],
-          };
+          return state;
         });
       },
 
