@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Concert_One, Inter } from "next/font/google";
 
+import CartInitializer from "@/components/features/Cart/CartInitializer";
 import BottomBar from "@/components/layout/BottomBar";
 import Header from "@/components/layout/Header";
 import { ToastContainer, ToastContextProvider } from "@gratia/ui/components";
@@ -35,6 +36,7 @@ export default function RootLayout({
           <main>{children}</main>
           <BottomBar />
           <ToastContainer />
+          <CartInitializer />
         </ToastContextProvider>
       </body>
     </html>

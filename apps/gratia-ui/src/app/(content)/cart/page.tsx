@@ -1,14 +1,9 @@
-import { getCart } from "@/actions";
 import CartList from "@/components/features/Cart/CartList";
 
-export default async function CartPage() {
-  const cartResponse = await getCart();
-
-  const cartData = cartResponse.data;
-
+export default function CartPage() {
   return (
     <div>
-      <CartList cart={cartData ?? null} />
+      <CartList />
     </div>
   );
 }

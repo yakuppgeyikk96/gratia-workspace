@@ -6,10 +6,14 @@ interface CartStore {
   items: CartItem[];
 
   addItem: (item: Omit<CartItem, "quantity"> & { quantity?: number }) => void;
+  addItems: (items: CartItem[]) => void;
   incrementQuantity: (sku: string, quantity: number) => void;
   removeItem: (sku: string) => void;
   updateQuantity: (sku: string, quantity: number) => void;
   clearCart: () => void;
+
+  dataLoading: boolean;
+  setDataLoading: (loading: boolean) => void;
 
   getTotalItems: () => number;
   getTotalPrice: () => number;
@@ -20,6 +24,12 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+
+      dataLoading: false,
+
+      setDataLoading: (loading: boolean) => {
+        set({ dataLoading: loading });
+      },
 
       addItem: (item) => {
         const quantity = item.quantity || 1;
@@ -32,6 +42,30 @@ export const useCartStore = create<CartStore>()(
 
           return {
             items: [...state.items, { ...item, quantity }],
+          };
+        });
+      },
+
+      addItems: (items: CartItem[]) => {
+        set((state) => {
+          const existingSkus = new Set(state.items.map((i) => i.sku));
+          const newItems: CartItem[] = [];
+
+          items.forEach((item) => {
+            if (!existingSkus.has(item.sku as string)) {
+              const quantity = item.quantity || 1;
+              newItems.push({ ...item, quantity } as CartItem);
+              existingSkus.add(item.sku);
+            }
+          });
+
+          // Only update if there are new items to add
+          if (newItems.length === 0) {
+            return state;
+          }
+
+          return {
+            items: [...state.items, ...newItems],
           };
         });
       },
