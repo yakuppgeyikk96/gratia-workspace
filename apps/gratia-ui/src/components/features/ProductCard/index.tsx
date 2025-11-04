@@ -16,13 +16,11 @@ export default function ProductCard({
   const addItem = useCartStore((state) => state.addItem);
   const { addToast } = useToast();
 
-  const hasVariants = (product.variants?.length ?? 0) > 0;
-
   const handleAddToCart = () => {
-    if (!product.baseStock || product.baseStock <= 0) {
+    if (!product.stock || product.stock <= 0) {
       addToast({
-        title: "Stok Yok",
-        description: "Bu ürün şu anda stokta bulunmamaktadır.",
+        title: "Out of Stock",
+        description: "This product is currently out of stock.",
         variant: "warning",
       });
       return;
@@ -31,41 +29,39 @@ export default function ProductCard({
     if (
       product._id &&
       product.sku &&
-      product.basePrice &&
-      product.baseDiscountedPrice &&
-      product.baseAttributes
+      product.price !== undefined &&
+      product.attributes
     ) {
       addItem({
         productId: product._id,
         sku: product.sku,
         quantity: 1,
-        price: product.basePrice,
-        discountedPrice: product.baseDiscountedPrice,
+        price: product.price,
+        discountedPrice: product.discountedPrice,
         productName: product.name ?? "",
         productImages: product.images ?? [],
-        attributes: product.baseAttributes,
+        attributes: product.attributes,
         isVariant: false,
+      });
+
+      addToast({
+        title: "Added to Cart",
+        description: `${product.name} has been added to your cart.`,
+        variant: "success",
       });
     } else {
       addToast({
-        title: "Hata",
-        description: "Bu ürün sepete eklenebilir değil.",
+        title: "Error",
+        description: "This product cannot be added to cart.",
         variant: "error",
       });
-      return;
     }
-
-    addToast({
-      title: "Sepete Eklendi",
-      description: `${product.name} sepetinize eklendi.`,
-      variant: "success",
-    });
   };
 
   const handleAddToFavorites = () => {
     addToast({
-      title: "Favorilere Eklendi",
-      description: `${product.name} favorilerinize eklendi.`,
+      title: "Added to Favorites",
+      description: `${product.name} has been added to your favorites.`,
       variant: "success",
     });
   };
@@ -87,21 +83,10 @@ export default function ProductCard({
         />
       </Link>
 
-      {/* Variant Options Link - Only shown if variants exist */}
-      {hasVariants && (
-        <div className={styles.variantLink}>
-          <Link href={`/products/${product.slug}`}>
-            <span className={styles.variantLinkText}>
-              Show Variants • {product.variants?.length ?? 0} variant
-            </span>
-          </Link>
-        </div>
-      )}
-
       {/* Actions Section */}
       <ProductCardActions
-        price={product.basePrice ?? 0}
-        discountedPrice={product.baseDiscountedPrice ?? 0}
+        price={product.price ?? 0}
+        discountedPrice={product.discountedPrice}
         onAddToCart={handleAddToCart}
       />
     </article>

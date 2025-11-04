@@ -12,7 +12,7 @@ export default function TopHeaderLinkItem({
 }: TopHeaderLinkItemProps) {
   return (
     <li className={styles.topHeaderLinkItem}>
-      <Link href={href}>
+      <Link href={href} prefetch={false} target="_blank">
         <span className={styles.topHeaderLinkItemTitle}>{title}</span>
       </Link>
     </li>

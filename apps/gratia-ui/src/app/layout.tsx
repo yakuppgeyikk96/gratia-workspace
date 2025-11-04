@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { Concert_One, Inter } from "next/font/google";
 
 import CartInitializer from "@/components/features/Cart/CartInitializer";
-import BottomBar from "@/components/layout/BottomBar";
 import Header from "@/components/layout/Header";
 import { ToastContainer, ToastContextProvider } from "@gratia/ui/components";
+import { lazy } from "react";
 import "./globals.scss";
+
+const BottomBar = lazy(() => import("@/components/layout/BottomBar"));
 
 const inter = Inter({
   subsets: ["latin"],

@@ -1,21 +1,68 @@
-import { Category } from "./Category.types";
+import { Category } from "@/constants/categories";
 
-export interface ProductVariantAttributes {
-  color?: string;
-  size?: string;
-  material?: string;
-  brand?: string;
-  style?: string;
-  pattern?: string;
-}
+export type ProductColor =
+  | "black"
+  | "white"
+  | "gray"
+  | "red"
+  | "blue"
+  | "green"
+  | "yellow"
+  | "orange"
+  | "purple"
+  | "pink"
+  | "brown"
+  | "beige"
+  | "navy"
+  | "teal"
+  | "burgundy"
+  | "olive"
+  | "cream"
+  | "tan"
+  | "maroon"
+  | "coral"
+  | "silver"
+  | "gold"
+  | "khaki"
+  | "mint"
+  | "lavender";
 
-export interface ProductVariant {
-  sku: string;
-  stock: number;
-  price?: number;
-  discountedPrice?: number;
-  attributes: ProductVariantAttributes;
-  images?: string[];
+export type ProductSize =
+  | "XXS"
+  | "XS"
+  | "S"
+  | "M"
+  | "L"
+  | "XL"
+  | "XXL"
+  | "XXXL"
+  | "one-size";
+
+export type ProductMaterial =
+  | "cotton"
+  | "polyester"
+  | "wool"
+  | "silk"
+  | "linen"
+  | "denim"
+  | "leather"
+  | "suede"
+  | "cashmere"
+  | "nylon"
+  | "spandex"
+  | "rayon"
+  | "velvet"
+  | "satin"
+  | "acrylic"
+  | "modal"
+  | "viscose";
+
+export type SortOptions = "newest" | "price-low" | "price-high" | "name";
+
+export interface ProductAttributes {
+  color?: ProductColor;
+  size?: ProductSize;
+  material?: ProductMaterial;
 }
 
 export interface Product {
@@ -27,15 +74,12 @@ export interface Product {
   categoryId: string | Partial<Category>;
   categoryPath?: string;
   collectionSlugs?: string[];
-
-  basePrice: number;
-  baseDiscountedPrice?: number;
-  baseStock: number;
-  baseAttributes: ProductVariantAttributes;
-
+  price: number;
+  discountedPrice?: number;
+  stock: number;
+  attributes: ProductAttributes;
   images: string[];
-  variants: ProductVariant[];
-
+  productGroupId: string;
   metaTitle?: string;
   metaDescription?: string;
   isActive: boolean;
@@ -43,12 +87,9 @@ export interface Product {
   updatedAt: Date;
 }
 
-export type SortOptions = "newest" | "price-low" | "price-high" | "name";
-
 export interface ProductFiltersDto {
   colors?: string[];
   sizes?: string[];
-  brands?: string[];
   materials?: string[];
   minPrice?: number;
   maxPrice?: number;
@@ -67,7 +108,6 @@ export interface FilterOptions {
   colors: string[];
   sizes: string[];
   materials: string[];
-  brands: string[];
   priceRange: {
     min: number;
     max: number;

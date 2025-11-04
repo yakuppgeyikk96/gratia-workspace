@@ -4,8 +4,10 @@ import { useCartStore } from "@/store/cartStore";
 import { Badge, Button, Flex, LoadingSpinner } from "@gratia/ui/components";
 import { IconShoppingBag } from "@gratia/ui/icons";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function HeaderCartButton() {
+  const [mounted, setMounted] = useState(false);
   const totalItems = useCartStore((state) => state.getTotalItems());
   const dataLoading = useCartStore((state) => state.dataLoading);
   const router = useRouter();
@@ -13,6 +15,14 @@ export default function HeaderCartButton() {
   const handleClick = () => {
     router.push("/cart");
   };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || dataLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Button
@@ -22,16 +32,12 @@ export default function HeaderCartButton() {
       onClick={handleClick}
       disabled={dataLoading}
     >
-      {dataLoading ? (
-        <LoadingSpinner />
-      ) : (
-        <Flex align="center" gap={8}>
-          <span>Cart</span>
-          {totalItems > 0 ? (
-            <Badge count={totalItems} size="sm" color="secondary" />
-          ) : null}
-        </Flex>
-      )}
+      <Flex align="center" gap={8}>
+        <span>Cart</span>
+        {mounted && totalItems > 0 ? (
+          <Badge count={totalItems} size="sm" color="secondary" />
+        ) : null}
+      </Flex>
     </Button>
   );
 }

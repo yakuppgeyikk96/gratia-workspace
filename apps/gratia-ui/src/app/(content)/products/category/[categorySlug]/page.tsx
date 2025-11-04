@@ -8,9 +8,9 @@ export default async function CategoryProductsPage({
 }) {
   const { categorySlug } = await params;
 
-  console.log(categorySlug);
-
   const { data } = await getProducts({ categorySlug });
+
+  console.log(data);
 
   return <ProductList products={data?.products ?? []} title="" />;
 }

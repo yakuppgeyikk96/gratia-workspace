@@ -89,7 +89,6 @@
   }
 }
 
-// Size variants - düzeltildi
 .checkbox-sm + .label .checkboxVisual {
   width: $checkbox-size-sm;
   height: $checkbox-size-sm;
@@ -116,7 +115,6 @@
   line-height: 1.5;
 }
 
-// Size variants için label
 .checkbox-sm + .label {
   gap: $checkbox-gap-sm;
   font-size: $checkbox-label-sm;
@@ -132,7 +130,6 @@
   font-size: $checkbox-label-lg;
 }
 
-// Disabled state
 .disabled {
   .checkboxVisual {
     background: $checkbox-bg-disabled;

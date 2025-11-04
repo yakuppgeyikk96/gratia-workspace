@@ -122,7 +122,6 @@
     margin-left: $button-icon-spacing-sm;
   }
 
-  // Size variants for icon spacing
   .button-sm & {
     &-left {
       margin-right: $button-icon-spacing-sm;
@@ -164,7 +163,6 @@
   transition: opacity 0.2s ease;
 }
 
-// Icon size variants
 .button-sm .icon {
   width: $button-icon-sm;
   height: $button-icon-sm;

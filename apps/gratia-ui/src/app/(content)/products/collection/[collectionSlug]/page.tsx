@@ -10,5 +10,7 @@ export default async function CollectionProductsPage({
 
   const { data } = await getProducts({ collectionSlug });
 
+  console.log(data);
+
   return <ProductList products={data?.products ?? []} title="" />;
 }

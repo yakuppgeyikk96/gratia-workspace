@@ -1,5 +1,5 @@
 import { IApiResponse } from "./Api.types";
-import { ProductVariantAttributes } from "./Product.types";
+import { ProductAttributes } from "./Product.types";
 
 export interface CartItem {
   productId: string;
@@ -9,7 +9,7 @@ export interface CartItem {
   discountedPrice?: number;
   productName: string;
   productImages: string[];
-  attributes: ProductVariantAttributes;
+  attributes: ProductAttributes;
   isVariant: boolean;
 }
 
@@ -34,5 +34,4 @@ export interface AddToCartDto {
   productId: string;
   sku: string;
   quantity: number;
-  attributes?: ProductVariantAttributes;
 }
