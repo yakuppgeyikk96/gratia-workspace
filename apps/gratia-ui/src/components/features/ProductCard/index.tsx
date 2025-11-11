@@ -1,6 +1,8 @@
 "use client";
 
+import { logError } from "@/lib/errorHandler";
 import { useCartStore } from "@/store/cartStore";
+import { CartItem } from "@/types/Cart.types";
 import { useToast } from "@gratia/ui/components";
 import Link from "next/link";
 import styles from "./ProductCard.module.scss";
@@ -12,47 +14,42 @@ import ProductCardInfo from "./ProductCardInfo";
 export default function ProductCard({
   product,
   className = "",
+  isLoggedIn,
 }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
+  const syncCart = useCartStore((state) => state.syncCart);
+
   const { addToast } = useToast();
 
   const handleAddToCart = () => {
-    if (!product.stock || product.stock <= 0) {
-      addToast({
-        title: "Out of Stock",
-        description: "This product is currently out of stock.",
-        variant: "warning",
-      });
-      return;
-    }
-
-    if (
-      product._id &&
-      product.sku &&
-      product.price !== undefined &&
-      product.attributes
-    ) {
-      addItem({
-        productId: product._id,
-        sku: product.sku,
-        quantity: 1,
-        price: product.price,
-        discountedPrice: product.discountedPrice,
-        productName: product.name ?? "",
-        productImages: product.images ?? [],
-        attributes: product.attributes,
-        isVariant: false,
-      });
+    const itemToAdd: CartItem = {
+      productId: product._id!,
+      sku: product.sku!,
+      quantity: 1,
+      price: product.price!,
+      discountedPrice: product.discountedPrice,
+      productName: product.name ?? "",
+      productImages: product.images ?? [],
+      attributes: product.attributes ?? {},
+      isVariant: false,
+    };
+    try {
+      if (isLoggedIn) {
+        syncCart([itemToAdd]);
+      } else {
+        addItem(itemToAdd);
+      }
 
       addToast({
         title: "Added to Cart",
         description: `${product.name} has been added to your cart.`,
         variant: "success",
       });
-    } else {
+    } catch (error) {
+      logError(error);
       addToast({
         title: "Error",
-        description: "This product cannot be added to cart.",
+        description: "An error occurred while adding to cart.",
         variant: "error",
       });
     }
@@ -88,6 +85,7 @@ export default function ProductCard({
         price={product.price ?? 0}
         discountedPrice={product.discountedPrice}
         onAddToCart={handleAddToCart}
+        productSku={product.sku ?? ""}
       />
     </article>
   );

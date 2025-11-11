@@ -29,6 +29,9 @@ importers:
       '@radix-ui/react-dropdown-menu':
         specifier: ^2.1.16
         version: 2.1.16(@types/react-dom@19.1.1(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      classnames:
+        specifier: ^2.5.1
+        version: 2.5.1
       embla-carousel-react:
         specifier: ^8.5.1
         version: 8.6.0(react@19.1.0)

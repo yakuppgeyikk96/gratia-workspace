@@ -3,6 +3,7 @@ import { Product } from "@/types";
 export interface ProductCardProps {
   product: Partial<Product>;
   className?: string;
+  isLoggedIn: boolean;
 }
 
 export interface ProductCardImageProps {
@@ -19,5 +20,6 @@ export interface ProductCardInfoProps {
 export interface ProductCardActionsProps {
   price: number;
   discountedPrice?: number;
+  productSku: string;
   onAddToCart?: () => void;
 }

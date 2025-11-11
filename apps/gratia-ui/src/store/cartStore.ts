@@ -1,3 +1,4 @@
+import { syncCart as syncCartAction } from "@/actions";
 import { CartItem } from "@/types/Cart.types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
@@ -11,6 +12,7 @@ interface CartStore {
   removeItem: (sku: string) => void;
   updateQuantity: (sku: string, quantity: number) => void;
   clearCart: () => void;
+  syncCart: (items?: CartItem[]) => void;
 
   dataLoading: boolean;
   setDataLoading: (loading: boolean) => void;
@@ -119,6 +121,22 @@ export const useCartStore = create<CartStore>()(
       getItemCount: (sku) => {
         const item = get().items.find((i) => i.sku === sku);
         return item?.quantity || 0;
+      },
+
+      syncCart: async (items?: CartItem[]) => {
+        const itemsToSync = items || get().items;
+
+        syncCartAction({ items: itemsToSync })
+          .then((cartResponse) => {
+            if (cartResponse.success) {
+              console.log(cartResponse.data?.items);
+              get().clearCart();
+              get().addItems(cartResponse.data?.items ?? []);
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       },
     }),
     {

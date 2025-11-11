@@ -18,8 +18,9 @@
   cursor: pointer;
 
   &:hover {
-    box-shadow: $shadow-md;
+    box-shadow: $shadow-sm;
     transition: all $transition-fast;
+    border-color: $border-medium;
   }
 }
 

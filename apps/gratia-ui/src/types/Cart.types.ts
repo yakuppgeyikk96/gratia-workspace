@@ -35,3 +35,7 @@ export interface AddToCartDto {
   sku: string;
   quantity: number;
 }
+
+export interface SyncCartDto {
+  items: AddToCartDto[];
+}
