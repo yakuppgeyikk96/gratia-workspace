@@ -84,8 +84,9 @@ export default function ProductCard({
       <ProductCardActions
         price={product.price ?? 0}
         discountedPrice={product.discountedPrice}
-        onAddToCart={handleAddToCart}
+        isLoggedIn={isLoggedIn}
         productSku={product.sku ?? ""}
+        onAddToCart={handleAddToCart}
       />
     </article>
   );

@@ -21,5 +21,6 @@ export interface ProductCardActionsProps {
   price: number;
   discountedPrice?: number;
   productSku: string;
+  isLoggedIn: boolean;
   onAddToCart?: () => void;
 }

@@ -1,3 +1,4 @@
+import { logoutUser } from "@/actions";
 import { API_BASE_PATH } from "@/constants";
 import { IApiRequestOptions, IApiResponse } from "@/types";
 
@@ -49,6 +50,11 @@ class ApiClient {
       }
 
       const data = await response.json();
+
+      if (data.errorCode === "UNAUTHORIZED") {
+        logoutUser();
+        window.location.reload();
+      }
 
       if (!response.ok) {
         return {

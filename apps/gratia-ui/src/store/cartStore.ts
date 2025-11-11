@@ -1,4 +1,4 @@
-import { syncCart as syncCartAction } from "@/actions";
+import { syncCart as syncCartAction, updateCartItem } from "@/actions";
 import { CartItem } from "@/types/Cart.types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
@@ -10,7 +10,7 @@ interface CartStore {
   addItems: (items: CartItem[]) => void;
   incrementQuantity: (sku: string, quantity: number) => void;
   removeItem: (sku: string) => void;
-  updateQuantity: (sku: string, quantity: number) => void;
+  updateQuantity: (sku: string, quantity: number, isLoggedIn: boolean) => void;
   clearCart: () => void;
   syncCart: (items?: CartItem[]) => void;
 
@@ -92,17 +92,27 @@ export const useCartStore = create<CartStore>()(
         }));
       },
 
-      updateQuantity: (sku, quantity) => {
-        if (quantity <= 0) {
-          get().removeItem(sku);
-          return;
-        }
+      updateQuantity: (sku, quantity, isLoggedIn) => {
+        if (isLoggedIn) {
+          updateCartItem({ sku, quantity }).then((response) => {
+            if (response.success) {
+              const updatedItems = response.data?.items ?? [];
 
-        set((state) => ({
-          items: state.items.map((i) =>
-            i.sku === sku ? { ...i, quantity } : i
-          ),
-        }));
+              set({ items: updatedItems });
+            }
+          });
+        } else {
+          if (quantity <= 0) {
+            get().removeItem(sku);
+            return;
+          }
+
+          set((state) => ({
+            items: state.items.map((i) =>
+              i.sku === sku ? { ...i, quantity } : i
+            ),
+          }));
+        }
       },
 
       clearCart: () => set({ items: [] }),
@@ -129,7 +139,6 @@ export const useCartStore = create<CartStore>()(
         syncCartAction({ items: itemsToSync })
           .then((cartResponse) => {
             if (cartResponse.success) {
-              console.log(cartResponse.data?.items);
               get().clearCart();
               get().addItems(cartResponse.data?.items ?? []);
             }

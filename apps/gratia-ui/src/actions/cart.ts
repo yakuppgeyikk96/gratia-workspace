@@ -1,7 +1,12 @@
 "use server";
 
 import { apiClient } from "@/lib/apiClient";
-import { AddToCartDto, CartResponse, SyncCartDto } from "@/types/Cart.types";
+import {
+  AddToCartDto,
+  CartResponse,
+  SyncCartDto,
+  UpdateCartItemDto,
+} from "@/types/Cart.types";
 import { getAuthHeader } from "./utils";
 
 const API_BASE_ROUTE = "/cart";
@@ -20,6 +25,18 @@ export async function addToCart(dto: AddToCartDto): Promise<CartResponse> {
   const authHeader: Record<string, string> = await getAuthHeader();
 
   const response: CartResponse = await apiClient.post(API_BASE_ROUTE, dto, {
+    headers: { ...authHeader },
+  });
+
+  return response;
+}
+
+export async function updateCartItem(
+  dto: UpdateCartItemDto
+): Promise<CartResponse> {
+  const authHeader: Record<string, string> = await getAuthHeader();
+
+  const response: CartResponse = await apiClient.put(API_BASE_ROUTE, dto, {
     headers: { ...authHeader },
   });
 

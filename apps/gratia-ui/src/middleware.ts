@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-
 const authRoutes = ["/login", "/register", "/verify-email"];
 
 export default async function middleware(request: NextRequest) {
