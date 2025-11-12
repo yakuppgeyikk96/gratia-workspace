@@ -5,7 +5,7 @@ import { IconButton } from "@gratia/ui/components";
 import { IconHeart } from "@gratia/ui/icons";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ProductCardImageProps } from "../ProductCard.types";
 import styles from "./ProductCardImage.module.scss";
 
@@ -17,8 +17,7 @@ export default function ProductCardImage({
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // En fazla 4 görsel göster
-  const displayImages = images.slice(0, 4);
+  const displayImages = useMemo(() => images.slice(0, 4), [images]);
   const hasImages = displayImages.length > 0;
 
   const onSelect = useCallback(() => {

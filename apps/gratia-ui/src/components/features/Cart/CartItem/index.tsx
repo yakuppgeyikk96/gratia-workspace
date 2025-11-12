@@ -3,6 +3,7 @@
 import QuantitySelector from "@/components/common/QuantitySelector";
 import { useCartStore } from "@/store/cartStore";
 import { CartItem as CartItemType } from "@/types/Cart.types";
+import { memo, useCallback } from "react";
 import styles from "./CartItem.module.scss";
 import CartItemContent from "./CartItemContent";
 import CartItemImage from "./CartItemImage";
@@ -13,20 +14,20 @@ interface CartItemProps {
   isLoggedIn?: boolean;
 }
 
-export default function CartItem({ item, isLoggedIn = false }: CartItemProps) {
+function CartItem({ item, isLoggedIn = false }: CartItemProps) {
   const updateQuantity = useCartStore((state) => state.updateQuantity);
 
   const totalPrice = item.discountedPrice
     ? item.discountedPrice * item.quantity
     : item.price * item.quantity;
 
-  const handleIncrement = () => {
+  const handleIncrement = useCallback(() => {
     updateQuantity(item.sku, item.quantity + 1, isLoggedIn);
-  };
+  }, [item.sku, item.quantity, isLoggedIn, updateQuantity]);
 
-  const handleDecrement = () => {
+  const handleDecrement = useCallback(() => {
     updateQuantity(item.sku, item.quantity - 1, isLoggedIn);
-  };
+  }, [item.sku, item.quantity, isLoggedIn, updateQuantity]);
 
   const handleRemove = () => {
     updateQuantity(item.sku, 0, isLoggedIn);
@@ -64,3 +65,5 @@ export default function CartItem({ item, isLoggedIn = false }: CartItemProps) {
     </div>
   );
 }
+
+export default memo(CartItem);

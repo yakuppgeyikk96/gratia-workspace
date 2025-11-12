@@ -9,7 +9,10 @@ import styles from "./BottomBar.module.scss";
 
 export default function BottomBarCartItem() {
   const [mounted, setMounted] = useState(false);
-  const itemCount = useCartStore((state) => state.getTotalItems());
+
+  const itemCount = useCartStore((state) =>
+    state.items.reduce((total, item) => total + item.quantity, 0)
+  );
   const dataLoading = useCartStore((state) => state.dataLoading);
 
   useEffect(() => {

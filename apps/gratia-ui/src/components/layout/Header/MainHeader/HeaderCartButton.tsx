@@ -8,8 +8,12 @@ import { useEffect, useState } from "react";
 
 export default function HeaderCartButton() {
   const [mounted, setMounted] = useState(false);
-  const totalItems = useCartStore((state) => state.getTotalItems());
+
   const dataLoading = useCartStore((state) => state.dataLoading);
+  const totalItems = useCartStore((state) =>
+    state.items.reduce((total, item) => total + item.quantity, 0)
+  );
+
   const router = useRouter();
 
   const handleClick = () => {

@@ -2,6 +2,7 @@
 
 import { IconDash, IconPlus } from "@gratia/ui/icons";
 import classNames from "classnames";
+import { memo } from "react";
 import styles from "./QuantitySelector.module.scss";
 
 interface QuantitySelectorProps {
@@ -14,7 +15,7 @@ interface QuantitySelectorProps {
   size?: "sm" | "md" | "lg";
 }
 
-export default function QuantitySelector({
+function QuantitySelector({
   quantity,
   onIncrement,
   onDecrement,
@@ -68,3 +69,5 @@ export default function QuantitySelector({
     </div>
   );
 }
+
+export default memo(QuantitySelector);

@@ -4,8 +4,14 @@ const nextConfig: NextConfig = {
   /* config options here */
   transpilePackages: ["@gratia/ui"],
   images: {
-    domains: ["images.unsplash.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
   },
+  reactStrictMode: false,
 };
 
 export default nextConfig;
