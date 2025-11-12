@@ -1,9 +1,5 @@
-import CartList from "@/components/features/Cart/CartList";
+import CartPageContainer from "@/components/layout/CartPageContainer";
 
-export default function CartPage() {
-  return (
-    <div>
-      <CartList />
-    </div>
-  );
+export default async function CartPage() {
+  return <CartPageContainer />;
 }

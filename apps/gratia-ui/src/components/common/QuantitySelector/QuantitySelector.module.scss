@@ -1,0 +1,101 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.quantitySelector {
+  @include flex(row, center, center);
+  @include gap(2);
+  @include rounded($radius-full);
+
+  .quantityButton {
+    @include flex(row, center, center);
+    @include rounded($radius-full);
+    padding: $spacing-1;
+    border: 1px solid;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover:not(.disabled) {
+      transform: scale(1.1);
+      box-shadow: $shadow-md;
+    }
+
+    &:active:not(.disabled) {
+      transform: scale(1);
+      box-shadow: $shadow-sm;
+    }
+
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .decrementButton {
+    background-color: rgba($text-error-color, 0.1);
+    border-color: rgba($text-error-color, 0.2);
+    color: $text-error-color;
+  }
+
+  .incrementButton {
+    background-color: rgba($text-success-color, 0.1);
+    border-color: rgba($text-success-color, 0.2);
+    color: $text-success-color;
+  }
+
+  .quantityValue {
+    font-weight: $font-semibold;
+    color: $text-primary-color;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  // Size variants
+  &.sm {
+    @include gap(1);
+
+    .quantityButton {
+      padding: $spacing-1;
+      width: 24px;
+      height: 24px;
+    }
+
+    .quantityValue {
+      font-size: $text-sm;
+      min-width: 20px;
+    }
+  }
+
+  &.md {
+    @include gap(2);
+
+    .quantityButton {
+      padding: $spacing-1;
+      width: 28px;
+      height: 28px;
+    }
+
+    .quantityValue {
+      font-size: $text-base;
+      min-width: 24px;
+    }
+  }
+
+  &.lg {
+    @include gap(3);
+
+    .quantityButton {
+      padding: $spacing-2;
+      width: 32px;
+      height: 32px;
+    }
+
+    .quantityValue {
+      font-size: $text-lg;
+      min-width: 28px;
+    }
+  }
+}

@@ -10,6 +10,7 @@ export { default as IconChevronLeft } from "./IconChevronLeft";
 export { default as IconChevronRight } from "./IconChevronRight";
 export { default as IconClose } from "./IconClose";
 export { default as IconColumnsGap } from "./IconColumnsGap";
+export { default as IconCross } from "./IconCross";
 export { default as IconDash } from "./IconDash";
 export { default as IconHeart } from "./IconHeart";
 export { default as IconHome } from "./IconHome";

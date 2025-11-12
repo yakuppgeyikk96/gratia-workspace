@@ -1,0 +1,25 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+
+.removeButtonContainer {
+  position: absolute;
+  top: $spacing-2;
+  right: $spacing-2;
+  z-index: 10;
+  cursor: pointer;
+
+  &:hover {
+    svg {
+      transform: scale(1.1);
+    }
+  }
+
+  &:active {
+    svg {
+      transform: scale(1);
+    }
+  }
+}

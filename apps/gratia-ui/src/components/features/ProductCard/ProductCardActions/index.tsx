@@ -1,8 +1,9 @@
 "use client";
 
+import QuantitySelector from "@/components/common/QuantitySelector";
 import { useCartStore } from "@/store/cartStore";
 import { IconButton } from "@gratia/ui/components";
-import { IconDash, IconPlus, IconShoppingBag } from "@gratia/ui/icons";
+import { IconShoppingBag } from "@gratia/ui/icons";
 import classNames from "classnames";
 import { ProductCardActionsProps } from "../ProductCard.types";
 import styles from "./ProductCardActions.module.scss";
@@ -26,8 +27,12 @@ export default function ProductCardActions({
     onAddToCart?.();
   };
 
-  const handleUpdateQuantity = (quantity: number) => {
-    updateQuantity(productSku, quantity, isLoggedIn);
+  const handleIncrement = () => {
+    updateQuantity(productSku, itemCount + 1, isLoggedIn);
+  };
+
+  const handleDecrement = () => {
+    updateQuantity(productSku, itemCount - 1, isLoggedIn);
   };
 
   return (
@@ -40,40 +45,19 @@ export default function ProductCardActions({
         )}
       </div>
 
-      {/* Add to Cart Button */}
       <div
         className={classNames(styles.addToCartButton, {
           [styles.inCart]: isInCart,
         })}
       >
         {isInCart ? (
-          <div className={styles.inCartIcon}>
-            <div
-              role="button"
-              tabIndex={0}
-              className={classNames(
-                styles.inCartIconButton,
-                styles.inCartDashIconButton
-              )}
-              onClick={() => handleUpdateQuantity(itemCount - 1)}
-              aria-label="Decrement quantity"
-            >
-              <IconDash />
-            </div>
-            <span className={styles.inCartCount}>{itemCount}</span>
-            <div
-              role="button"
-              tabIndex={0}
-              className={classNames(
-                styles.inCartIconButton,
-                styles.inCartPlusIconButton
-              )}
-              onClick={() => handleUpdateQuantity(itemCount + 1)}
-              aria-label="Increment quantity"
-            >
-              <IconPlus />
-            </div>
-          </div>
+          <QuantitySelector
+            quantity={itemCount}
+            onIncrement={handleIncrement}
+            onDecrement={handleDecrement}
+            min={0}
+            size="md"
+          />
         ) : (
           <IconButton
             icon={<IconShoppingBag />}

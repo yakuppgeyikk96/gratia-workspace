@@ -1,0 +1,15 @@
+@use "@gratia/ui/styles/layout/_grid.scss" as *;
+
+.cartPageContainer {
+  @include grid-container;
+  @include grid-cols-12;
+  @include grid-gap-8;
+}
+
+.cartList {
+  @include col-span-8;
+}
+
+.totalPrice {
+  @include col-span-4;
+}

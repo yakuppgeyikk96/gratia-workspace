@@ -34,10 +34,8 @@ export default function CartItemContent({
               ${price.toFixed(2)}
             </span>
           )}
+          <span className={styles.totalPrice}>${totalPrice.toFixed(2)}</span>
         </div>
-      </div>
-      <div className={styles.totalSection}>
-        <span className={styles.totalPrice}>${totalPrice.toFixed(2)}</span>
       </div>
     </div>
   );

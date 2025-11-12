@@ -53,28 +53,3 @@
     }
   }
 }
-
-.inCart {
-  .inCartIcon {
-    @include flex(row, center, center);
-    @include rounded($radius-full);
-    @include gap(2);
-
-    .inCartIconButton {
-      @include flex(row, center, center);
-      @include rounded($radius-full);
-      @include gap(2);
-      padding: $spacing-1;
-    }
-
-    .inCartDashIconButton {
-      background-color: rgba($text-error-color, 0.1);
-      border: 1px solid rgba($text-error-color, 0.2);
-    }
-
-    .inCartPlusIconButton {
-      background-color: rgba($text-success-color, 0.1);
-      border: 1px solid rgba($text-success-color, 0.2);
-    }
-  }
-}

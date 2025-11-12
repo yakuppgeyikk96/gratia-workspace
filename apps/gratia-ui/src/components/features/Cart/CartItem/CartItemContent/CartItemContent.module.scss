@@ -4,7 +4,7 @@
 @use "@gratia/ui/styles/layout/_flex.scss" as *;
 
 .contentContainer {
-  @include flex(row, space-between, flex-start);
+  @include flex(row, flex-start, flex-start);
   flex: 1;
   min-width: 0; // Allows text truncation
 }
@@ -31,7 +31,7 @@
 
 .priceInfo {
   @include flex-column;
-  @include gap(1);
+  @include gap(2);
 }
 
 .unitPrice {
@@ -54,15 +54,10 @@
   line-height: $leading-none;
 }
 
-.totalSection {
-  @include flex(column, center, flex-end);
-  flex-shrink: 0;
-}
-
 .totalPrice {
-  font-size: $text-lg;
-  font-weight: $font-bold;
-  color: $text-primary-color;
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  color: $text-info-color;
   line-height: $leading-none;
   white-space: nowrap;
 }

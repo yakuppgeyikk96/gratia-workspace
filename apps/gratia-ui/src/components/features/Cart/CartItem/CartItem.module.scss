@@ -13,8 +13,13 @@
   @include rounded($radius-lg);
   transition: box-shadow $transition-normal;
   width: 100%;
+  position: relative;
+}
 
-  &:hover {
-    box-shadow: $shadow-md;
-  }
+.quantitySection {
+  position: absolute;
+  bottom: $spacing-4;
+  right: $spacing-4;
+  flex-shrink: 0;
+  z-index: 5;
 }
