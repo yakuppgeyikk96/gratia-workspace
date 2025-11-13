@@ -1,0 +1,102 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+
+.content {
+  min-width: 220px;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: $bg-color;
+  @include border(1, $border-light);
+  @include rounded($radius-md);
+  box-shadow: $shadow-sm;
+  @include p(2);
+  z-index: $z-dropdown;
+}
+
+.item {
+  @include flex-between();
+  @include px(3);
+  @include py(2);
+  @include rounded($radius-sm);
+  cursor: pointer;
+  outline: none;
+  font-size: $text-sm;
+  color: $text-primary-color;
+  transition: background-color $transition-fast;
+
+  &:hover,
+  &:focus {
+    background-color: $bg-secondary-color;
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.itemLabel {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subTrigger {
+  @include px(3);
+  @include py(2);
+  @include rounded($radius-sm);
+  cursor: pointer;
+  outline: none;
+  font-size: $text-sm;
+  color: $text-primary-color;
+  transition: background-color $transition-fast;
+  width: 100%;
+
+  .subTriggerContent {
+    @include flex-between();
+    @include gap(2);
+  }
+
+  &:hover,
+  &:focus {
+    background-color: $bg-secondary-color;
+  }
+
+  &[data-state="open"] {
+    background-color: $bg-secondary-color;
+
+    .chevronIcon {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.chevronIcon {
+  transition: transform $transition-fast;
+  flex-shrink: 0;
+  @include ml(2);
+}
+
+.subContent {
+  min-width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: $bg-color;
+  @include border(1, $border-light);
+  @include rounded($radius-md);
+  box-shadow: $shadow-sm;
+  @include p(2);
+  @include ml(2);
+  z-index: $z-popover;
+}
+
+.emptyState {
+  @include p(3);
+  text-align: center;
+  color: $text-muted-color;
+  font-size: $text-sm;
+}

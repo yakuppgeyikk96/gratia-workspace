@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Concert_One, Inter } from "next/font/google";
 
 import { isAuthenticatedUser } from "@/actions";
+import TanstackQueryClientProvider from "@/components/common/TanstackQueryClientProvider";
 import CartInitializer from "@/components/features/Cart/CartInitializer";
 import Header from "@/components/layout/Header";
 import { ToastContainer, ToastContextProvider } from "@gratia/ui/components";
@@ -36,13 +37,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${concertOne.variable}`}>
-        <ToastContextProvider>
-          <Header />
-          <main>{children}</main>
-          <BottomBar />
-          <ToastContainer />
-          <CartInitializer isLoggedIn={isLoggedIn} />
-        </ToastContextProvider>
+        <TanstackQueryClientProvider>
+          <ToastContextProvider>
+            <Header />
+            <main>{children}</main>
+            <BottomBar />
+            <ToastContainer />
+            <CartInitializer isLoggedIn={isLoggedIn} />
+          </ToastContextProvider>
+        </TanstackQueryClientProvider>
       </body>
     </html>
   );

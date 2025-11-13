@@ -1,35 +1,18 @@
-"use client";
+import CategoryTreeDropdown from "./CategoryTreeDropdown";
 
-import { CATEGORIES } from "@/constants";
-import {
-  Button,
-  Dropdown,
-  Flex,
-  type DropdownProps,
-} from "@gratia/ui/components";
-import { IconChevronDown } from "@gratia/ui/icons";
-
-interface CategoryDropdownProps extends Omit<DropdownProps, "options"> {
+interface CategoryDropdownProps {
   triggerClassName?: string;
+  disabled?: boolean;
 }
 
 export default function CategoryDropdown({
   triggerClassName,
-  ...props
+  disabled,
 }: CategoryDropdownProps) {
   return (
-    <Dropdown
-      options={CATEGORIES}
+    <CategoryTreeDropdown
       triggerClassName={triggerClassName}
-      customTrigger={
-        <Button variant="ghost" size="sm">
-          <Flex gap={4} align="center">
-            <span>Categories</span>
-            <IconChevronDown size={12} />
-          </Flex>
-        </Button>
-      }
-      {...props}
+      disabled={disabled}
     />
   );
 }

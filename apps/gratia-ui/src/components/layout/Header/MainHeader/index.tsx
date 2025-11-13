@@ -1,6 +1,7 @@
 import { isAuthenticatedUser } from "@/actions/auth";
 import SearchInput from "@/components/features/search/SearchInput";
 import { Container, Flex } from "@gratia/ui/components";
+import Link from "next/link";
 import HeaderCartButton from "./HeaderCartButton";
 import HeaderLoginButton from "./HeaderLoginButton";
 import styles from "./MainHeader.module.scss";
@@ -12,7 +13,9 @@ export default async function MainHeader() {
   return (
     <Container className={styles.mainHeader}>
       {/* Logo */}
-      <h1 className={styles.mainHeaderLogo}>GRATIA</h1>
+      <Link href="/">
+        <h1 className={styles.mainHeaderLogo}>GRATIA</h1>
+      </Link>
 
       {/* Search Input */}
       <SearchInput
