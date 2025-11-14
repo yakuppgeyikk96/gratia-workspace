@@ -1,0 +1,46 @@
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+
+$hero-text-shadow-title: 0 2px 10px rgba(0, 0, 0, 0.3);
+$hero-text-shadow-description: 0 1px 5px rgba(0, 0, 0, 0.3);
+$hero-content-max-width: 800px;
+
+.heroContent {
+  text-align: center;
+  max-width: $hero-content-max-width;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: $text-6xl;
+  font-weight: $font-bold;
+  color: $text-on-primary-color;
+  text-shadow: $hero-text-shadow-title;
+  margin-bottom: $spacing-md;
+  line-height: $leading-tight;
+  text-align: center;
+
+  @include media-md {
+    font-size: $text-5xl;
+  }
+
+  @include media-sm {
+    font-size: $text-4xl;
+  }
+}
+
+.heroDescription {
+  font-size: $text-2xl;
+  color: rgba($text-on-primary-color, 0.95);
+  line-height: $leading-normal;
+  text-shadow: $hero-text-shadow-description;
+  text-align: center;
+  margin: 0 auto;
+
+  @include media-md {
+    font-size: $text-xl;
+  }
+}

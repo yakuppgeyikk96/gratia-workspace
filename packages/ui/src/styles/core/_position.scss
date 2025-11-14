@@ -1,0 +1,38 @@
+@mixin position-absolute($top: 0, $left: 0, $right: auto, $bottom: auto) {
+  position: absolute;
+  top: $top;
+  left: $left;
+  @if $right != auto {
+    right: $right;
+  }
+  @if $bottom != auto {
+    bottom: $bottom;
+  }
+}
+
+@mixin position-fixed($top: 0, $left: 0, $right: auto, $bottom: auto) {
+  position: fixed;
+  top: $top;
+  left: $left;
+  @if $right != auto {
+    right: $right;
+  }
+  @if $bottom != auto {
+    bottom: $bottom;
+  }
+}
+
+@mixin position-relative {
+  position: relative;
+}
+
+@mixin position-sticky($top: 0) {
+  position: sticky;
+  top: $top;
+}
+
+@mixin full-cover {
+  @include position-absolute;
+  width: 100%;
+  height: 100%;
+}

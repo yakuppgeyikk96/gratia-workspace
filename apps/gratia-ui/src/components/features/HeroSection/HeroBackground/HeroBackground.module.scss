@@ -1,0 +1,41 @@
+@use "@gratia/ui/styles/core/_position.scss" as *;
+
+$hero-overlay-gradient: linear-gradient(
+  135deg,
+  rgba(0, 0, 0, 0.7) 0%,
+  rgba(0, 0, 0, 0.5) 100%
+);
+
+.heroBackground {
+  @include full-cover;
+  z-index: 0;
+}
+
+.emblaViewport {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.emblaContainer {
+  display: flex;
+  height: 100%;
+}
+
+.emblaSlide {
+  flex: 0 0 100%;
+  min-width: 0;
+  position: relative;
+}
+
+.backgroundImage {
+  object-fit: cover;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.heroOverlay {
+  @include full-cover;
+  background: $hero-overlay-gradient;
+  z-index: 1;
+  pointer-events: none;
+}
