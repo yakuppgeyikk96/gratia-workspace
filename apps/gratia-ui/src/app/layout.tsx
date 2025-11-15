@@ -3,7 +3,7 @@ import { Concert_One, Inter } from "next/font/google";
 
 import { isAuthenticatedUser } from "@/actions";
 import TanstackQueryClientProvider from "@/components/common/TanstackQueryClientProvider";
-import CartInitializer from "@/components/features/cart/CartInitializer";
+import { CartInitializer } from "@/components/features/cart";
 import Header from "@/components/layout/Header";
 import { ToastContainer, ToastContextProvider } from "@gratia/ui/components";
 import { lazy } from "react";
