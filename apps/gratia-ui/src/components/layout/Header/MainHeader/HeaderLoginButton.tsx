@@ -1,6 +1,6 @@
 "use client";
 
-import ProfileDropdown from "@/components/common/dropdowns/ProfileDropdown";
+import ProfileDropdown from "@/components/common/ProfileDropdown";
 import { Button } from "@gratia/ui/components";
 import { IconPerson } from "@gratia/ui/icons";
 import { useRouter } from "next/navigation";

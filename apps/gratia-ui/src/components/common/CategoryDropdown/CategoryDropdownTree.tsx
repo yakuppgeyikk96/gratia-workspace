@@ -9,17 +9,17 @@ import { useQuery } from "@tanstack/react-query";
 import classNames from "classnames";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import styles from "./CategoryTreeDropdown.module.scss";
+import styles from "./CategoryDropdownTree.module.scss";
 
-interface CategoryTreeDropdownProps {
+interface CategoryDropdownTreeProps {
   triggerClassName?: string;
   disabled?: boolean;
 }
 
-export default function CategoryTreeDropdown({
+export default function CategoryDropdownTree({
   triggerClassName,
   disabled = false,
-}: CategoryTreeDropdownProps) {
+}: CategoryDropdownTreeProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: categoryTreeResponse, isLoading } = useQuery({

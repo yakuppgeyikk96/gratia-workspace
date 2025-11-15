@@ -1,5 +1,5 @@
 import { isAuthenticatedUser } from "@/actions/auth";
-import SearchInput from "@/components/features/SearchInput";
+import { SearchInput } from "@/components/features/search";
 import { Container, Flex } from "@gratia/ui/components";
 import Link from "next/link";
 import HeaderCartButton from "./HeaderCartButton";

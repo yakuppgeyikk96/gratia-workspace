@@ -1,7 +1,5 @@
-import {
-  CurrencyDropdown,
-  LanguageDropdown,
-} from "@/components/common/dropdowns";
+import CurrencyDropdown from "@/components/common/CurrencyDropdown";
+import LanguageDropdown from "@/components/common/LanguageDropdown";
 import TopHeaderLinks from "@/components/layout/Header/TopHeaderLinks";
 import { COLORS } from "@/constants/colors";
 import { Container, Flex } from "@gratia/ui/components";

@@ -1,4 +1,4 @@
-import CategoryTreeDropdown from "./CategoryTreeDropdown";
+import CategoryDropdownTree from "./CategoryDropdownTree";
 
 interface CategoryDropdownProps {
   triggerClassName?: string;
@@ -10,7 +10,7 @@ export default function CategoryDropdown({
   disabled,
 }: CategoryDropdownProps) {
   return (
-    <CategoryTreeDropdown
+    <CategoryDropdownTree
       triggerClassName={triggerClassName}
       disabled={disabled}
     />

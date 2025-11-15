@@ -1,5 +1,5 @@
 import { getProducts } from "@/actions/product";
-import ProductList from "@/components/features/ProductList";
+import ProductList from "@/components/features/product/ProductList";
 
 export default async function CategoryProductsPage({
   params,
