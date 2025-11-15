@@ -38,29 +38,31 @@ export default function HeroSection({
         ]);
 
   return (
-    <div className={styles.heroSection}>
-      <div className={styles.heroGrid}>
-        <div className={styles.heroContentWrapper}>
-          <Container className={styles.heroContainer}>
-            <HeroContent
-              title={title}
-              description={description}
-              ctaText={ctaText}
-              ctaHref={ctaHref}
-              ctaVariant={ctaVariant}
-            />
-          </Container>
-        </div>
+    <div className={styles.heroSectionContainer}>
+      <Container className={styles.heroSection}>
+        <div className={styles.heroGrid}>
+          <div className={styles.heroContentWrapper}>
+            <Container className={styles.heroContainer}>
+              <HeroContent
+                title={title}
+                description={description}
+                ctaText={ctaText}
+                ctaHref={ctaHref}
+                ctaVariant={ctaVariant}
+              />
+            </Container>
+          </div>
 
-        <div className={styles.heroImageWrapper}>
-          <HeroBackground
-            images={heroImages}
-            imageAlt={imageAlt}
-            autoplayInterval={autoplayInterval}
-          />
-          <div className={styles.heroGradientOverlay} />
+          <div className={styles.heroImageWrapper}>
+            <HeroBackground
+              images={heroImages}
+              imageAlt={imageAlt}
+              autoplayInterval={autoplayInterval}
+            />
+            <div className={styles.heroGradientOverlay} />
+          </div>
         </div>
-      </div>
+      </Container>
     </div>
   );
 }

@@ -3,6 +3,10 @@
 @use "@gratia/ui/styles/core/_variables.scss" as *;
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
+.productListContainer {
+  padding-bottom: $spacing-10;
+}
+
 .title {
   font-size: $text-3xl;
   font-weight: $font-bold;

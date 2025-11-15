@@ -1,14 +1,31 @@
 import { getProducts } from "@/actions/product";
 import ProductList from "@/components/features/product/ProductList";
 
+interface CollectionProductsPageProps {
+  params: Promise<{ collectionSlug: string }>;
+  searchParams: Promise<{ page?: string }>;
+}
+
 export default async function CollectionProductsPage({
   params,
-}: {
-  params: Promise<{ collectionSlug: string }>;
-}) {
+  searchParams,
+}: CollectionProductsPageProps) {
   const { collectionSlug } = await params;
+  const { page } = await searchParams;
 
-  const { data } = await getProducts({ collectionSlug });
+  const pageNumber = page ? parseInt(page, 10) : 1;
+  const validPage = isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber;
 
-  return <ProductList products={data?.products ?? []} title="" />;
+  const { data } = await getProducts({
+    collectionSlug,
+    page: validPage,
+  });
+
+  return (
+    <ProductList
+      products={data?.products ?? []}
+      title=""
+      pagination={data?.pagination}
+    />
+  );
 }

@@ -30,6 +30,10 @@ $hero-mobile-gradient-subtle: linear-gradient(
   #f8fafc 100%
 );
 
+.heroSectionContainer {
+  background: $bg-color;
+}
+
 .heroSection {
   position: relative;
   margin-top: calc($hero-header-height);
@@ -59,7 +63,7 @@ $hero-mobile-gradient-subtle: linear-gradient(
 .heroContentWrapper {
   @include flex-center-column;
   z-index: 2;
-  padding: $spacing-2xl $spacing-xl;
+  padding: $spacing-2xl 0;
   background: $bg-color;
 
   @include media-md {
@@ -70,7 +74,6 @@ $hero-mobile-gradient-subtle: linear-gradient(
 
 .heroContainer {
   width: 100%;
-  max-width: 600px;
 }
 
 .heroImageWrapper {

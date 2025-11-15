@@ -1,0 +1,117 @@
+@use "../../styles/core/_colors.scss" as *;
+@use "../../styles/core/_spacing.scss" as *;
+@use "../../styles/core/_variables.scss" as *;
+@use "../../styles/core/_border.scss" as *;
+@use "../../styles/core/_breakpoints.scss" as *;
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: $spacing-8;
+  margin-bottom: $spacing-8;
+}
+
+.paginationContainer {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.pageButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: $spacing-2 $spacing-3;
+  @include border($border-1, $border-light);
+  @include rounded($radius-md);
+  background-color: $bg-color;
+  color: $text-primary-color;
+  font-size: $text-base;
+  font-weight: $font-medium;
+  text-decoration: none;
+  transition: all $transition-normal;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:hover:not(.disabled):not(:disabled) {
+    background-color: $interactive-hover-bg;
+    border-color: $border-medium;
+  }
+
+  &:active:not(.disabled):not(:disabled) {
+    background-color: $interactive-active-bg;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $interactive-focus-ring;
+    outline-offset: 2px;
+  }
+
+  &.disabled,
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &.active {
+    background-color: $primary-color;
+    color: $text-on-primary-color;
+    border-color: $primary-color;
+    font-weight: $font-semibold;
+
+    &:hover {
+      background-color: $primary-color-dark;
+      border-color: $primary-color-dark;
+    }
+  }
+}
+
+.prevButton,
+.nextButton {
+  padding: $spacing-2;
+}
+
+.pageNumbers {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.numberButton {
+  min-width: 40px;
+}
+
+.ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: $spacing-2;
+  color: $text-muted-color;
+  font-size: $text-base;
+}
+
+@include media-xs {
+  .pageButton {
+    min-width: 36px;
+    height: 36px;
+    padding: $spacing-1 $spacing-2;
+    font-size: $text-sm;
+  }
+
+  .numberButton {
+    min-width: 36px;
+  }
+
+  .ellipsis {
+    min-width: 36px;
+    height: 36px;
+    font-size: $text-sm;
+  }
+}

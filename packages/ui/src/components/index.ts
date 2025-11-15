@@ -13,6 +13,8 @@ export { default as IconButton } from "./IconButton";
 export { default as Input } from "./Input";
 export { default as LoadingSpinner } from "./LoadingSpinner";
 export { default as OneTimePassword } from "./OneTimePassword";
+export { default as Pagination } from "./Pagination";
+export type { PaginationInfo } from "./Pagination";
 export { Toast, ToastContainer, ToastProvider } from "./Toast";
 export type { ToastProps, ToastVariant } from "./Toast";
 export {
