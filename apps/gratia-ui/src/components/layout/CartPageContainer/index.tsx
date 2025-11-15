@@ -1,5 +1,5 @@
 import { isAuthenticatedUser } from "@/actions";
-import { CartList } from "@/components/features/cart";
+import CartList from "@/components/features/cart/CartList";
 import styles from "./CartPageContainer.module.scss";
 
 export default async function CartPageContainer() {
