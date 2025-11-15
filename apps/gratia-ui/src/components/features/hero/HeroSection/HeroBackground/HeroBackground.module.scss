@@ -1,11 +1,5 @@
 @use "@gratia/ui/styles/core/_position.scss" as *;
 
-$hero-overlay-gradient: linear-gradient(
-  135deg,
-  rgba(0, 0, 0, 0.5) 0%,
-  rgba(0, 0, 0, 0.3) 100%
-);
-
 .heroBackground {
   @include full-cover;
   z-index: 0;
@@ -26,16 +20,46 @@ $hero-overlay-gradient: linear-gradient(
   flex: 0 0 100%;
   min-width: 0;
   position: relative;
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+
+  &:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  &:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .backgroundImage {
   object-fit: cover;
-  transition: opacity 0.5s ease-in-out;
+  object-position: center;
+  transition: opacity 1s ease-in-out;
 }
 
-.heroOverlay {
-  @include full-cover;
-  background: $hero-overlay-gradient;
-  z-index: 1;
-  pointer-events: none;
+// Embla'nın geçiş animasyonu için
+.emblaSlide[data-embla-selected] {
+  .backgroundImage {
+    opacity: 1;
+  }
+}
+
+.emblaSlide:not([data-embla-selected]) {
+  .backgroundImage {
+    opacity: 0;
+  }
 }

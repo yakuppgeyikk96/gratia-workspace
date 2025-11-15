@@ -2,29 +2,30 @@
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
 @use "@gratia/ui/styles/core/_variables.scss" as *;
 @use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
 
-$hero-text-shadow-title: 0 2px 10px rgba(0, 0, 0, 0.3);
-$hero-text-shadow-description: 0 1px 5px rgba(0, 0, 0, 0.3);
-$hero-content-max-width: 800px;
+$hero-content-max-width: 600px;
 
 .heroContent {
-  text-align: center;
   max-width: $hero-content-max-width;
   width: 100%;
-  margin: 0 auto;
+
+  @include media-md {
+    @include flex-center-column;
+  }
 }
 
 .heroTitle {
   font-size: $text-6xl;
   font-weight: $font-bold;
-  color: $text-on-primary-color;
-  text-shadow: $hero-text-shadow-title;
+  color: $text-primary-color;
   margin-bottom: $spacing-md;
   line-height: $leading-tight;
-  text-align: center;
+  text-align: left;
 
   @include media-md {
     font-size: $text-5xl;
+    text-align: center;
   }
 
   @include media-sm {
@@ -34,13 +35,13 @@ $hero-content-max-width: 800px;
 
 .heroDescription {
   font-size: $text-2xl;
-  color: rgba($text-on-primary-color, 0.95);
+  color: $text-secondary-color;
   line-height: $leading-normal;
-  text-shadow: $hero-text-shadow-description;
-  text-align: center;
-  margin: 0 auto;
+  text-align: left;
+  margin-bottom: $spacing-xl;
 
   @include media-md {
     font-size: $text-xl;
+    text-align: center;
   }
 }

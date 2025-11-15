@@ -2,31 +2,83 @@
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
 @use "@gratia/ui/styles/layout/_flex.scss" as *;
 @use "@gratia/ui/styles/core/_position.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
 
 $hero-header-height: 195px;
 $hero-min-height-desktop: calc(100vh - $spacing-52);
-
 $hero-header-height-mobile: 100px;
 $hero-min-height-mobile: calc(100vh - $hero-header-height-mobile);
 
-.heroSection {
-  @include flex-center-column;
+$hero-mobile-gradient: linear-gradient(
+  135deg,
+  #f8fafc 0%,
+  #f0f9ff 20%,
+  #ecfdf5 40%,
+  #fef3c7 60%,
+  #f3e8ff 80%,
+  #f8fafc 100%
+);
 
+// Alternative gradient
+$hero-mobile-gradient-subtle: linear-gradient(
+  135deg,
+  #f8fafc 0%,
+  #f0f9ff 20%,
+  #ecfdf5 40%,
+  #fef3c7 60%,
+  #f3e8ff 80%,
+  #f8fafc 100%
+);
+
+.heroSection {
   position: relative;
-  margin-top: calc($hero-header-height + $spacing-1);
+  margin-top: calc($hero-header-height);
   min-height: $hero-min-height-desktop;
   overflow: hidden;
+  background: $bg-color;
 
   @include media-md {
     min-height: $hero-min-height-mobile;
-    margin-top: calc($hero-header-height-mobile + $spacing-1);
+    margin-top: calc($hero-header-height-mobile);
+    background: $hero-mobile-gradient;
+  }
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+  min-height: $hero-min-height-desktop;
+
+  @include media-md {
+    grid-template-columns: 1fr;
+    min-height: $hero-min-height-mobile;
+  }
+}
+
+.heroContentWrapper {
+  @include flex-center-column;
+  z-index: 2;
+  padding: $spacing-2xl $spacing-xl;
+  background: $bg-color;
+
+  @include media-md {
+    padding: $spacing-xl $spacing-lg;
+    background: transparent;
   }
 }
 
 .heroContainer {
-  @include position-relative;
-  z-index: 2;
   width: 100%;
-  height: 100%;
-  @include flex(row, center, center);
+  max-width: 600px;
+}
+
+.heroImageWrapper {
+  position: relative;
+  overflow: hidden;
+  background: $bg-color;
+
+  @include media-md {
+    display: none;
+  }
 }

@@ -1,4 +1,4 @@
-import { Button, Flex } from "@gratia/ui/components";
+import { Button } from "@gratia/ui/components";
 import Link from "next/link";
 import styles from "./HeroContent.module.scss";
 
@@ -18,13 +18,7 @@ export default function HeroContent({
   ctaVariant = "primary",
 }: HeroContentProps) {
   return (
-    <Flex
-      direction="column"
-      align="center"
-      justify="center"
-      gap={24}
-      className={styles.heroContent}
-    >
+    <div className={styles.heroContent}>
       <h1 className={styles.heroTitle}>{title}</h1>
       <p className={styles.heroDescription}>{description}</p>
       <Link href={ctaHref}>
@@ -32,6 +26,6 @@ export default function HeroContent({
           {ctaText}
         </Button>
       </Link>
-    </Flex>
+    </div>
   );
 }
