@@ -73,7 +73,11 @@ export default function ProductCard({
       />
 
       {/* Product Info Section - Clickable */}
-      <Link href={`/products/${product.slug}`} className={styles.infoLink}>
+      <Link
+        href={`/products/${product.slug}`}
+        className={styles.infoLink}
+        prefetch={false}
+      >
         <ProductCardInfo
           name={product.name ?? ""}
           description={product.description}
