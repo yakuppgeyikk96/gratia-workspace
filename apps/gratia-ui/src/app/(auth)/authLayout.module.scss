@@ -2,9 +2,5 @@
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
 .authLayout {
-  margin-top: calc(195px + $spacing-8);
-
-  @media screen and (max-width: $breakpoint-sm) {
-    margin-top: calc(125px + $spacing-8);
-  }
+  margin-block: $spacing-4;
 }

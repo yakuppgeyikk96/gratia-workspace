@@ -2,6 +2,7 @@
 
 import CartIsEmpty from "@/components/features/cart/CartIsEmpty";
 import CartList from "@/components/features/cart/CartList";
+import CartSummary from "@/components/features/cart/CartSummary";
 import { useCartStore } from "@/store/cartStore";
 import styles from "./CartPageContainer.module.scss";
 
@@ -23,8 +24,8 @@ export default function CartPageContainer(props: CartPageContainerProps) {
       <div className={styles.cartList}>
         <CartList isLoggedIn={isLoggedIn} />
       </div>
-      <div className={styles.totalPrice}>
-        <h2>Total Price</h2>
+      <div className={styles.cartSummary}>
+        <CartSummary />
       </div>
     </div>
   );

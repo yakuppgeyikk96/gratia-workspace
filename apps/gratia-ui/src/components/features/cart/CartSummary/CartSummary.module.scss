@@ -1,0 +1,81 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.cartSummary {
+  position: sticky;
+  top: $spacing-12;
+  height: fit-content;
+}
+
+.summaryContent {
+  @include flex-column;
+  @include p(6);
+  background-color: $bg-color;
+  @include border($border-1, $border-light);
+  @include rounded($radius-lg);
+  box-shadow: $shadow-sm;
+}
+
+.title {
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+  margin: 0 0 $spacing-6 0;
+}
+
+.summaryDetails {
+  @include flex-column;
+  @include gap(4);
+  @include mb(6);
+}
+
+.summaryRow {
+  @include flex-between;
+  align-items: center;
+}
+
+.label {
+  font-size: $text-base;
+  color: $text-secondary-color;
+}
+
+.value {
+  font-size: $text-base;
+  font-weight: $font-medium;
+  color: $text-primary-color;
+}
+
+.discountLabel {
+  color: $text-success-color;
+}
+
+.discountValue {
+  color: $text-success-color;
+  font-weight: $font-semibold;
+}
+
+.divider {
+  margin-top: $spacing-2;
+  margin-bottom: $spacing-2;
+}
+
+.totalLabel {
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+}
+
+.totalValue {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+}
+
+.checkoutButton {
+  width: 100%;
+  @include mt(4);
+}

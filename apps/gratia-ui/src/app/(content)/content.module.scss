@@ -2,10 +2,9 @@
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
 .contentLayout {
-  margin-top: calc(195px + $spacing-8);
-  margin-bottom: $spacing-8;
+  margin-block: $spacing-4;
 
-  @media screen and (max-width: $breakpoint-sm) {
-    margin-top: calc(100px + $spacing-8);
+  @include media-md {
+    margin-bottom: calc($spacing-4 + 6rem);
   }
 }

@@ -1,4 +1,5 @@
 @use "@gratia/ui/styles/layout/_grid.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
 .cartPageContainer {
   @include grid-container;
@@ -8,8 +9,16 @@
 
 .cartList {
   @include col-span-8;
+
+  @include media-md {
+    @include col-span-12;
+  }
 }
 
-.totalPrice {
+.cartSummary {
   @include col-span-4;
+
+  @include media-md {
+    @include col-span-12;
+  }
 }
