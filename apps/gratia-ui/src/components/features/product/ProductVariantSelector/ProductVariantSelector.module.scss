@@ -1,0 +1,126 @@
+// apps/gratia-ui/src/components/features/product/ProductVariantSelector/ProductVariantSelector.module.scss
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.variantSelector {
+  @include flex-column;
+  @include gap(3);
+  @include mb(6);
+}
+
+.label {
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  @include mb(2);
+}
+
+// Size buttons container
+.sizeButtonsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  @include gap(2);
+}
+
+.sizeButton {
+  min-width: 50px;
+  height: 40px;
+  @include flex-center;
+  @include border($border-1, $border-light);
+  @include rounded($radius-md);
+  background-color: $bg-color;
+  color: $text-primary-color;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  text-decoration: none;
+  transition: all $transition-normal;
+  cursor: pointer;
+  padding: $spacing-2 $spacing-4;
+
+  &:hover {
+    border-color: $border-medium;
+    box-shadow: $shadow-sm;
+  }
+
+  &.active {
+    border: 2px solid $primary-color;
+    background-color: rgba($primary-color, 0.1);
+    color: $text-primary-color;
+    font-weight: $font-semibold;
+  }
+}
+
+.variantsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  @include gap(3);
+
+  @include media-xs {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    @include gap(2);
+  }
+}
+
+.variantCard {
+  @include flex-column;
+  @include gap(2);
+  @include border($border-1, $border-light);
+  @include rounded($radius-md);
+  @include p(2);
+  background-color: $bg-color;
+  text-decoration: none;
+  color: inherit;
+  transition: all $transition-normal;
+  cursor: pointer;
+  overflow: hidden;
+
+  &:hover {
+    border-color: $border-medium;
+    box-shadow: $shadow-sm;
+    transform: translateY(-2px);
+  }
+
+  &.active {
+    border: 2px solid $primary-color;
+    box-shadow: $shadow-sm;
+  }
+}
+
+.variantImageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.3; // Dikey görünüm için
+  overflow: hidden;
+  background-color: $bg-secondary-color;
+  @include rounded($radius-sm);
+}
+
+.variantImage {
+  object-fit: cover;
+  transition: transform $transition-normal;
+
+  .variantCard:hover & {
+    transform: scale(1.05);
+  }
+}
+
+.placeholderImage {
+  width: 100%;
+  height: 100%;
+  @include flex-center;
+  color: $text-muted-color;
+  font-size: $text-xs;
+  text-align: center;
+}
+
+.variantPrice {
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  text-align: center;
+  line-height: $leading-tight;
+}

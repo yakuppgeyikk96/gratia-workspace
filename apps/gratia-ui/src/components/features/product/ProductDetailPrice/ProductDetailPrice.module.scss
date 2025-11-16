@@ -1,0 +1,68 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.priceContainer {
+  width: 100%;
+}
+
+.priceRow {
+  @include flex-row;
+  @include align-center;
+  @include gap(4);
+  flex-wrap: wrap;
+}
+
+.currentPrice {
+  font-size: $text-4xl;
+  font-weight: $font-bold;
+  color: #059669;
+  line-height: $leading-none;
+}
+
+.originalPrice {
+  font-size: $text-xl;
+  font-weight: $font-normal;
+  color: $text-muted-color;
+  text-decoration: line-through;
+  line-height: $leading-none;
+}
+
+.savingsBox {
+  @include flex-row;
+  @include align-center;
+  @include px(4);
+  @include py(2);
+  background-color: #d1fae5;
+  @include border($border-1, transparent);
+  @include rounded($radius-md);
+}
+
+.savingsText {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: #059669;
+  white-space: nowrap;
+}
+
+@include media-md {
+  .currentPrice {
+    font-size: $text-3xl;
+  }
+
+  .originalPrice {
+    font-size: $text-lg;
+  }
+
+  .savingsBox {
+    @include px(3);
+    @include py(2);
+  }
+
+  .savingsText {
+    font-size: $text-xs;
+  }
+}
