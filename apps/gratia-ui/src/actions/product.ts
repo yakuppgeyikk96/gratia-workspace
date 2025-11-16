@@ -3,6 +3,7 @@ import { IApiResponse } from "@/types";
 import {
   ProductQueryOptionsDto,
   ProductsResponseDto,
+  ProductWithVariantsDto,
 } from "@/types/Product.types";
 
 export async function getProducts(
@@ -13,4 +14,10 @@ export async function getProducts(
   );
   const queryString = queryParams.join("&");
   return await apiClient.get(`/products?${queryString}`);
+}
+
+export async function getProductBySlug(
+  slug: string
+): Promise<IApiResponse<ProductWithVariantsDto>> {
+  return await apiClient.get(`/products/${slug}/with-variants`);
 }

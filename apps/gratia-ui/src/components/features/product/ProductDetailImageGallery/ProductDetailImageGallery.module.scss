@@ -1,0 +1,184 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.galleryContainer {
+  @include flex-column;
+  @include gap(4);
+  width: 100%;
+}
+
+.mainCarousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-color: $bg-secondary-color;
+  @include rounded($radius-lg);
+}
+
+.emblaViewport {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.emblaContainer {
+  @include flex-row;
+  height: 100%;
+}
+
+.emblaSlide {
+  flex: 0 0 100%;
+  min-width: 0;
+  position: relative;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  object-fit: cover;
+  user-select: none;
+}
+
+.placeholderImage {
+  width: 100%;
+  height: 100%;
+  @include flex-center;
+  background: linear-gradient(
+    135deg,
+    $bg-secondary-color 0%,
+    $border-light 100%
+  );
+}
+
+.placeholderText {
+  color: $text-muted-color;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  @include flex-center;
+  background-color: rgba(255, 255, 255, 0.95);
+  @include border($border-1, $border-light);
+  @include rounded-full;
+  box-shadow: $shadow-md;
+  cursor: pointer;
+  transition: all $transition-normal;
+  border: none;
+
+  &:hover:not(.navButtonDisabled) {
+    background-color: $bg-color;
+    box-shadow: $shadow-lg;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &:active:not(.navButtonDisabled) {
+    transform: translateY(-50%) scale(0.95);
+  }
+
+  &.navButtonDisabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  svg {
+    color: $text-primary-color;
+  }
+}
+
+.navButtonPrev {
+  left: $spacing-4;
+}
+
+.navButtonNext {
+  right: $spacing-4;
+}
+
+.thumbnailContainer {
+  @include flex-row;
+  @include gap(2);
+  width: 100%;
+  overflow-x: auto;
+  padding: $spacing-2 0;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  scrollbar-width: none;
+}
+
+.thumbnail {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  position: relative;
+  @include rounded($radius-md);
+  overflow: hidden;
+  background-color: $bg-secondary-color;
+  @include border($border-2, transparent);
+  cursor: pointer;
+  padding: 0;
+  border: none;
+
+  &:hover {
+    @include border($border-2, $secondary-color);
+  }
+
+  &.thumbnailActive {
+    @include border($border-2, $secondary-color);
+  }
+}
+
+.thumbnailImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.thumbnailImage {
+  object-fit: cover;
+  user-select: none;
+}
+
+@include media-md {
+  .mainCarousel {
+    aspect-ratio: 4 / 5;
+  }
+
+  .navButton {
+    width: 40px;
+    height: 40px;
+  }
+
+  .navButtonPrev {
+    left: $spacing-2;
+  }
+
+  .navButtonNext {
+    right: $spacing-2;
+  }
+
+  .thumbnail {
+    width: 60px;
+    height: 60px;
+  }
+}

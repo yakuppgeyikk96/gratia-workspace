@@ -6,54 +6,6 @@ interface CategoryProductsPageProps {
   searchParams: Promise<{ page?: string }>;
 }
 
-// const getAllCategorySlugs = (categories: CategoryTreeNode[]): string[] => {
-//   const slugs: string[] = [];
-
-//   function traverse(node: CategoryTreeNode) {
-//     if (node.isActive) {
-//       slugs.push(node.slug);
-//     }
-//     if (node.children && node.children.length > 0) {
-//       node.children.forEach((child) => traverse(child));
-//     }
-//   }
-
-//   categories.forEach((category) => traverse(category));
-//   return slugs;
-// };
-
-// export async function generateStaticParams() {
-//   try {
-//     const { data: categoryTree } = await getCategoryTree();
-
-//     if (!categoryTree || categoryTree.length === 0) {
-//       return [];
-//     }
-
-//     const slugs = getAllCategorySlugs(categoryTree);
-
-//     return slugs.map((slug) => ({
-//       categorySlug: slug,
-//     }));
-//   } catch (error) {
-//     console.error("Error generating static params for categories:", error);
-//     return [];
-//   }
-// }
-
-// export async function generateMetadata({
-//   params,
-// }: {
-//   params: Promise<{ categorySlug: string }>;
-// }): Promise<Metadata> {
-//   const { categorySlug } = await params;
-
-//   return {
-//     title: `Gratia - Products - ${categorySlug}`,
-//     description: `Discover amazing products in the ${categorySlug} category`,
-//   };
-// }
-
 export default async function CategoryProductsPage({
   params,
   searchParams,

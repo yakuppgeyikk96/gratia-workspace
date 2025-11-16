@@ -127,3 +127,13 @@ export interface ProductsResponseDto {
   pagination: PaginationInfo;
   sortOptions: string[];
 }
+
+export interface ProductWithVariantsDto {
+  product: Product;
+  variants: Product[];
+  availableOptions: {
+    colors: string[];
+    sizes: string[];
+    materials: string[];
+  };
+}
