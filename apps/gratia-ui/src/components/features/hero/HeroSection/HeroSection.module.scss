@@ -4,11 +4,6 @@
 @use "@gratia/ui/styles/core/_position.scss" as *;
 @use "@gratia/ui/styles/core/_colors.scss" as *;
 
-$hero-header-height: 195px;
-$hero-min-height-desktop: calc(100vh - $spacing-52);
-$hero-header-height-mobile: 100px;
-$hero-min-height-mobile: calc(100vh - $hero-header-height-mobile);
-
 $hero-mobile-gradient: linear-gradient(
   135deg,
   #f8fafc 0%,
@@ -32,31 +27,24 @@ $hero-mobile-gradient-subtle: linear-gradient(
 
 .heroSectionContainer {
   background: $bg-color;
+  height: calc(100vh - 12rem);
 }
 
 .heroSection {
   position: relative;
-  margin-top: calc($hero-header-height);
-  min-height: $hero-min-height-desktop;
   overflow: hidden;
   background: $bg-color;
-
-  @include media-md {
-    min-height: $hero-min-height-mobile;
-    margin-top: calc($hero-header-height-mobile);
-    background: $hero-mobile-gradient;
-  }
+  height: 100%;
+  padding: 0;
 }
 
 .heroGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   height: 100%;
-  min-height: $hero-min-height-desktop;
 
   @include media-md {
     grid-template-columns: 1fr;
-    min-height: $hero-min-height-mobile;
   }
 }
 
@@ -74,6 +62,7 @@ $hero-mobile-gradient-subtle: linear-gradient(
 
 .heroContainer {
   width: 100%;
+  @include flex-center;
 }
 
 .heroImageWrapper {

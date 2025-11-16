@@ -39,7 +39,7 @@ export default function HeroSection({
 
   return (
     <div className={styles.heroSectionContainer}>
-      <Container className={styles.heroSection}>
+      <div className={styles.heroSection}>
         <div className={styles.heroGrid}>
           <div className={styles.heroContentWrapper}>
             <Container className={styles.heroContainer}>
@@ -62,7 +62,7 @@ export default function HeroSection({
             <div className={styles.heroGradientOverlay} />
           </div>
         </div>
-      </Container>
+      </div>
     </div>
   );
 }
