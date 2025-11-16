@@ -1,0 +1,23 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/components/_empty-state.scss" as *;
+
+.cartIsEmpty {
+  @include empty-state-container;
+}
+
+.iconContainer {
+  @include empty-state-icon-container;
+}
+
+.title {
+  @include empty-state-title;
+}
+
+.description {
+  @include empty-state-description;
+}

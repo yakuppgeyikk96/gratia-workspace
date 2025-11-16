@@ -1,5 +1,6 @@
 export { default as IconAt } from "./IconAt";
 export { default as IconBagCheck } from "./IconBagCheck";
+export { default as IconBagXFill } from "./IconBagXFill";
 export { default as IconBell } from "./IconBell";
 export { default as IconBox } from "./IconBox";
 export { default as IconBoxArrowLeft } from "./IconBoxArrowLeft";

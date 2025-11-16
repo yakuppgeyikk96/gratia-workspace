@@ -1,5 +1,8 @@
+import { isAuthenticatedUser } from "@/actions";
 import CartPageContainer from "@/components/layout/CartPageContainer";
 
 export default async function CartPage() {
-  return <CartPageContainer />;
+  const isLoggedIn = await isAuthenticatedUser();
+
+  return <CartPageContainer isLoggedIn={isLoggedIn} />;
 }

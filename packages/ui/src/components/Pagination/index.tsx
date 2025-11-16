@@ -64,8 +64,8 @@ export default function Pagination({
   }
 
   const visiblePages = getVisiblePages();
-  const isPrevDisabled = page <= 1;
-  const isNextDisabled = page >= totalPages;
+  // const isPrevDisabled = page <= 1;
+  // const isNextDisabled = page >= totalPages;
 
   return (
     <nav

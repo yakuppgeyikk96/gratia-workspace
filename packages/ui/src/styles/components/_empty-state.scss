@@ -1,0 +1,65 @@
+@use "../core/_colors.scss" as *;
+@use "../core/_spacing.scss" as *;
+@use "../core/_variables.scss" as *;
+@use "../core/_border.scss" as *;
+@use "../core/_breakpoints.scss" as *;
+@use "../layout/_flex.scss" as *;
+
+// Empty state container mixin
+// Provides centered layout with consistent padding and min-height
+@mixin empty-state-container($min-height: 400px, $min-height-mobile: 300px) {
+  @include py(20);
+  @include px(4);
+  @include flex-center-column;
+  min-height: $min-height;
+
+  @include media-xs {
+    @include py(16);
+    @include px(4);
+    min-height: $min-height-mobile;
+  }
+}
+
+// Empty state icon container mixin
+// Creates a circular container for empty state icons
+@mixin empty-state-icon-container($size: 120px, $size-mobile: 100px) {
+  @include flex-center;
+  width: $size;
+  height: $size;
+  @include rounded-full;
+  background-color: $bg-secondary-color;
+  @include mb(4);
+
+  @include media-xs {
+    width: $size-mobile;
+    height: $size-mobile;
+  }
+}
+
+// Empty state title mixin
+// Consistent typography for empty state titles
+@mixin empty-state-title {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+  text-align: center;
+  margin: 0;
+
+  @include media-xs {
+    font-size: $text-xl;
+  }
+}
+
+// Empty state description mixin
+// Consistent typography for empty state descriptions
+@mixin empty-state-description($max-width: 400px) {
+  font-size: $text-base;
+  color: $text-secondary-color;
+  text-align: center;
+  margin: 0;
+  max-width: $max-width;
+
+  @include media-xs {
+    font-size: $text-sm;
+  }
+}
