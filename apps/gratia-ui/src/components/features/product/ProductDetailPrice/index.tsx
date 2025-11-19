@@ -1,6 +1,6 @@
 "use client";
 
-import { formatPrice } from "@/lib/format";
+import { formatPrice } from "@/lib/utils/format";
 import styles from "./ProductDetailPrice.module.scss";
 
 interface ProductDetailPriceProps {

@@ -19,10 +19,16 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-
-    }
+      "@/*": ["./src/*"]
+    },
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/vitest.d.ts"
+  ],
   "exclude": ["node_modules"]
 }
