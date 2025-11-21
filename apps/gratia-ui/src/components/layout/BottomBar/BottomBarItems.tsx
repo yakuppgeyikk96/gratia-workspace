@@ -9,7 +9,7 @@ import BottomBarHomeItem from "./BottomBarHomeItem";
 import BottomBarProfileItem from "./BottomBarProfileItem";
 
 interface BottomBarItemsProps {
-  isAuthenticated: boolean;
+  isLoggedIn: boolean;
 }
 
 export default function BottomBarItems(props: BottomBarItemsProps) {
@@ -29,10 +29,10 @@ export default function BottomBarItems(props: BottomBarItemsProps) {
       },
       {
         id: "profile",
-        label: <BottomBarProfileItem isAuthenticated={props.isAuthenticated} />,
+        label: <BottomBarProfileItem isLoggedIn={props.isLoggedIn} />,
       },
     ],
-    [props.isAuthenticated]
+    [props.isLoggedIn]
   );
 
   return (

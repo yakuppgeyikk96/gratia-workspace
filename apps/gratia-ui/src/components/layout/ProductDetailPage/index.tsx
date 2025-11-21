@@ -1,6 +1,8 @@
+import ProductDetailAddToCart from "@/components/features/product/ProductDetailAddToCart";
 import ProductDetailImageGallery from "@/components/features/product/ProductDetailImageGallery";
 import ProductDetailPrice from "@/components/features/product/ProductDetailPrice";
 import ProductVariantSelector from "@/components/features/product/ProductVariantSelector";
+import { isAuthenticated } from "@/lib/utils/auth";
 import { ProductWithVariantsDto } from "@/types/Product.types";
 import { notFound } from "next/navigation";
 import styles from "./ProductDetailPage.module.scss";
@@ -9,9 +11,11 @@ interface ProductDetailPageProps {
   productData: ProductWithVariantsDto;
 }
 
-export default function ProductDetailPage({
+export default async function ProductDetailPage({
   productData,
 }: ProductDetailPageProps) {
+  const isLoggedIn = await isAuthenticated();
+
   if (!productData?.product) {
     notFound();
   }
@@ -37,7 +41,6 @@ export default function ProductDetailPage({
           currency="USD"
         />
 
-        {/* Variant Selectors */}
         {productData.product.attributes.size &&
           productData.availableOptions.sizes.length > 0 && (
             <ProductVariantSelector
@@ -57,6 +60,11 @@ export default function ProductDetailPage({
               currency="USD"
             />
           )}
+
+        <ProductDetailAddToCart
+          product={productData.product}
+          isLoggedIn={isLoggedIn}
+        />
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import { IconPerson } from "@gratia/ui/icons";
 import { useRouter } from "next/navigation";
 
 interface HeaderLoginButtonProps {
-  isAuthenticatedUser: boolean;
+  isLoggedIn: boolean;
 }
 
 export default function HeaderLoginButton(props: HeaderLoginButtonProps) {
@@ -16,7 +16,7 @@ export default function HeaderLoginButton(props: HeaderLoginButtonProps) {
     router.push("/login");
   };
 
-  return props.isAuthenticatedUser ? (
+  return props.isLoggedIn ? (
     <ProfileDropdown />
   ) : (
     <Button variant="ghost" icon={<IconPerson />} onClick={handleLogin}>

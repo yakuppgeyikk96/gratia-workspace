@@ -12,19 +12,19 @@
 .priceRow {
   @include flex-row;
   @include align-center;
-  @include gap(4);
+  @include gap(3);
   flex-wrap: wrap;
 }
 
 .currentPrice {
-  font-size: $text-4xl;
+  font-size: $text-3xl;
   font-weight: $font-bold;
   color: #059669;
   line-height: $leading-none;
 }
 
 .originalPrice {
-  font-size: $text-xl;
+  font-size: $text-lg;
   font-weight: $font-normal;
   color: $text-muted-color;
   text-decoration: line-through;
@@ -34,15 +34,15 @@
 .savingsBox {
   @include flex-row;
   @include align-center;
-  @include px(4);
-  @include py(2);
+  @include px(3);
+  @include py(1);
   background-color: #d1fae5;
   @include border($border-1, transparent);
   @include rounded($radius-md);
 }
 
 .savingsText {
-  font-size: $text-sm;
+  font-size: $text-xs;
   font-weight: $font-medium;
   color: #059669;
   white-space: nowrap;
@@ -50,16 +50,16 @@
 
 @include media-md {
   .currentPrice {
-    font-size: $text-3xl;
+    font-size: $text-2xl;
   }
 
   .originalPrice {
-    font-size: $text-lg;
+    font-size: $text-base;
   }
 
   .savingsBox {
-    @include px(3);
-    @include py(2);
+    @include px(2);
+    @include py(1);
   }
 
   .savingsText {

@@ -14,7 +14,7 @@ import { useCallback, useMemo } from "react";
 import styles from "./BottomBar.module.scss";
 
 interface BottomBarProfileItemProps {
-  isAuthenticated: boolean;
+  isLoggedIn: boolean;
 }
 
 export default function BottomBarProfileItem(props: BottomBarProfileItemProps) {
@@ -28,7 +28,7 @@ export default function BottomBarProfileItem(props: BottomBarProfileItemProps) {
   const profileItems: DrawerItem[] = useMemo(() => {
     const items: DrawerItem[] = [];
 
-    if (props.isAuthenticated) {
+    if (props.isLoggedIn) {
       items.push(
         ...[
           {
@@ -90,7 +90,7 @@ export default function BottomBarProfileItem(props: BottomBarProfileItemProps) {
       ]
     );
 
-    if (props.isAuthenticated) {
+    if (props.isLoggedIn) {
       items.push({
         id: "logout",
         label: "Logout",
@@ -107,7 +107,7 @@ export default function BottomBarProfileItem(props: BottomBarProfileItemProps) {
     }
 
     return items;
-  }, [props.isAuthenticated, handleLogout, router]);
+  }, [props.isLoggedIn, handleLogout, router]);
 
   return (
     <Drawer

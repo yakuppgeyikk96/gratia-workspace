@@ -1,11 +1,25 @@
 import { getProductBySlug } from "@/actions/product";
 import ProductDetailPage from "@/components/layout/ProductDetailPage";
+import { logError } from "@/lib/errorHandler";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
 interface ProductDetailPageProps {
   params: Promise<{ slug: string }>;
 }
+
+const getCachedProduct = cache(async (slug: string) => {
+  try {
+    return await getProductBySlug(slug);
+  } catch (error) {
+    logError(error);
+    return {
+      data: null,
+      success: false,
+    };
+  }
+});
 
 export async function generateMetadata({
   params,
@@ -14,9 +28,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
 
-  const { data } = await getProductBySlug(slug);
+  const { data, success } = await getCachedProduct(slug);
 
-  if (!data?.product) {
+  if (!success || !data?.product) {
     return {
       title: "Product Not Found",
       description: "The product you are looking for does not exist.",
@@ -34,7 +48,7 @@ export default async function ProductDetail({
 }: ProductDetailPageProps) {
   const { slug } = await params;
 
-  const { data, success } = await getProductBySlug(slug);
+  const { data, success } = await getCachedProduct(slug);
 
   if (!success || !data?.product) {
     notFound();

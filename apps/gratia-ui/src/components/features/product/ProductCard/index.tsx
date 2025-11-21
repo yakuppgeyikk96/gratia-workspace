@@ -1,9 +1,6 @@
 "use client";
 
-import { logError } from "@/lib/errorHandler";
-import { useCartStore } from "@/store/cartStore";
-import { CartItem } from "@/types/Cart.types";
-import { useToast } from "@gratia/ui/components";
+import { useAddToCart } from "@/hooks/useAddToCart";
 import Link from "next/link";
 import styles from "./ProductCard.module.scss";
 import { ProductCardProps } from "./ProductCard.types";
@@ -16,63 +13,20 @@ export default function ProductCard({
   className = "",
   isLoggedIn,
 }: ProductCardProps) {
-  const addItem = useCartStore((state) => state.addItem);
-  const syncCart = useCartStore((state) => state.syncCart);
-
-  const { addToast } = useToast();
-
-  const handleAddToCart = () => {
-    const itemToAdd: CartItem = {
-      productId: product._id!,
-      sku: product.sku!,
-      quantity: 1,
-      price: product.price!,
-      discountedPrice: product.discountedPrice,
-      productName: product.name ?? "",
-      productImages: product.images ?? [],
-      attributes: product.attributes ?? {},
-      isVariant: false,
-    };
-    try {
-      if (isLoggedIn) {
-        syncCart([itemToAdd]);
-      } else {
-        addItem(itemToAdd);
-      }
-
-      addToast({
-        title: "Added to Cart",
-        description: `${product.name} has been added to your cart.`,
-        variant: "success",
-      });
-    } catch (error) {
-      logError(error);
-      addToast({
-        title: "Error",
-        description: "An error occurred while adding to cart.",
-        variant: "error",
-      });
-    }
-  };
+  const { handleAddToCart } = useAddToCart({ product, isLoggedIn });
 
   const handleAddToFavorites = () => {
-    addToast({
-      title: "Added to Favorites",
-      description: `${product.name} has been added to your favorites.`,
-      variant: "success",
-    });
+    console.log("Add to favorites");
   };
 
   return (
     <article className={`${styles.productCard} ${className}`}>
-      {/* Image Section with Carousel */}
       <ProductCardImage
         images={product.images ?? []}
         productName={product.name ?? ""}
         onAddToFavorites={handleAddToFavorites}
       />
 
-      {/* Product Info Section - Clickable */}
       <Link
         href={`/products/${product.slug}`}
         className={styles.infoLink}
@@ -84,7 +38,6 @@ export default function ProductCard({
         />
       </Link>
 
-      {/* Actions Section */}
       <ProductCardActions
         price={product.price ?? 0}
         discountedPrice={product.discountedPrice}

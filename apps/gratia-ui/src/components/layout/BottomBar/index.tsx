@@ -1,8 +1,9 @@
-import { isAuthenticatedUser } from "@/actions";
 import BottomBarItems from "./BottomBarItems";
 
-export default async function BottomBar() {
-  const isAuthenticated = await isAuthenticatedUser();
+interface BottomBarProps {
+  isLoggedIn: boolean;
+}
 
-  return <BottomBarItems isAuthenticated={isAuthenticated} />;
+export default async function BottomBar(props: BottomBarProps) {
+  return <BottomBarItems isLoggedIn={props.isLoggedIn} />;
 }

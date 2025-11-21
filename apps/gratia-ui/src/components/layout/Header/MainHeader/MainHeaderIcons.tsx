@@ -5,11 +5,11 @@ import { IconBell, IconHeart } from "@gratia/ui/icons";
 
 export default function MainHeaderIcons() {
   const handleBellClick = () => {
-    console.log("Bell clicked");
+    // TODO: Implement bell click
   };
 
   const handleHeartClick = () => {
-    console.log("Heart clicked");
+    // TODO: Implement heart click
   };
 
   return (

@@ -56,21 +56,21 @@
 
 .variantsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  @include gap(3);
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  @include gap(2);
 
   @include media-xs {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
     @include gap(2);
   }
 }
 
 .variantCard {
   @include flex-column;
-  @include gap(2);
+  @include gap(1);
   @include border($border-1, $border-light);
   @include rounded($radius-md);
-  @include p(2);
+  @include p(1);
   background-color: $bg-color;
   text-decoration: none;
   color: inherit;
@@ -93,7 +93,7 @@
 .variantImageContainer {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1.3; // Dikey görünüm için
+  aspect-ratio: 1 / 1.3;
   overflow: hidden;
   background-color: $bg-secondary-color;
   @include rounded($radius-sm);
@@ -118,7 +118,7 @@
 }
 
 .variantPrice {
-  font-size: $text-sm;
+  font-size: $text-xs;
   font-weight: $font-semibold;
   color: $text-primary-color;
   text-align: center;

@@ -16,7 +16,6 @@ export default async function CategoryProductsPage({
   const pageNumber = page ? parseInt(page, 10) : 1;
   const validPage = isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber;
 
-  console.log(categorySlug);
   const { data } = await getProducts({
     categorySlug,
     page: validPage,

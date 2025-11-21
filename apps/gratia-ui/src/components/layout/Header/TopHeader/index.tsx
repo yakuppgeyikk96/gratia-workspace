@@ -6,9 +6,9 @@ import { Container, Flex } from "@gratia/ui/components";
 import { IconInstagram, IconWhatsapp, IconX } from "@gratia/ui/icons";
 import styles from "./TopHeader.module.scss";
 
-export default function TopHeader() {
-  const socialMediaIconsColor = COLORS.ICON_PRIMARY;
+const socialMediaIconsColor = COLORS.ICON_PRIMARY;
 
+export default function TopHeader() {
   return (
     <Container className={styles.topHeader}>
       <div className={styles.topHeaderInner}>

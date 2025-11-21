@@ -1,0 +1,42 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.addToCartContainer {
+  @include flex-row;
+  @include align-center;
+  @include gap(3);
+  width: 100%;
+}
+
+.addToCartButton {
+  width: 100%;
+}
+
+.addToCartButtonContent {
+  @include flex-row;
+  @include align-center;
+  @include justify-center;
+  @include gap(2);
+}
+
+.inCartBadge {
+  @include flex-row;
+  @include align-center;
+  @include justify-center;
+  @include px(4);
+  @include py(2);
+  background-color: rgba($text-success-color, 0.1);
+  @include border($border-1, transparent);
+  @include rounded($radius-md);
+  white-space: nowrap;
+}
+
+.inCartText {
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  color: $text-success-color;
+  line-height: $leading-tight;
+}

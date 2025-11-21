@@ -1,4 +1,3 @@
-import { isAuthenticatedUser } from "@/actions/auth";
 import { SearchInput } from "@/components/features/search";
 import { Container, Flex } from "@gratia/ui/components";
 import Link from "next/link";
@@ -7,9 +6,11 @@ import HeaderLoginButton from "./HeaderLoginButton";
 import styles from "./MainHeader.module.scss";
 import MainHeaderIcons from "./MainHeaderIcons";
 
-export default async function MainHeader() {
-  const isAuthenticated = await isAuthenticatedUser();
+interface MainHeaderProps {
+  isLoggedIn: boolean;
+}
 
+export default function MainHeader(props: MainHeaderProps) {
   return (
     <Container className={styles.mainHeader}>
       {/* Logo */}
@@ -31,7 +32,7 @@ export default async function MainHeader() {
       {/* Primary Actions - Hidden on mobile */}
       <Flex gap={16} align="center" className={styles.mainHeaderPrimaryActions}>
         <HeaderCartButton />
-        <HeaderLoginButton isAuthenticatedUser={isAuthenticated} />
+        <HeaderLoginButton isLoggedIn={props.isLoggedIn} />
       </Flex>
     </Container>
   );

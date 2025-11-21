@@ -1,14 +1,19 @@
 import { getNavigationItems } from "@/actions";
+import { cache } from "react";
 import HeaderCategoryLinksClient from "./HeaderCategoryLinksClient";
 
 interface HeaderCategoryLinksProps {
   className?: string;
 }
 
+const getCachedNavigationItems = cache(async () => {
+  return await getNavigationItems();
+});
+
 export default async function HeaderCategoryLinks({
   className = "",
 }: HeaderCategoryLinksProps) {
-  const { data: navigationItems } = await getNavigationItems();
+  const { data: navigationItems } = await getCachedNavigationItems();
 
   const collectionLinks =
     navigationItems?.collections.map((collection) => ({
