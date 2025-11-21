@@ -38,6 +38,8 @@ export default function ProductColorSelector({
                   fill
                   className={styles.variantImage}
                   sizes="(max-width: 768px) 100px, 120px"
+                  quality={60}
+                  loading="lazy"
                 />
               ) : (
                 <div className={styles.placeholderImage}>No Image</div>

@@ -79,8 +79,10 @@ export default function ProductDetailImageGallery({
                     alt={`${productName} - Image ${index + 1}`}
                     fill
                     className={styles.image}
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 60vw, (max-width: 1024px) 42vw, (max-width: 1280px) 42vw, 33vw"
                     priority={index === 0}
+                    quality={75}
+                    loading={index === 0 ? undefined : "lazy"}
                   />
                 </div>
               </div>
@@ -137,6 +139,8 @@ export default function ProductDetailImageGallery({
                   fill
                   className={styles.thumbnailImage}
                   sizes="80px"
+                  quality={60}
+                  loading="lazy"
                 />
               </div>
             </button>
