@@ -1,0 +1,19 @@
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+
+.addToCartButton {
+  width: 100%;
+}
+
+.addToCartButtonContent {
+  @include flex-row;
+  @include align-center;
+  @include justify-center;
+  @include gap(2);
+
+  svg {
+    fill: $text-on-primary-color;
+  }
+}

@@ -1,11 +1,9 @@
 "use client";
 
-import { useAddToCart } from "@/hooks/useAddToCart";
 import { useCartStore } from "@/store/cartStore";
 import { Product } from "@/types/Product.types";
-import { Button } from "@gratia/ui/components";
-import { IconBagPlus } from "@gratia/ui/icons";
 import { lazy } from "react";
+import AddToCartButtonContainer from "./AddToCartButtonContainer";
 import styles from "./ProductDetailAddToCart.module.scss";
 
 const QuantitySelectorContainer = lazy(
@@ -21,8 +19,6 @@ export default function ProductDetailAddToCart({
   product,
   isLoggedIn,
 }: ProductDetailAddToCartProps) {
-  const { handleAddToCart } = useAddToCart({ product, isLoggedIn });
-
   const productSku = product.sku ?? "";
 
   const itemCount = useCartStore((state) => state.getItemCount(productSku));
@@ -37,17 +33,7 @@ export default function ProductDetailAddToCart({
           isLoggedIn={isLoggedIn}
         />
       ) : (
-        <Button
-          variant="primary"
-          ariaLabel="Add to cart"
-          className={styles.addToCartButton}
-          onClick={handleAddToCart}
-        >
-          <div className={styles.addToCartButtonContent}>
-            <IconBagPlus />
-            <span>Add to cart</span>
-          </div>
-        </Button>
+        <AddToCartButtonContainer product={product} isLoggedIn={isLoggedIn} />
       )}
     </div>
   );

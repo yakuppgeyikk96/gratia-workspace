@@ -1,50 +1,62 @@
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
-@use "@gratia/ui/styles/core/_variables.scss" as *;
-@use "@gratia/ui/styles/layout/_flex.scss" as *;
-@use "@gratia/ui/styles/core/_colors.scss" as *;
-@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/layout/_grid.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
 .productDetailContainer {
-  display: grid;
-  gap: $spacing-8;
-  grid-template-areas: "imageGallery imageGallery productInfo productInfo productInfo";
+  @include grid-container;
+  @include grid-cols-1;
+  @include grid-gap-8;
+
+  @include responsive(sm) {
+    @include grid-cols-5;
+  }
+
+  @include responsive(md) {
+    @include grid-cols-12;
+  }
 }
 
 .imageGalleryContainer {
-  grid-area: imageGallery;
   width: 100%;
   height: 100%;
+
+  @include col-span-1;
+
+  @include responsive(sm) {
+    grid-column: 2 / span 3;
+  }
+
+  @include responsive(md) {
+    @include col-span-5;
+  }
+
+  @include responsive(lg) {
+    @include col-span-5;
+  }
+
+  @include responsive(xl) {
+    @include col-span-4;
+  }
 }
 
 .productInfoContainer {
-  grid-area: productInfo;
   width: 100%;
-  height: 100%;
-  max-width: $width-500;
-  border: 1px solid $border-light;
-  height: fit-content;
-  @include flex-column;
-  @include gap(5);
-  @include p(4);
-  @include rounded($radius-lg);
-  background-color: $bg-color;
-}
 
-.productInfoHeader {
-  @include flex-column;
-  @include gap(2);
+  @include col-span-1;
 
-  h1 {
-    font-size: $text-2xl;
-    font-weight: $font-semibold;
-    line-height: $leading-tight;
-    margin: 0;
+  @include responsive(sm) {
+    @include col-span-5;
   }
 
-  p {
-    font-size: $text-sm;
-    color: $text-muted-color;
-    line-height: $leading-relaxed;
-    margin: 0;
+  @include responsive(md) {
+    @include col-span-7;
+  }
+
+  @include responsive(lg) {
+    @include col-span-7;
+  }
+
+  @include responsive(xl) {
+    @include col-span-5;
   }
 }

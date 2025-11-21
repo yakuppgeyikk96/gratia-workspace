@@ -20,6 +20,10 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
+@mixin grid-cols-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
 @mixin grid-cols-4 {
   grid-template-columns: repeat(4, 1fr);
 }

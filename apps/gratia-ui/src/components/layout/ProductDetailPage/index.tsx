@@ -1,7 +1,5 @@
-import ProductDetailAddToCart from "@/components/features/product/ProductDetailAddToCart";
 import ProductDetailImageGallery from "@/components/features/product/ProductDetailImageGallery";
-import ProductDetailPrice from "@/components/features/product/ProductDetailPrice";
-import ProductVariantSelector from "@/components/features/product/ProductVariantSelector";
+import ProductDetailInfoCard from "@/components/features/product/ProductDetailInfoCard";
 import { isAuthenticated } from "@/lib/utils/auth";
 import { ProductWithVariantsDto } from "@/types/Product.types";
 import { notFound } from "next/navigation";
@@ -30,39 +28,8 @@ export default async function ProductDetailPage({
       </div>
 
       <div className={styles.productInfoContainer}>
-        <div className={styles.productInfoHeader}>
-          <h1>{productData.product.name}</h1>
-          <p>{productData.product.description}</p>
-        </div>
-
-        <ProductDetailPrice
-          price={productData.product.price}
-          discountedPrice={productData.product.discountedPrice}
-          currency="USD"
-        />
-
-        {productData.product.attributes.size &&
-          productData.availableOptions.sizes.length > 0 && (
-            <ProductVariantSelector
-              variantType="size"
-              currentProduct={productData.product}
-              variants={productData.variants}
-              currency="USD"
-            />
-          )}
-
-        {productData.product.attributes.color &&
-          productData.availableOptions.colors.length > 0 && (
-            <ProductVariantSelector
-              variantType="color"
-              currentProduct={productData.product}
-              variants={productData.variants}
-              currency="USD"
-            />
-          )}
-
-        <ProductDetailAddToCart
-          product={productData.product}
+        <ProductDetailInfoCard
+          productData={productData}
           isLoggedIn={isLoggedIn}
         />
       </div>

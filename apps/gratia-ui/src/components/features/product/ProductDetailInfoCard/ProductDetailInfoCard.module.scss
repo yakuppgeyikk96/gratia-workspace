@@ -1,0 +1,45 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.productDetailInfoCard {
+  width: 100%;
+  height: fit-content;
+  border: 1px solid $border-light;
+  @include flex-column;
+  @include gap(5);
+  @include p(4);
+  @include rounded($radius-lg);
+  background-color: $bg-color;
+}
+
+.productDetailInfoCardHeader {
+  @include flex-column;
+  @include gap(2);
+
+  h1 {
+    font-size: $text-2xl;
+    font-weight: $font-semibold;
+    line-height: $leading-tight;
+    margin: 0;
+
+    @include media-sm {
+      font-size: $text-xl;
+    }
+  }
+
+  p {
+    font-size: $text-sm;
+    color: $text-muted-color;
+    line-height: $leading-relaxed;
+    margin: 0;
+
+    @include media-sm {
+      font-size: $text-xs;
+      font-weight: $font-semibold;
+    }
+  }
+}
