@@ -1,0 +1,72 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.quantitySelectorSkeleton {
+  @include flex-row;
+  @include align-center;
+  @include gap(6);
+  width: 100%;
+}
+
+.inCartBadgeSkeleton {
+  height: 32px;
+  width: 100px;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-md);
+}
+
+.quantitySelectorWrapperSkeleton {
+  @include flex-row;
+  @include align-center;
+  @include gap(2);
+  height: 40px;
+}
+
+.quantityButtonSkeleton {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-md);
+  border: 1px solid $border-light;
+}
+
+.quantityValueSkeleton {
+  width: 40px;
+  height: 32px;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+  animation-delay: 0.1s;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

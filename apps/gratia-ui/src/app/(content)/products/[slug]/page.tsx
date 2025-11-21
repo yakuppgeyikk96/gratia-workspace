@@ -1,6 +1,7 @@
 import { getProductBySlug } from "@/actions/product";
 import ProductDetailPage from "@/components/layout/ProductDetailPage";
 import { logError } from "@/lib/errorHandler";
+import { isAuthenticated } from "@/lib/utils/auth";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
@@ -48,11 +49,16 @@ export default async function ProductDetail({
 }: ProductDetailPageProps) {
   const { slug } = await params;
 
-  const { data, success } = await getCachedProduct(slug);
+  const [productResponse, isLoggedIn] = await Promise.all([
+    getCachedProduct(slug),
+    isAuthenticated(),
+  ]);
+
+  const { data, success } = productResponse;
 
   if (!success || !data?.product) {
     notFound();
   }
 
-  return <ProductDetailPage productData={data} />;
+  return <ProductDetailPage productData={data} isLoggedIn={isLoggedIn} />;
 }

@@ -2,12 +2,13 @@
 
 import { useCartStore } from "@/store/cartStore";
 import { Product } from "@/types/Product.types";
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import AddToCartButtonContainer from "./AddToCartButtonContainer";
 import styles from "./ProductDetailAddToCart.module.scss";
+import QuantitySelectorSkeleton from "./QuantitySelector/QuantitySelectorSkeleton";
 
 const QuantitySelectorContainer = lazy(
-  () => import("./QuantitySelectorContainer")
+  () => import("./QuantitySelector/QuantitySelectorContainer")
 );
 
 interface ProductDetailAddToCartProps {
@@ -28,10 +29,12 @@ export default function ProductDetailAddToCart({
   return (
     <div className={styles.addToCartContainer}>
       {isInCart && productSku ? (
-        <QuantitySelectorContainer
-          productSku={productSku}
-          isLoggedIn={isLoggedIn}
-        />
+        <Suspense fallback={<QuantitySelectorSkeleton />}>
+          <QuantitySelectorContainer
+            productSku={productSku}
+            isLoggedIn={isLoggedIn}
+          />
+        </Suspense>
       ) : (
         <AddToCartButtonContainer product={product} isLoggedIn={isLoggedIn} />
       )}

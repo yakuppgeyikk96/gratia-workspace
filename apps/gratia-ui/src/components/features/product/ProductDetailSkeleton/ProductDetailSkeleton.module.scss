@@ -1,0 +1,279 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/layout/_grid.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.productDetailContainer {
+  @include grid-container;
+  @include grid-cols-1;
+  @include grid-gap-8;
+
+  @include responsive(sm) {
+    @include grid-cols-5;
+  }
+
+  @include responsive(md) {
+    @include grid-cols-12;
+  }
+}
+
+.imageGalleryContainer {
+  width: 100%;
+  height: 100%;
+
+  @include col-span-1;
+
+  @include responsive(sm) {
+    grid-column: 2 / span 3;
+  }
+
+  @include responsive(md) {
+    @include col-span-5;
+  }
+
+  @include responsive(lg) {
+    @include col-span-5;
+  }
+
+  @include responsive(xl) {
+    @include col-span-4;
+  }
+}
+
+.productInfoContainer {
+  width: 100%;
+
+  @include col-span-1;
+
+  @include responsive(sm) {
+    @include col-span-5;
+  }
+
+  @include responsive(md) {
+    @include col-span-7;
+  }
+
+  @include responsive(lg) {
+    @include col-span-7;
+  }
+
+  @include responsive(xl) {
+    @include col-span-5;
+  }
+}
+
+.galleryWrapper {
+  @include flex-column;
+  @include gap(4);
+  width: 100%;
+}
+
+.mainImageSkeleton {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-lg);
+  overflow: hidden;
+
+  @include responsive(md) {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+.thumbnailContainer {
+  @include flex-row;
+  @include gap(2);
+  width: 100%;
+  overflow-x: auto;
+  padding: $spacing-2 0;
+}
+
+.thumbnailSkeleton {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-md);
+  animation-delay: calc(var(--i, 0) * 0.1s);
+
+  @include responsive(md) {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+.infoCard {
+  width: 100%;
+  height: fit-content;
+  border: 1px solid $border-light;
+  @include flex-column;
+  @include gap(5);
+  @include p(4);
+  @include rounded($radius-lg);
+  background-color: $bg-color;
+}
+
+.headerSection {
+  @include flex-column;
+  @include gap(2);
+}
+
+.titleSkeleton {
+  height: 32px;
+  width: 75%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+
+  @include responsive(sm) {
+    height: 28px;
+  }
+}
+
+.descriptionSkeleton {
+  height: 16px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.descriptionSkeletonShort {
+  height: 16px;
+  width: 60%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.priceSection {
+  @include flex-row;
+  @include gap(3);
+  align-items: center;
+}
+
+.priceSkeleton {
+  height: 36px;
+  width: 120px;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.originalPriceSkeleton {
+  height: 20px;
+  width: 100px;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.variantSection {
+  @include flex-column;
+  @include gap(2);
+}
+
+.variantLabelSkeleton {
+  height: 16px;
+  width: 80px;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.variantOptions {
+  @include flex-row;
+  @include gap(2);
+  flex-wrap: wrap;
+}
+
+.variantOptionSkeleton {
+  height: 40px;
+  width: 60px;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-md);
+  border: 1px solid $border-light;
+}
+
+.buttonSkeleton {
+  height: 48px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-md);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
