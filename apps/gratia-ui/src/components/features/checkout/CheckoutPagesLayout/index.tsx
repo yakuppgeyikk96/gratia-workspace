@@ -12,7 +12,7 @@ const CheckoutPagesLayout = ({ children }: CheckoutPagesLayoutProps) => {
       <div className={styles.checkoutPagesHeader}>
         <Logo />
       </div>
-      <CheckoutStepper />
+      <CheckoutStepper currentStep="shipping" />
       {children}
     </div>
   );

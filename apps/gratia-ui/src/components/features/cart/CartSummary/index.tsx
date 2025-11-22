@@ -2,7 +2,6 @@
 
 import { useCartStore } from "@/store/cartStore";
 import { Button, Divider } from "@gratia/ui/components";
-import { useRouter } from "next/navigation";
 import styles from "./CartSummary.module.scss";
 
 export default function CartSummary() {
@@ -12,10 +11,11 @@ export default function CartSummary() {
   const totalItems = useCartStore((state) => state.getTotalItems());
   const hasDiscount = totalDiscount > 0;
 
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleCheckout = () => {
-    router.push("/checkout");
+    alert("Coming soon...");
+    // router.push("/checkout");
   };
 
   return (
