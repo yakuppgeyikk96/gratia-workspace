@@ -126,3 +126,7 @@ $spacings: (
 @mixin gap-y($size) {
   row-gap: map-get($spacings, $size);
 }
+
+@mixin mx-auto {
+  margin: 0 auto;
+}

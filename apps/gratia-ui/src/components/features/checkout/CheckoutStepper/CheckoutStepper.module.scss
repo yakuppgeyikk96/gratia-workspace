@@ -1,0 +1,104 @@
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+
+.stepper {
+  @include flex-center;
+  @include gap(1);
+  @include py(4);
+  @include mx-auto;
+  max-width: $width-600;
+}
+
+.stepContainer {
+  @include flex-column;
+  @include align-center;
+  @include flex-1;
+  position: relative;
+}
+
+.stepCircle {
+  @include flex-center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-weight: $font-bold;
+  font-size: $text-base;
+  background: $bg-color;
+  color: var(--color-text-secondary);
+  transition: all 0.3s ease;
+
+  &.completed {
+    background: var(--color-success);
+    border: 1px solid $text-success-color;
+    color: $text-success-color;
+  }
+
+  &.active {
+    background: rgba(map-get($colors, "success"), 0.1);
+    border: 1px solid map-get($colors, "success");
+    color: map-get($colors, "success");
+    transform: scale(1.1);
+  }
+
+  &.upcoming {
+    background: map-get($backgrounds, "bg-secondary");
+    border: 1px solid map-get($borders, "light");
+    color: map-get($colors, "muted");
+  }
+}
+
+.stepLabel {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &.active {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  &.completed {
+    color: var(--color-text);
+  }
+}
+
+.connector {
+  position: absolute;
+  top: 20px;
+  left: calc(50% + 20px);
+  right: calc(-50% + 20px);
+  height: 2px;
+  background: var(--color-border);
+  z-index: -1;
+
+  &.completed {
+    background: var(--color-success);
+  }
+}
+
+// Mobile responsive
+@media (max-width: 640px) {
+  .stepper {
+    gap: 0.5rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .stepCircle {
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
+  }
+
+  .stepLabel {
+    font-size: 0.75rem;
+  }
+
+  .connector {
+    display: none; // Hide on mobile for cleaner look
+  }
+}

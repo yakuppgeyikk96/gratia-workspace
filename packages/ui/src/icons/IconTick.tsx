@@ -1,4 +1,3 @@
-import React from "react";
 import IconComponent from "../interfaces/IconComponent";
 
 export default function IconTick({ color = "#000", size = 14 }: IconComponent) {

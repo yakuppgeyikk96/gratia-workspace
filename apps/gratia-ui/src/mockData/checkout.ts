@@ -1,5 +1,5 @@
-import { CheckoutSession, ShippingMethod } from "@/types/Checkout.types";
 import { CartItem } from "@/types/Cart.types";
+import { CheckoutSession, ShippingMethod } from "@/types/Checkout.types";
 
 // Mock cart items for cart snapshot
 const mockCartItems: CartItem[] = [
@@ -159,4 +159,3 @@ export const mockCheckoutSessionLoggedIn: CheckoutSession = {
   guestEmail: null,
   expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
 };
-

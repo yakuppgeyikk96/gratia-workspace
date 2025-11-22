@@ -9,12 +9,13 @@ export default function CartSummary() {
   const totalDiscount = useCartStore((state) => state.getTotalDiscount());
   const total = useCartStore((state) => state.getTotal());
   const totalItems = useCartStore((state) => state.getTotalItems());
-
   const hasDiscount = totalDiscount > 0;
 
+  // const router = useRouter();
+
   const handleCheckout = () => {
-    // TODO: Navigate to checkout page
-    console.log("Proceed to checkout");
+    alert("Coming soon...");
+    // router.push("/checkout");
   };
 
   return (
