@@ -30,7 +30,7 @@ export default function CartPageContainer(props: CartPageContainerProps) {
         <CartList cartItems={cartItems} isLoggedIn={isLoggedIn} />
       </div>
       <div className={styles.cartSummary}>
-        <CartSummary />
+        <CartSummary items={cartItems} />
       </div>
     </div>
   );

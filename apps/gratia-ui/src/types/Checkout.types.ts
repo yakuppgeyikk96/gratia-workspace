@@ -71,8 +71,10 @@ export interface CheckoutSession {
 
 // Request DTOs
 export interface CreateCheckoutSessionRequest {
-  cartId: string;
-  guestEmail?: string;
+  items: {
+    sku: string;
+    quantity: number;
+  }[];
 }
 
 export interface CreateCheckoutSessionResponse {

@@ -178,6 +178,12 @@ export const useCartStore = create<CartStore>()(
     {
       name: "gratia-cart-storage",
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        if (state && state.items === null) {
+          state.items = [];
+        }
+        state?.setDataLoading(false);
+      },
     }
   )
 );
