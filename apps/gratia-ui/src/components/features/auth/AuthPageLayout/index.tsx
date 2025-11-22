@@ -7,8 +7,8 @@ export default function AuthPageLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className={styles.authPageWrapper}>
+    <div className={styles.authPageWrapper}>
       <Container className={styles.authPageFormContainer}>{children}</Container>
-    </main>
+    </div>
   );
 }

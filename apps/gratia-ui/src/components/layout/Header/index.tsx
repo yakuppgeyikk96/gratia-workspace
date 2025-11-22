@@ -10,12 +10,12 @@ interface HeaderProps {
 
 export default function Header(props: HeaderProps) {
   return (
-    <div className={styles.header}>
+    <header className={styles.header}>
       <TopHeader />
       <Divider />
       <MainHeader isLoggedIn={props.isLoggedIn} />
       <BottomHeader />
       <Divider />
-    </div>
+    </header>
   );
 }

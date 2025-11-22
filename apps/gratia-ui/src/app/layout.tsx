@@ -3,10 +3,9 @@ import { Concert_One, Inter } from "next/font/google";
 
 import TanstackQueryClientProvider from "@/components/common/TanstackQueryClientProvider";
 import CartInitializer from "@/components/features/cart/CartInitializer";
-import Header from "@/components/layout/Header";
 import { isAuthenticated } from "@/lib/utils/auth";
 import { ToastContainer, ToastContextProvider } from "@gratia/ui/components";
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 import "./globals.scss";
 
 const BottomBar = lazy(() => import("@/components/layout/BottomBar"));
@@ -39,11 +38,7 @@ export default async function RootLayout({
       <body className={`${inter.variable} ${concertOne.variable}`}>
         <TanstackQueryClientProvider>
           <ToastContextProvider>
-            <Header isLoggedIn={isLoggedIn} />
-            <main>{children}</main>
-            <Suspense fallback={null}>
-              <BottomBar isLoggedIn={isLoggedIn} />
-            </Suspense>
+            {children}
             <ToastContainer />
             <CartInitializer isLoggedIn={isLoggedIn} />
           </ToastContextProvider>

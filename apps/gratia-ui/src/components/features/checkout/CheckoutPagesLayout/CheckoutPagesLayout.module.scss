@@ -1,0 +1,10 @@
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+
+.checkoutPagesLayout {
+}
+
+.checkoutPagesHeader {
+  @include flex-center;
+  @include py(4);
+}
