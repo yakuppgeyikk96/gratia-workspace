@@ -1,4 +1,3 @@
-@use "@gratia/ui/styles/core/_variables.scss" as *;
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
 @use "@gratia/ui/styles/layout/_flex.scss" as *;
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
@@ -28,27 +27,6 @@
     flex-wrap: wrap;
     @include py(2);
     justify-content: center;
-  }
-}
-
-.mainHeaderLogo {
-  font-family: $font-family-logo;
-  font-size: $text-4xl;
-  font-weight: $font-bold;
-  color: var(--text-primary);
-
-  @media screen and (max-width: $breakpoint-lg) {
-    font-size: $text-3xl;
-  }
-
-  @media screen and (max-width: $breakpoint-md) {
-    font-size: $text-2xl;
-  }
-
-  @media screen and (max-width: $breakpoint-sm) {
-    width: 100%;
-    text-align: center;
-    font-size: $text-xl;
   }
 }
 

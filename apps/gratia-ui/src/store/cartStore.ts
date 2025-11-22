@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 interface CartStore {
-  items: CartItem[];
+  items: CartItem[] | null;
 
   addItem: (item: Omit<CartItem, "quantity"> & { quantity?: number }) => void;
   addItems: (items: CartItem[]) => void;
@@ -20,12 +20,15 @@ interface CartStore {
   getTotalItems: () => number;
   getTotalPrice: () => number;
   getItemCount: (sku: string) => number;
+  getSubtotal: () => number;
+  getTotalDiscount: () => number;
+  getTotal: () => number;
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
-      items: [],
+      items: null,
 
       dataLoading: false,
 
@@ -36,21 +39,21 @@ export const useCartStore = create<CartStore>()(
       addItem: (item) => {
         const quantity = item.quantity || 1;
         set((state) => {
-          const existingItem = state.items.find((i) => i.sku === item.sku);
+          const existingItem = state.items?.find((i) => i.sku === item.sku);
 
           if (existingItem) {
             return state;
           }
 
           return {
-            items: [...state.items, { ...item, quantity }],
+            items: [...(state.items ?? []), { ...item, quantity }],
           };
         });
       },
 
       addItems: (items: CartItem[]) => {
         set((state) => {
-          const existingSkus = new Set(state.items.map((i) => i.sku));
+          const existingSkus = new Set(state.items?.map((i) => i.sku) ?? []);
           const newItems: CartItem[] = [];
 
           items.forEach((item) => {
@@ -67,29 +70,24 @@ export const useCartStore = create<CartStore>()(
           }
 
           return {
-            items: [...state.items, ...newItems],
+            items: [...(state.items ?? []), ...newItems],
           };
         });
       },
 
       incrementQuantity: (sku: string, quantity: number = 1) => {
         set((state) => {
-          const existingIndex = state.items.findIndex((i) => i.sku === sku);
+          const existingIndex =
+            state.items?.findIndex((i) => i.sku === sku) ?? -1;
 
           if (existingIndex > -1) {
-            const newItems = [...state.items];
+            const newItems = [...(state.items ?? [])];
             newItems[existingIndex].quantity += quantity;
             return { items: newItems };
           }
 
           return state;
         });
-      },
-
-      removeItem: (sku) => {
-        set((state) => ({
-          items: state.items.filter((i) => i.sku !== sku),
-        }));
       },
 
       updateQuantity: (sku, quantity, isLoggedIn) => {
@@ -108,35 +106,64 @@ export const useCartStore = create<CartStore>()(
           }
 
           set((state) => ({
-            items: state.items.map((i) =>
+            items: state.items?.map((i) =>
               i.sku === sku ? { ...i, quantity } : i
             ),
           }));
         }
       },
 
+      removeItem: (sku) => {
+        set((state) => ({
+          items: state.items?.filter((i) => i.sku !== sku) ?? [],
+        }));
+      },
+
       clearCart: () => set({ items: [] }),
 
       getTotalItems: () => {
-        return get().items.reduce((total, item) => total + item.quantity, 0);
+        return (
+          get().items?.reduce((total, item) => total + item.quantity, 0) ?? 0
+        );
       },
 
       getTotalPrice: () => {
-        return get().items.reduce((total, item) => {
-          const price = item.discountedPrice || item.price;
-          return total + price * item.quantity;
-        }, 0);
+        return (
+          get().items?.reduce((total, item) => {
+            const price = item.discountedPrice || item.price;
+            return total + price * item.quantity;
+          }, 0) ?? 0
+        );
       },
 
       getItemCount: (sku) => {
-        const item = get().items.find((i) => i.sku === sku);
+        const item = get().items?.find((i) => i.sku === sku);
         return item?.quantity || 0;
+      },
+
+      getSubtotal: () => {
+        return (
+          get().items?.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+          ) ?? 0
+        );
+      },
+
+      getTotalDiscount: () => {
+        const subtotal = get().getSubtotal();
+        const total = get().getTotalPrice();
+        return Math.max(0, subtotal - total);
+      },
+
+      getTotal: () => {
+        return get().getTotalPrice();
       },
 
       syncCart: async (items?: CartItem[]) => {
         const itemsToSync = items || get().items;
 
-        syncCartAction({ items: itemsToSync })
+        syncCartAction({ items: itemsToSync ?? [] })
           .then((cartResponse) => {
             if (cartResponse.success) {
               get().clearCart();

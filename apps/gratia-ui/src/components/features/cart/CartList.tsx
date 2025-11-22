@@ -1,12 +1,15 @@
 "use client";
 
-import { useCartStore } from "@/store/cartStore";
+import { CartItem } from "@/types/Cart.types";
 import { Flex } from "@gratia/ui/components";
 import CartItemComponent from "./CartItem";
 
-export default function CartList({ isLoggedIn }: { isLoggedIn: boolean }) {
-  const cartItems = useCartStore((state) => state.items);
+interface CartListProps {
+  cartItems: CartItem[];
+  isLoggedIn: boolean;
+}
 
+export default function CartList({ cartItems, isLoggedIn }: CartListProps) {
   return (
     <Flex direction="column" gap={12}>
       {cartItems.map((item) => (
