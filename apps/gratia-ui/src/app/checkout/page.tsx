@@ -1,15 +1,17 @@
-interface CheckoutPageProps {
-  searchParams: {
-    id: string;
-  };
-}
+import { cookies } from "next/headers";
 
-const CheckoutPage = ({ searchParams }: CheckoutPageProps) => {
-  const { id } = searchParams;
+const CheckoutPage = async () => {
+  const cookieStore = await cookies();
 
-  console.log(id);
+  const checkoutSessionToken = cookieStore.get(
+    "gratia-checkout-session"
+  )?.value;
 
-  return <div>CheckoutPage</div>;
+  if (!checkoutSessionToken) {
+    return <div>Checkout session not found</div>;
+  }
+
+  return <div>{checkoutSessionToken}</div>;
 };
 
 export default CheckoutPage;

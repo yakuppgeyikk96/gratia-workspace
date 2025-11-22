@@ -9,18 +9,12 @@ interface CartInitializerProps {
 
 export default function CartInitializer(props: CartInitializerProps) {
   const syncCart = useCartStore((state) => state.syncCart);
-  const items = useCartStore((state) => state.items);
-  const clearCart = useCartStore((state) => state.clearCart);
 
   useEffect(() => {
     if (props.isLoggedIn) {
       syncCart();
     }
-
-    if (items === null) {
-      clearCart();
-    }
-  }, [props.isLoggedIn, syncCart, items, clearCart]);
+  }, [props.isLoggedIn, syncCart]);
 
   return <></>;
 }
