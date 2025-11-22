@@ -2,35 +2,14 @@
 
 import { useCartStore } from "@/store/cartStore";
 import { Button, Divider } from "@gratia/ui/components";
-import { useMemo } from "react";
 import styles from "./CartSummary.module.scss";
 
 export default function CartSummary() {
-  const items = useCartStore((state) => state.items);
-  const getTotalItems = useCartStore((state) => state.getTotalItems);
+  const subTotal = useCartStore((state) => state.getSubtotal());
+  const totalDiscount = useCartStore((state) => state.getTotalDiscount());
+  const total = useCartStore((state) => state.getTotal());
+  const totalItems = useCartStore((state) => state.getTotalItems());
 
-  const { subtotal, totalDiscount, total } = useMemo(() => {
-    const subtotal = items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-
-    const totalWithDiscount = items.reduce((sum, item) => {
-      const price = item.discountedPrice || item.price;
-      return sum + price * item.quantity;
-    }, 0);
-
-    const totalDiscount = subtotal - totalWithDiscount;
-    const total = totalWithDiscount;
-
-    return {
-      subtotal,
-      totalDiscount: totalDiscount > 0 ? totalDiscount : 0,
-      total,
-    };
-  }, [items]);
-
-  const totalItems = getTotalItems();
   const hasDiscount = totalDiscount > 0;
 
   const handleCheckout = () => {
@@ -48,7 +27,7 @@ export default function CartSummary() {
             <span className={styles.label}>
               Subtotal ({totalItems} {totalItems === 1 ? "item" : "items"})
             </span>
-            <span className={styles.value}>${subtotal.toFixed(2)}</span>
+            <span className={styles.value}>${subTotal.toFixed(2)}</span>
           </div>
 
           {hasDiscount && (
@@ -75,7 +54,7 @@ export default function CartSummary() {
           size="lg"
           className={styles.checkoutButton}
           onClick={handleCheckout}
-          disabled={items.length === 0}
+          disabled={totalItems === 0}
         >
           Proceed to Checkout
         </Button>

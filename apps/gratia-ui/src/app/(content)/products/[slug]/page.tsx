@@ -1,5 +1,5 @@
 import { getProductBySlug } from "@/actions/product";
-import ProductDetailPage from "@/components/layout/ProductDetailPage";
+import ProductDetailPage from "@/components/features/product/ProductDetailPage";
 import { logError } from "@/lib/errorHandler";
 import { isAuthenticated } from "@/lib/utils/auth";
 import { Metadata } from "next";

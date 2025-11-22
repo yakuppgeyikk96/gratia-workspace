@@ -10,9 +10,7 @@ export default function HeaderCartButton() {
   const [mounted, setMounted] = useState(false);
 
   const dataLoading = useCartStore((state) => state.dataLoading);
-  const totalItems = useCartStore((state) =>
-    state.items.reduce((total, item) => total + item.quantity, 0)
-  );
+  const totalItems = useCartStore((state) => state.getTotalItems());
 
   const router = useRouter();
 

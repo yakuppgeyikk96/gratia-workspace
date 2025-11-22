@@ -1,6 +1,6 @@
+import Logo from "@/components/common/Logo";
 import { SearchInput } from "@/components/features/search";
 import { Container, Flex } from "@gratia/ui/components";
-import Link from "next/link";
 import HeaderCartButton from "./HeaderCartButton";
 import HeaderLoginButton from "./HeaderLoginButton";
 import styles from "./MainHeader.module.scss";
@@ -14,9 +14,7 @@ export default function MainHeader(props: MainHeaderProps) {
   return (
     <Container className={styles.mainHeader}>
       {/* Logo */}
-      <Link href="/">
-        <h1 className={styles.mainHeaderLogo}>GRATIA</h1>
-      </Link>
+      <Logo />
 
       {/* Search Input */}
       <SearchInput
