@@ -1,0 +1,40 @@
+@use "@gratia/ui/styles/core/spacing.scss" as *;
+@use "@gratia/ui/styles/core/breakpoints.scss" as *;
+
+.checkoutShipping {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form {
+  @include py(6);
+}
+
+.section {
+  @include mb(8);
+
+  &:last-of-type {
+    @include mb(6);
+  }
+}
+
+.billingHeader {
+  @include mb(4);
+}
+
+.billingForm {
+  @include mt(6);
+  padding-top: $spacing-6;
+  border-top: 1px solid var(--color-border);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  @include mt(8);
+}
+
+.continueButton {
+  min-width: 200px;
+}

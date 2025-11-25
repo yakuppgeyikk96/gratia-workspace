@@ -1,0 +1,27 @@
+@use "@gratia/ui/styles/core/spacing.scss" as *;
+@use "@gratia/ui/styles/core/breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/grid.scss" as *;
+@use "@gratia/ui/styles/core/variables.scss" as *;
+
+.shippingForm {
+  width: 100%;
+}
+
+.title {
+  @include mb(4);
+  font-size: $text-xl;
+  font-weight: $font-semibold;
+}
+
+.formGrid {
+  @include form-grid;
+  @include gap-y(4);
+}
+
+.formFieldFull {
+  @include form-field;
+}
+
+.formFieldHalf {
+  @include form-field-half;
+}
