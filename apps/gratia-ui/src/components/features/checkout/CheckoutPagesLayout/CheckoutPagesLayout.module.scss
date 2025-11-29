@@ -1,5 +1,6 @@
 @use "@gratia/ui/styles/layout/_flex.scss" as *;
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
 .checkoutPagesLayout {
   max-width: 1280px;
@@ -18,7 +19,7 @@
   gap: 40px;
   margin-top: 32px;
 
-  @media (max-width: 1024px) {
+  @include media-lg {
     grid-template-columns: 1fr;
     gap: 24px;
 
@@ -30,7 +31,4 @@
 
 .mainContent {
   min-width: 0;
-}
-
-.sidebar {
 }
