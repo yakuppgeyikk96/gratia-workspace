@@ -1,8 +1,12 @@
 "use client";
 
+import { createCheckoutSession } from "@/actions";
 import { useCartStore } from "@/store/cartStore";
+import { CreateCheckoutSessionRequest } from "@/types";
 import { CartItem } from "@/types/Cart.types";
-import { Button, Divider } from "@gratia/ui/components";
+import { Button, Divider, useToast } from "@gratia/ui/components";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import styles from "./CartSummary.module.scss";
 
 interface CartSummaryProps {
@@ -16,40 +20,37 @@ export default function CartSummary({ items }: CartSummaryProps) {
   const totalItems = useCartStore((state) => state.getTotalItems());
   const hasDiscount = totalDiscount > 0;
 
-  console.log(items);
+  const router = useRouter();
 
-  // const router = useRouter();
+  const { addToast } = useToast();
 
-  // const { addToast } = useToast();
-
-  // const { mutate: createCheckoutSessionMutation } = useMutation({
-  //   mutationFn: createCheckoutSession,
-  //   onSuccess: () => {
-  //     addToast({
-  //       title: "Checkout session created",
-  //       description: "You can now proceed to checkout.",
-  //       variant: "success",
-  //     });
-  //     router.push("/checkout");
-  //   },
-  //   onError: () => {
-  //     addToast({
-  //       title: "Error",
-  //       description: "An error occurred while creating checkout session.",
-  //       variant: "error",
-  //     });
-  //   },
-  // });
+  const { mutate: createCheckoutSessionMutation } = useMutation({
+    mutationFn: createCheckoutSession,
+    onSuccess: () => {
+      addToast({
+        title: "Checkout session created",
+        description: "You can now proceed to checkout.",
+        variant: "success",
+      });
+      router.push("/checkout");
+    },
+    onError: () => {
+      addToast({
+        title: "Error",
+        description: "An error occurred while creating checkout session.",
+        variant: "error",
+      });
+    },
+  });
 
   const handleCheckout = () => {
-    alert("Coming soon...");
-    // const payload: CreateCheckoutSessionRequest = {
-    //   items: items.map((item) => ({
-    //     sku: item.sku,
-    //     quantity: item.quantity,
-    //   })),
-    // };
-    // createCheckoutSessionMutation(payload);
+    const payload: CreateCheckoutSessionRequest = {
+      items: items.map((item) => ({
+        sku: item.sku,
+        quantity: item.quantity,
+      })),
+    };
+    createCheckoutSessionMutation(payload);
   };
 
   return (

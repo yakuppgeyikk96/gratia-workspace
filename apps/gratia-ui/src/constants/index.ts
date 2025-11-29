@@ -10,3 +10,4 @@ export * from "./categories";
 export * from "./currencies";
 export * from "./languages";
 export * from "./navigation";
+export * from "./regexes";

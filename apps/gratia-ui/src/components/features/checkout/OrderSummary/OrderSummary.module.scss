@@ -1,0 +1,178 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.orderSummary {
+  background-color: $bg-color;
+  @include border($border-1, $border-light);
+  @include rounded($radius-lg);
+  @include p(6);
+  height: fit-content;
+
+  &.sticky {
+    position: sticky;
+    top: $spacing-6;
+  }
+}
+
+.header {
+  @include flex(row, space-between, center);
+  @include mb(6);
+  @include pb(4);
+  @include border-b($border-1, $border-light);
+}
+
+.title {
+  font-size: $text-xl;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  margin: 0;
+}
+
+.itemCount {
+  font-size: $text-sm;
+  font-weight: $font-normal;
+  color: $text-muted-color;
+}
+
+.items {
+  @include flex-column;
+  @include gap(4);
+  @include mb(6);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.item {
+  @include flex-column;
+  @include gap(2);
+  @include pb(4);
+  @include border-b($border-1, $border-light);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.itemRow {
+  @include flex(row, flex-start, center);
+  @include gap(3);
+  width: 100%;
+}
+
+.itemName {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-primary-color;
+  line-height: $leading-tight;
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quantityBadge {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-muted-color;
+  flex-shrink: 0;
+}
+
+.totalPrice {
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  color: $text-info-color;
+  line-height: $leading-none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.itemDetails {
+  @include flex-column;
+  @include gap(2);
+}
+
+.attributes {
+  @include flex(row, flex-start, center);
+  @include gap(2);
+  flex-wrap: wrap;
+}
+
+.attribute {
+  font-size: $text-xs;
+  font-weight: $font-normal;
+  color: $text-muted-color;
+
+  &:not(:last-child)::after {
+    content: "•";
+    margin-left: $spacing-2;
+    color: $border-medium;
+  }
+}
+
+.priceInfo {
+  @include flex(row, flex-start, center);
+  @include gap(2);
+}
+
+.originalPrice {
+  font-size: $text-sm;
+  font-weight: $font-normal;
+  color: $text-muted-color;
+  text-decoration: line-through;
+  line-height: $leading-none;
+}
+
+.unitPrice {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-secondary-color;
+  line-height: $leading-none;
+}
+
+.pricing {
+  @include flex-column;
+  @include gap(3);
+  @include pt(4);
+  @include border-t($border-1, $border-light);
+}
+
+.pricingRow {
+  @include flex(row, space-between, center);
+
+  &.discount {
+    .value {
+      color: $text-success-color;
+    }
+  }
+
+  &.total {
+    @include pt(3);
+    @include border-t($border-1, $border-light);
+    @include mt(2);
+
+    .label,
+    .value {
+      font-size: $text-lg;
+      font-weight: $font-bold;
+    }
+  }
+}
+
+.label {
+  font-size: $text-sm;
+  font-weight: $font-normal;
+  color: $text-muted-color;
+}
+
+.value {
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  white-space: nowrap;
+}

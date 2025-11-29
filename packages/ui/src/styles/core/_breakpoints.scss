@@ -16,7 +16,6 @@ $breakpoints: (
   2xl: $breakpoint-2xl,
 );
 
-// Media query mixins
 @mixin media-xs {
   @media (max-width: $breakpoint-xs) {
     @content;
@@ -53,7 +52,42 @@ $breakpoints: (
   }
 }
 
-// Responsive mixin
+@mixin media-xs-up {
+  @media (min-width: $breakpoint-xs) {
+    @content;
+  }
+}
+
+@mixin media-sm-up {
+  @media (min-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin media-md-up {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin media-lg-up {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin media-xl-up {
+  @media (min-width: $breakpoint-xl) {
+    @content;
+  }
+}
+
+@mixin media-2xl-up {
+  @media (min-width: $breakpoint-2xl) {
+    @content;
+  }
+}
+
 @mixin responsive($breakpoint) {
   @if map-has-key($breakpoints, $breakpoint) {
     @media (min-width: map-get($breakpoints, $breakpoint)) {

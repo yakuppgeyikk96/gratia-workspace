@@ -6,7 +6,7 @@ import classNames from "classnames";
 import styles from "./CheckoutStepper.module.scss";
 
 interface CheckoutStepperProps {
-  currentStep: Exclude<CheckoutStep, "completed">;
+  currentStep: CheckoutStep;
 }
 
 const steps = [
