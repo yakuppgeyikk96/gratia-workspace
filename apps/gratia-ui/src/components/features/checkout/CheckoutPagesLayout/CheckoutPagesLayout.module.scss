@@ -2,9 +2,35 @@
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
 
 .checkoutPagesLayout {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
 .checkoutPagesHeader {
   @include flex-center;
   @include py(4);
+}
+
+.contentWrapper {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 40px;
+  margin-top: 32px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    gap: 24px;
+
+    .sidebar {
+      order: -1;
+    }
+  }
+}
+
+.mainContent {
+  min-width: 0;
+}
+
+.sidebar {
 }

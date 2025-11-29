@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
-import CheckoutPagesLayout from "@/components/features/checkout/CheckoutPagesLayout";
 import { getCheckoutSessionFromCookie } from "@/actions/checkout";
+import CheckoutPagesLayout from "@/components/features/checkout/CheckoutPagesLayout";
 import { CheckoutStep } from "@/types/Checkout.types";
+import { redirect } from "next/navigation";
 
 export default async function CheckoutLayout({
   children,
@@ -14,14 +14,14 @@ export default async function CheckoutLayout({
     redirect("/cart");
   }
 
-  const currentStep = sessionResponse.data.currentStep;
+  const session = sessionResponse.data;
+  const currentStep = session.currentStep;
 
-  // CheckoutStepper doesn't show "completed" step, so exclude it
   const stepperStep: Exclude<CheckoutStep, "completed"> =
     currentStep === "completed" ? "payment" : currentStep;
 
   return (
-    <CheckoutPagesLayout currentStep={stepperStep}>
+    <CheckoutPagesLayout currentStep={stepperStep} session={session}>
       {children}
     </CheckoutPagesLayout>
   );
