@@ -4,6 +4,7 @@ import QuantitySelector from "@/components/common/QuantitySelector";
 import { useCartStore } from "@/store/cartStore";
 
 import { COLORS } from "@/constants";
+import { useCart } from "@/hooks/useCart";
 import { IconBagCheck } from "@gratia/ui/icons";
 import { memo } from "react";
 import styles from "./QuantitySelectorContainer.module.scss";
@@ -18,14 +19,14 @@ function QuantitySelectorContainer({
   isLoggedIn,
 }: QuantitySelectorContainerProps) {
   const itemCount = useCartStore((state) => state.getItemCount(productSku));
-  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const { handleUpdateQuantity } = useCart(isLoggedIn);
 
   const handleIncrement = () => {
-    updateQuantity(productSku, itemCount + 1, isLoggedIn);
+    handleUpdateQuantity(productSku, itemCount + 1);
   };
 
   const handleDecrement = () => {
-    updateQuantity(productSku, itemCount - 1, isLoggedIn);
+    handleUpdateQuantity(productSku, itemCount - 1);
   };
 
   return (
@@ -44,4 +45,3 @@ function QuantitySelectorContainer({
 }
 
 export default memo(QuantitySelectorContainer);
-

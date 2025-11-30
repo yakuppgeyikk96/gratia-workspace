@@ -1,4 +1,3 @@
-import { syncCart as syncCartAction, updateCartItem } from "@/actions";
 import { CartItem } from "@/types/Cart.types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
@@ -6,13 +5,13 @@ import { createJSONStorage, persist } from "zustand/middleware";
 interface CartStore {
   items: CartItem[] | null;
 
+  // State management only - no backend calls
   addItem: (item: Omit<CartItem, "quantity"> & { quantity?: number }) => void;
   addItems: (items: CartItem[]) => void;
-  incrementQuantity: (sku: string, quantity: number) => void;
   removeItem: (sku: string) => void;
-  updateQuantity: (sku: string, quantity: number, isLoggedIn: boolean) => void;
+  updateQuantityLocal: (sku: string, quantity: number) => void;
   clearCart: () => void;
-  syncCart: (items?: CartItem[]) => void;
+  setItems: (items: CartItem[]) => void;
 
   dataLoading: boolean;
   setDataLoading: (loading: boolean) => void;
@@ -64,7 +63,6 @@ export const useCartStore = create<CartStore>()(
             }
           });
 
-          // Only update if there are new items to add
           if (newItems.length === 0) {
             return state;
           }
@@ -75,42 +73,17 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
-      incrementQuantity: (sku: string, quantity: number = 1) => {
-        set((state) => {
-          const existingIndex =
-            state.items?.findIndex((i) => i.sku === sku) ?? -1;
-
-          if (existingIndex > -1) {
-            const newItems = [...(state.items ?? [])];
-            newItems[existingIndex].quantity += quantity;
-            return { items: newItems };
-          }
-
-          return state;
-        });
-      },
-
-      updateQuantity: (sku, quantity, isLoggedIn) => {
-        if (isLoggedIn) {
-          updateCartItem({ sku, quantity }).then((response) => {
-            if (response.success) {
-              const updatedItems = response.data?.items ?? [];
-
-              set({ items: updatedItems });
-            }
-          });
-        } else {
-          if (quantity <= 0) {
-            get().removeItem(sku);
-            return;
-          }
-
-          set((state) => ({
-            items: state.items?.map((i) =>
-              i.sku === sku ? { ...i, quantity } : i
-            ),
-          }));
+      updateQuantityLocal: (sku, quantity) => {
+        if (quantity <= 0) {
+          get().removeItem(sku);
+          return;
         }
+
+        set((state) => ({
+          items: state.items?.map((i) =>
+            i.sku === sku ? { ...i, quantity } : i
+          ),
+        }));
       },
 
       removeItem: (sku) => {
@@ -120,6 +93,10 @@ export const useCartStore = create<CartStore>()(
       },
 
       clearCart: () => set({ items: [] }),
+
+      setItems: (items: CartItem[]) => {
+        set({ items });
+      },
 
       getTotalItems: () => {
         return (
@@ -158,21 +135,6 @@ export const useCartStore = create<CartStore>()(
 
       getTotal: () => {
         return get().getTotalPrice();
-      },
-
-      syncCart: async (items?: CartItem[]) => {
-        const itemsToSync = items || get().items;
-
-        syncCartAction({ items: itemsToSync ?? [] })
-          .then((cartResponse) => {
-            if (cartResponse.success) {
-              get().clearCart();
-              get().addItems(cartResponse.data?.items ?? []);
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-          });
       },
     }),
     {

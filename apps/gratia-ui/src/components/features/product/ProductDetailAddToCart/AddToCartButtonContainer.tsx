@@ -1,4 +1,4 @@
-import { useAddToCart } from "@/hooks/useAddToCart";
+import { useCart } from "@/hooks/useCart";
 import { Product } from "@/types/Product.types";
 import { Button } from "@gratia/ui/components";
 import { IconBagPlus } from "@gratia/ui/icons";
@@ -14,13 +14,18 @@ function AddToCartButtonContainer({
   product,
   isLoggedIn,
 }: AddToCartButtonContainerProps) {
-  const { handleAddToCart } = useAddToCart({ product, isLoggedIn });
+  const { handleAddToCart } = useCart(isLoggedIn);
+
+  const onAddToCart = () => {
+    handleAddToCart(product);
+  };
+
   return (
     <Button
       variant="primary"
       ariaLabel="Add to cart"
       className={styles.addToCartButton}
-      onClick={handleAddToCart}
+      onClick={onAddToCart}
     >
       <div className={styles.addToCartButtonContent}>
         <IconBagPlus />
