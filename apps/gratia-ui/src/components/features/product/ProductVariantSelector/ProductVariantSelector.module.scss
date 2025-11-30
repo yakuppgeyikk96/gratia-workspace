@@ -1,4 +1,3 @@
-// apps/gratia-ui/src/components/features/product/ProductVariantSelector/ProductVariantSelector.module.scss
 @use "@gratia/ui/styles/core/_colors.scss" as *;
 @use "@gratia/ui/styles/core/_border.scss" as *;
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
@@ -41,11 +40,6 @@
   cursor: pointer;
   padding: $spacing-2 $spacing-4;
 
-  &:hover {
-    border-color: $border-medium;
-    box-shadow: $shadow-sm;
-  }
-
   &.active {
     border: 2px solid $primary-color;
     background-color: rgba($primary-color, 0.1);
@@ -79,9 +73,9 @@
   overflow: hidden;
 
   &:hover {
-    border-color: $border-medium;
-    box-shadow: $shadow-sm;
-    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+    transition: all $transition-fast;
+    border-color: $secondary-color;
   }
 
   &.active {
@@ -102,10 +96,6 @@
 .variantImage {
   object-fit: cover;
   transition: transform $transition-normal;
-
-  .variantCard:hover & {
-    transform: scale(1.05);
-  }
 }
 
 .placeholderImage {

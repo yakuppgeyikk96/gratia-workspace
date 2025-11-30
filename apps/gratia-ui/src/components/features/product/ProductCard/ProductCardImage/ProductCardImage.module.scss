@@ -40,10 +40,6 @@
   object-fit: cover;
   transition: transform $transition-normal;
   user-select: none;
-
-  &:hover {
-    transform: scale(1.05);
-  }
 }
 
 .placeholderImage {
@@ -80,7 +76,6 @@
     &:hover {
       background-color: rgba(255, 255, 255, 1);
       box-shadow: $shadow-md;
-      transform: scale(1.1);
     }
   }
 }
@@ -107,7 +102,8 @@
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.8);
-    transform: scale(1.2);
+    box-shadow: $shadow-lg;
+    transition: all $transition-fast;
   }
 
   &.dotActive {

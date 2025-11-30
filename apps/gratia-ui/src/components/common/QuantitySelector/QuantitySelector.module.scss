@@ -19,13 +19,11 @@
     transition: all $transition-fast;
 
     &:hover:not(.disabled) {
-      transform: scale(1.1);
-      box-shadow: $shadow-md;
+      box-shadow: $shadow-lg;
     }
 
     &:active:not(.disabled) {
-      transform: scale(1);
-      box-shadow: $shadow-sm;
+      box-shadow: $shadow-md;
     }
 
     &.disabled {
