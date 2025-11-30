@@ -22,16 +22,15 @@ export default function CartSummary({ items }: CartSummaryProps) {
   const totalItems = useCartStore((state) => state.getTotalItems());
   const hasDiscount = totalDiscount > 0;
 
+  const { addToast } = useToastContext();
   const router = useRouter();
 
-  const { addToast } = useToastContext();
-
-  const { mutate: createCheckoutSessionMutation } = useMutation({
+  const { mutate: createCheckoutSessionMutation, isPending } = useMutation({
     mutationFn: createCheckoutSession,
     onSuccess: () => {
       addToast({
         title: "Checkout session created",
-        description: "You can now proceed to checkout.",
+        description: "You will be redirected to the checkout page in a moment.",
         variant: "success",
         duration: TOAST_DURATION,
       });
@@ -94,7 +93,8 @@ export default function CartSummary({ items }: CartSummaryProps) {
           size="lg"
           className={styles.checkoutButton}
           onClick={handleCheckout}
-          disabled={totalItems === 0}
+          disabled={totalItems === 0 || isPending}
+          loading={isPending}
         >
           Proceed to Checkout
         </Button>

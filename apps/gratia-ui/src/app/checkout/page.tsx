@@ -1,4 +1,4 @@
-import { getCheckoutSessionFromCookie } from "@/actions/checkout";
+import { getCheckoutSessionData } from "@/actions/checkout";
 import CheckoutShipping from "@/components/features/checkout/CheckoutShipping";
 import { CheckoutStep } from "@/types/Checkout.types";
 import { redirect } from "next/navigation";
@@ -12,7 +12,7 @@ interface CheckoutPageProps {
 const CheckoutPage = async ({ searchParams }: CheckoutPageProps) => {
   const { step } = await searchParams;
 
-  const sessionResponse = await getCheckoutSessionFromCookie();
+  const sessionResponse = await getCheckoutSessionData();
 
   if (!sessionResponse.success || !sessionResponse.data) {
     redirect("/cart?error=session_expired");

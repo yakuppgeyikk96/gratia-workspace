@@ -1,36 +1,45 @@
 "use server";
 
-import {
-  mockCheckoutSessionAfterShipping,
-  mockCheckoutSessionInitial,
-} from "@/mockData";
+import { apiClient } from "@/lib/apiClient";
+import { mockCheckoutSessionAfterShipping } from "@/mockData";
 import {
   CheckoutSession,
   CheckoutSessionResponse,
   CreateCheckoutSessionRequest,
+  CreateSessionResponse,
   UpdateShippingAddressRequest,
 } from "@/types/Checkout.types";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { cache } from "react";
+import { getAuthHeader } from "./utils";
 
-const createCheckoutSession = async (payload: CreateCheckoutSessionRequest) => {
-  // TODO: Send request to backend to create checkout session
-
-  console.log(payload);
-
+const createCheckoutSession = async (
+  payload: CreateCheckoutSessionRequest
+): Promise<CreateSessionResponse> => {
   const cookieStore = await cookies();
+  const authHeader: Record<string, string> = await getAuthHeader();
 
-  const sessionToken = mockCheckoutSessionInitial.sessionToken;
+  const response: CreateSessionResponse = await apiClient.post(
+    `/checkout/session`,
+    payload,
+    {
+      headers: { ...authHeader },
+    }
+  );
 
-  cookieStore.set("gratia-checkout-session", sessionToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 30 * 60,
-    path: "/checkout",
-  });
+  if (response.success && response.data?.sessionToken) {
+    const sessionToken = response.data.sessionToken;
 
-  redirect(`/checkout?step=shipping`);
+    cookieStore.set("gratia-checkout-session", sessionToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 20 * 60, // 20 minutes
+      path: "/checkout",
+    });
+  }
+
+  return response;
 };
 
 const updateShippingAddress = async (
@@ -69,7 +78,7 @@ const updateShippingAddress = async (
   };
 };
 
-const getCheckoutSessionFromCookie =
+const getCheckoutSessionData = cache(
   async (): Promise<CheckoutSessionResponse> => {
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get("gratia-checkout-session")?.value;
@@ -82,19 +91,26 @@ const getCheckoutSessionFromCookie =
       };
     }
 
-    // TODO: Backend API call
-    // const response = await apiClient.get(`/checkout/session/${sessionToken}`);
+    try {
+      const authHeader: Record<string, string> = await getAuthHeader();
 
-    // Mock response - şimdilik initial session döndür
-    return {
-      success: true,
-      message: "Session retrieved successfully",
-      data: mockCheckoutSessionInitial,
-    };
-  };
+      const response: CheckoutSessionResponse = await apiClient.get(
+        `/checkout/session/${sessionToken}`,
+        {
+          headers: { ...authHeader },
+        }
+      );
 
-export {
-  createCheckoutSession,
-  getCheckoutSessionFromCookie,
-  updateShippingAddress,
-};
+      return response;
+    } catch (error) {
+      console.error("Error fetching checkout session:", error);
+      return {
+        success: false,
+        message: "Failed to retrieve checkout session",
+        errorCode: "FETCH_ERROR",
+      };
+    }
+  }
+);
+
+export { createCheckoutSession, getCheckoutSessionData, updateShippingAddress };
