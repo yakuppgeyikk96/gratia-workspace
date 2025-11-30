@@ -1,7 +1,7 @@
 "use client";
 
 import QuantitySelector from "@/components/common/QuantitySelector";
-import { useCartStore } from "@/store/cartStore";
+import { useCart } from "@/hooks/useCart";
 import { CartItem as CartItemType } from "@/types/Cart.types";
 import { memo, useCallback } from "react";
 import styles from "./CartItem.module.scss";
@@ -15,22 +15,22 @@ interface CartItemProps {
 }
 
 function CartItem({ item, isLoggedIn = false }: CartItemProps) {
-  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const { handleUpdateQuantity } = useCart(isLoggedIn);
 
   const totalPrice = item.discountedPrice
     ? item.discountedPrice * item.quantity
     : item.price * item.quantity;
 
   const handleIncrement = useCallback(() => {
-    updateQuantity(item.sku, item.quantity + 1, isLoggedIn);
-  }, [item.sku, item.quantity, isLoggedIn, updateQuantity]);
+    handleUpdateQuantity(item.sku, item.quantity + 1);
+  }, [item.sku, item.quantity, isLoggedIn, handleUpdateQuantity]);
 
   const handleDecrement = useCallback(() => {
-    updateQuantity(item.sku, item.quantity - 1, isLoggedIn);
-  }, [item.sku, item.quantity, isLoggedIn, updateQuantity]);
+    handleUpdateQuantity(item.sku, item.quantity - 1);
+  }, [item.sku, item.quantity, isLoggedIn, handleUpdateQuantity]);
 
   const handleRemove = () => {
-    updateQuantity(item.sku, 0, isLoggedIn);
+    handleUpdateQuantity(item.sku, 0);
   };
 
   return (

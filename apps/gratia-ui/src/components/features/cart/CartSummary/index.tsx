@@ -4,7 +4,7 @@ import { createCheckoutSession } from "@/actions";
 import { useCartStore } from "@/store/cartStore";
 import { CreateCheckoutSessionRequest } from "@/types";
 import { CartItem } from "@/types/Cart.types";
-import { Button, Divider, useToast } from "@gratia/ui/components";
+import { Button, Divider, useToastContext } from "@gratia/ui/components";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import styles from "./CartSummary.module.scss";
@@ -12,6 +12,8 @@ import styles from "./CartSummary.module.scss";
 interface CartSummaryProps {
   items: CartItem[];
 }
+
+const TOAST_DURATION = 3000;
 
 export default function CartSummary({ items }: CartSummaryProps) {
   const subTotal = useCartStore((state) => state.getSubtotal());
@@ -22,7 +24,7 @@ export default function CartSummary({ items }: CartSummaryProps) {
 
   const router = useRouter();
 
-  const { addToast } = useToast();
+  const { addToast } = useToastContext();
 
   const { mutate: createCheckoutSessionMutation } = useMutation({
     mutationFn: createCheckoutSession,
@@ -31,6 +33,7 @@ export default function CartSummary({ items }: CartSummaryProps) {
         title: "Checkout session created",
         description: "You can now proceed to checkout.",
         variant: "success",
+        duration: TOAST_DURATION,
       });
       router.push("/checkout");
     },
@@ -39,6 +42,7 @@ export default function CartSummary({ items }: CartSummaryProps) {
         title: "Error",
         description: "An error occurred while creating checkout session.",
         variant: "error",
+        duration: TOAST_DURATION,
       });
     },
   });

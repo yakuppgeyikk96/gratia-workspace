@@ -1,6 +1,7 @@
 "use client";
 
 import QuantitySelector from "@/components/common/QuantitySelector";
+import { useCart } from "@/hooks/useCart";
 import { useCartStore } from "@/store/cartStore";
 import { IconButton } from "@gratia/ui/components";
 import { IconShoppingBag } from "@gratia/ui/icons";
@@ -19,20 +20,16 @@ export default function ProductCardActions({
   const displayPrice = hasDiscount ? discountedPrice : price;
 
   const itemCount = useCartStore((state) => state.getItemCount(productSku));
-  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const { handleUpdateQuantity } = useCart(isLoggedIn);
 
   const isInCart = itemCount > 0;
 
-  const handleAddToCart = () => {
-    onAddToCart?.();
-  };
-
   const handleIncrement = () => {
-    updateQuantity(productSku, itemCount + 1, isLoggedIn);
+    handleUpdateQuantity(productSku, itemCount + 1);
   };
 
   const handleDecrement = () => {
-    updateQuantity(productSku, itemCount - 1, isLoggedIn);
+    handleUpdateQuantity(productSku, itemCount - 1);
   };
 
   return (
@@ -62,7 +59,7 @@ export default function ProductCardActions({
           <IconButton
             icon={<IconShoppingBag />}
             size="md"
-            onClick={handleAddToCart}
+            onClick={onAddToCart}
             ariaLabel="Add to cart"
           />
         )}

@@ -2,7 +2,7 @@
 
 import * as ToastPrimitive from "@radix-ui/react-toast";
 import * as React from "react";
-import IconX from "../../icons/IconX";
+import { IconCross } from "../../icons";
 import Flex from "../Flex";
 import styles from "./Toast.module.scss";
 
@@ -63,7 +63,7 @@ const Toast = React.forwardRef<
               className={styles.toastClose}
               aria-label="Close"
             >
-              <IconX size={16} />
+              <IconCross size={16} />
             </ToastPrimitive.Close>
           </Flex>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useAddToCart } from "@/hooks/useAddToCart";
+import { useCart } from "@/hooks/useCart";
 import Link from "next/link";
 import styles from "./ProductCard.module.scss";
 import { ProductCardProps } from "./ProductCard.types";
@@ -13,10 +13,14 @@ export default function ProductCard({
   className = "",
   isLoggedIn,
 }: ProductCardProps) {
-  const { handleAddToCart } = useAddToCart({ product, isLoggedIn });
+  const { handleAddToCart } = useCart(isLoggedIn);
 
   const handleAddToFavorites = () => {
     console.log("Add to favorites");
+  };
+
+  const onAddToCart = () => {
+    handleAddToCart(product);
   };
 
   return (
@@ -43,7 +47,7 @@ export default function ProductCard({
         discountedPrice={product.discountedPrice}
         isLoggedIn={isLoggedIn}
         productSku={product.sku ?? ""}
-        onAddToCart={handleAddToCart}
+        onAddToCart={onAddToCart}
       />
     </article>
   );
