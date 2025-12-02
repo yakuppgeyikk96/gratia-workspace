@@ -24,11 +24,11 @@ function CartItem({ item, isLoggedIn = false }: CartItemProps) {
 
   const handleIncrement = useCallback(() => {
     handleUpdateQuantity(item.sku, item.quantity + 1);
-  }, [item.sku, item.quantity, isLoggedIn, handleUpdateQuantity]);
+  }, [item.sku, item.quantity]);
 
   const handleDecrement = useCallback(() => {
     handleUpdateQuantity(item.sku, item.quantity - 1);
-  }, [item.sku, item.quantity, isLoggedIn, handleUpdateQuantity]);
+  }, [item.sku, item.quantity]);
 
   const handleRemove = () => {
     handleUpdateQuantity(item.sku, 0);

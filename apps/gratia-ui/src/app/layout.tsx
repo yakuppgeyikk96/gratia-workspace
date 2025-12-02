@@ -5,10 +5,7 @@ import TanstackQueryClientProvider from "@/components/common/TanstackQueryClient
 import CartInitializer from "@/components/features/cart/CartInitializer";
 import { isAuthenticated } from "@/lib/utils/auth";
 import { ToastContainer, ToastContextProvider } from "@gratia/ui/components";
-import { lazy } from "react";
 import "./globals.scss";
-
-const BottomBar = lazy(() => import("@/components/layout/BottomBar"));
 
 const inter = Inter({
   subsets: ["latin"],

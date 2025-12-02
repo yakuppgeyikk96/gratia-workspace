@@ -1,3 +1,5 @@
+@use "sass:map";
+
 // Spacing scale
 $spacing-0: 0;
 $spacing-1: 0.25rem; // 4px
@@ -54,77 +56,77 @@ $spacings: (
 
 // Padding utilities
 @mixin p($size) {
-  padding: map-get($spacings, $size);
+  padding: map.get($spacings, $size);
 }
 
 @mixin px($size) {
-  padding-left: map-get($spacings, $size);
-  padding-right: map-get($spacings, $size);
+  padding-left: map.get($spacings, $size);
+  padding-right: map.get($spacings, $size);
 }
 
 @mixin py($size) {
-  padding-top: map-get($spacings, $size);
-  padding-bottom: map-get($spacings, $size);
+  padding-top: map.get($spacings, $size);
+  padding-bottom: map.get($spacings, $size);
 }
 
 @mixin pt($size) {
-  padding-top: map-get($spacings, $size);
+  padding-top: map.get($spacings, $size);
 }
 
 @mixin pr($size) {
-  padding-right: map-get($spacings, $size);
+  padding-right: map.get($spacings, $size);
 }
 
 @mixin pb($size) {
-  padding-bottom: map-get($spacings, $size);
+  padding-bottom: map.get($spacings, $size);
 }
 
 @mixin pl($size) {
-  padding-left: map-get($spacings, $size);
+  padding-left: map.get($spacings, $size);
 }
 
 // Margin utilities
 @mixin m($size) {
-  margin: map-get($spacings, $size);
+  margin: map.get($spacings, $size);
 }
 
 @mixin mx($size) {
-  margin-left: map-get($spacings, $size);
-  margin-right: map-get($spacings, $size);
+  margin-left: map.get($spacings, $size);
+  margin-right: map.get($spacings, $size);
 }
 
 @mixin my($size) {
-  margin-top: map-get($spacings, $size);
-  margin-bottom: map-get($spacings, $size);
+  margin-top: map.get($spacings, $size);
+  margin-bottom: map.get($spacings, $size);
 }
 
 @mixin mt($size) {
-  margin-top: map-get($spacings, $size);
+  margin-top: map.get($spacings, $size);
 }
 
 @mixin mr($size) {
-  margin-right: map-get($spacings, $size);
+  margin-right: map.get($spacings, $size);
 }
 
 @mixin mb($size) {
-  margin-bottom: map-get($spacings, $size);
+  margin-bottom: map.get($spacings, $size);
 }
 
 @mixin ml($size) {
-  margin-left: map-get($spacings, $size);
+  margin-left: map.get($spacings, $size);
 }
 
 // Gap utilities
 @mixin gap($size) {
-  gap: map-get($spacings, $size);
+  gap: map.get($spacings, $size);
 }
 
 @mixin gap-x($size) {
-  column-gap: map-get($spacings, $size);
+  column-gap: map.get($spacings, $size);
 }
 
 @mixin gap-y($size) {
-  row-gap: map-get($spacings, $size);
+  row-gap: map.get($spacings, $size);
 }
 
 @mixin mx-auto {

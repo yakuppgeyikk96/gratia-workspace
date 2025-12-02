@@ -4,6 +4,8 @@
 @use "@gratia/ui/styles/core/_border.scss" as *;
 @use "@gratia/ui/styles/core/_colors.scss" as *;
 
+@use "sass:map";
+
 .stepper {
   @include flex-center;
   @include gap(1);
@@ -37,16 +39,16 @@
   }
 
   &.active {
-    background: rgba(map-get($colors, "success"), 0.1);
-    border: 1px solid map-get($colors, "success");
-    color: map-get($colors, "success");
+    background: rgba(map.get($colors, "success"), 0.1);
+    border: 1px solid map.get($colors, "success");
+    color: map.get($colors, "success");
     transform: scale(1.1);
   }
 
   &.upcoming {
-    background: map-get($backgrounds, "bg-secondary");
-    border: 1px solid map-get($borders, "light");
-    color: map-get($colors, "muted");
+    background: map.get($backgrounds, "bg-secondary");
+    border: 1px solid map.get($borders, "light");
+    color: map.get($colors, "muted");
   }
 }
 
