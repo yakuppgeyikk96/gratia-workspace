@@ -1,0 +1,40 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.countdown {
+  @include flex(row, space-between, center);
+  @include p(3);
+  @include rounded($radius-md);
+  background-color: rgba($text-success-color, 0.1);
+  @include border($border-2, $text-success-color);
+}
+
+.countdown.warning {
+  background-color: rgba($text-warning-color, 0.1);
+  @include border($border-2, $text-warning-color);
+}
+
+.label {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-success-color;
+}
+
+.countdown.warning .label {
+  color: $text-warning-color;
+}
+
+.time {
+  font-size: $text-base;
+  font-weight: $font-bold;
+  color: $text-success-color;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+
+.countdown.warning .time {
+  color: $text-warning-color;
+}

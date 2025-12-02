@@ -94,6 +94,7 @@ export const mockCheckoutSessionInitial: CheckoutSession = {
   orderId: null,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
+  ttl: 30 * 60,
 };
 
 // Mock checkout session - After Step 1 (Shipping Info filled)

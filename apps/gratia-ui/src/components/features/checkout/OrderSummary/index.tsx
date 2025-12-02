@@ -1,7 +1,9 @@
 "use client";
 
+import Countdown from "@/components/common/Countdown";
 import { formatPrice } from "@/lib/utils/format";
 import { CheckoutSession } from "@/types/Checkout.types";
+import { useRouter } from "next/navigation";
 import styles from "./OrderSummary.module.scss";
 
 interface OrderSummaryProps {
@@ -13,12 +15,24 @@ export default function OrderSummary({
   session,
   sticky = true,
 }: OrderSummaryProps) {
-  const { cartSnapshot, pricing } = session;
+  const { cartSnapshot, pricing, ttl } = session;
   const { items, totalItems } = cartSnapshot;
   const { subtotal, shippingCost, discount, tax, total } = pricing;
 
+  const router = useRouter();
+
+  const handleExpire = () => {
+    router.push("/cart?error=session_expired");
+  };
+
   return (
     <div className={`${styles.orderSummary} ${sticky ? styles.sticky : ""}`}>
+      {ttl > 0 && (
+        <div className={styles.countdownSection}>
+          <Countdown initialSeconds={ttl} onExpire={handleExpire} />
+        </div>
+      )}
+
       <div className={styles.header}>
         <h2 className={styles.title}>Order Summary</h2>
         <span className={styles.itemCount}>

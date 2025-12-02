@@ -17,6 +17,10 @@
   }
 }
 
+.countdownSection {
+  @include mb(6);
+}
+
 .header {
   @include flex(row, space-between, center);
   @include mb(6);

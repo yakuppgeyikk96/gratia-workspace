@@ -67,6 +67,7 @@ export interface CheckoutSession {
   orderId: string | null;
   createdAt: string;
   updatedAt: string;
+  ttl: number;
 }
 
 // Request DTOs
