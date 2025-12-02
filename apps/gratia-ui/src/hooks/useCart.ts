@@ -1,6 +1,6 @@
 "use client";
 
-import { addToCart, syncCart, updateCartItem } from "@/actions";
+import { addToCart, getCart, syncCart, updateCartItem } from "@/actions";
 import { useCartStore } from "@/store/cartStore";
 import {
   AddToCartDto,
@@ -10,7 +10,7 @@ import {
 } from "@/types/Cart.types";
 import { Product } from "@/types/Product.types";
 import { useToastContext } from "@gratia/ui/components";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const TOAST_DURATION = 3000;
 
@@ -26,7 +26,29 @@ export function useCart(isLoggedIn: boolean) {
   const clearCart = useCartStore((state) => state.clearCart);
   const addItems = useCartStore((state) => state.addItems);
 
-  // Add to cart mutation
+  const { data: cartData, refetch: refetchCart } = useQuery({
+    queryKey: ["cart", isLoggedIn],
+    queryFn: async () => {
+      if (!isLoggedIn) {
+        return null;
+      }
+
+      try {
+        const response = await getCart();
+        if (response.success && response.data) {
+          setItems(response.data.items);
+        }
+        return response;
+      } catch (error) {
+        console.error("Get cart error:", error);
+        return null;
+      }
+    },
+    enabled: isLoggedIn,
+    staleTime: 0,
+    gcTime: 0,
+  });
+
   const addToCartMutation = useMutation({
     mutationFn: async (dto: AddToCartDto) => {
       return await addToCart(dto);
@@ -61,7 +83,6 @@ export function useCart(isLoggedIn: boolean) {
     },
   });
 
-  // Update cart item mutation
   const updateCartItemMutation = useMutation({
     mutationFn: async (dto: UpdateCartItemDto) => {
       return await updateCartItem(dto);
@@ -96,7 +117,6 @@ export function useCart(isLoggedIn: boolean) {
     },
   });
 
-  // Sync cart mutation
   const syncCartMutation = useMutation({
     mutationFn: async (dto: SyncCartDto) => {
       return await syncCart(dto);
@@ -119,7 +139,6 @@ export function useCart(isLoggedIn: boolean) {
     },
   });
 
-  // Public API
   const handleAddToCart = (product: Partial<Product>) => {
     const itemToAdd: CartItem = {
       productId: product._id!,
@@ -179,7 +198,7 @@ export function useCart(isLoggedIn: boolean) {
   };
 
   const handleSyncCart = (items?: CartItem[]) => {
-    if (isLoggedIn && items) {
+    if (isLoggedIn && items && items.length > 0) {
       syncCartMutation.mutate({
         items: items.map((item) => ({
           productId: item.productId,
@@ -187,6 +206,8 @@ export function useCart(isLoggedIn: boolean) {
           quantity: item.quantity,
         })),
       });
+    } else if (isLoggedIn) {
+      refetchCart();
     }
   };
 
@@ -195,8 +216,10 @@ export function useCart(isLoggedIn: boolean) {
     handleUpdateQuantity,
     handleRemoveItem,
     handleSyncCart,
+    refetchCart,
     isAdding: addToCartMutation.isPending,
     isUpdating: updateCartItemMutation.isPending,
     isSyncing: syncCartMutation.isPending,
+    isLoading: cartData === undefined && isLoggedIn,
   };
 }

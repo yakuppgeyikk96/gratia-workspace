@@ -3,6 +3,7 @@
 import QuantitySelector from "@/components/common/QuantitySelector";
 import { useCart } from "@/hooks/useCart";
 import { CartItem as CartItemType } from "@/types/Cart.types";
+import { LoadingSpinner } from "@gratia/ui/components";
 import { memo, useCallback } from "react";
 import styles from "./CartItem.module.scss";
 import CartItemContent from "./CartItemContent";
@@ -15,7 +16,7 @@ interface CartItemProps {
 }
 
 function CartItem({ item, isLoggedIn = false }: CartItemProps) {
-  const { handleUpdateQuantity } = useCart(isLoggedIn);
+  const { handleUpdateQuantity, isUpdating } = useCart(isLoggedIn);
 
   const totalPrice = item.discountedPrice
     ? item.discountedPrice * item.quantity
@@ -54,13 +55,22 @@ function CartItem({ item, isLoggedIn = false }: CartItemProps) {
       />
 
       <div className={styles.quantitySection}>
-        <QuantitySelector
-          quantity={item.quantity}
-          onIncrement={handleIncrement}
-          onDecrement={handleDecrement}
-          min={1}
-          size="md"
-        />
+        {isUpdating ? (
+          <div className={styles.quantitySectionUpdating}>
+            <LoadingSpinner size="sm" />
+            <span className={styles.quantitySectionUpdatingText}>
+              Updating...
+            </span>
+          </div>
+        ) : (
+          <QuantitySelector
+            quantity={item.quantity}
+            onIncrement={handleIncrement}
+            onDecrement={handleDecrement}
+            min={1}
+            size="md"
+          />
+        )}
       </div>
     </div>
   );

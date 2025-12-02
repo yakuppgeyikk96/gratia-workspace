@@ -1,20 +1,26 @@
 "use client";
 
 import { useCart } from "@/hooks/useCart";
+import { useCartStore } from "@/store/cartStore";
 import { useEffect } from "react";
 
 interface CartInitializerProps {
   isLoggedIn: boolean;
 }
 
-export default function CartInitializer(props: CartInitializerProps) {
-  const { handleSyncCart } = useCart(props.isLoggedIn);
+export default function CartInitializer({ isLoggedIn }: CartInitializerProps) {
+  const items = useCartStore((state) => state.items);
+  const { handleSyncCart, refetchCart } = useCart(isLoggedIn);
 
   useEffect(() => {
-    if (props.isLoggedIn) {
-      handleSyncCart();
+    if (isLoggedIn) {
+      if (items && items.length > 0) {
+        handleSyncCart(items);
+      } else {
+        refetchCart();
+      }
     }
-  }, [props.isLoggedIn, handleSyncCart]);
+  }, [isLoggedIn]);
 
-  return <></>;
+  return null;
 }

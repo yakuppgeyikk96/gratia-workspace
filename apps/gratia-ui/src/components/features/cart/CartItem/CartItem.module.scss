@@ -23,3 +23,17 @@
   flex-shrink: 0;
   z-index: 5;
 }
+
+.quantitySectionUpdating {
+  @include flex(row, center, center);
+  @include gap(2);
+  @include p(2);
+  @include rounded($radius-lg);
+  background-color: $bg-color;
+  @include border($border-1, $border-light);
+}
+
+.quantitySectionUpdatingText {
+  font-size: $text-sm;
+  color: $text-muted-color;
+}
