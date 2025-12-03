@@ -75,8 +75,6 @@ export default function CheckoutShipping({ session }: Props) {
     }
   };
 
-  console.log("Form errors:", errors);
-
   return (
     <div className={styles.checkoutShipping}>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>

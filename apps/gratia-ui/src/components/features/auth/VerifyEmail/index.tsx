@@ -28,8 +28,6 @@ export default function VerifyEmail({ token }: VerifyEmailProps) {
         duration: 2000,
       });
     }
-
-    console.log("Verification code:", code);
   };
 
   return (
