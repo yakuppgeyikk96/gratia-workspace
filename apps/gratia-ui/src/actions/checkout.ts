@@ -1,7 +1,7 @@
 "use server";
 
 import { apiClient } from "@/lib/apiClient";
-import { mockCheckoutSessionAfterShipping } from "@/mockData";
+import { IApiResponse } from "@/types/Api.types";
 import {
   CheckoutSession,
   CheckoutSessionResponse,
@@ -34,7 +34,7 @@ const createCheckoutSession = async (
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 20 * 60, // 20 minutes
+      maxAge: 20 * 60,
       path: "/checkout",
     });
   }
@@ -44,7 +44,7 @@ const createCheckoutSession = async (
 
 const updateShippingAddress = async (
   request: UpdateShippingAddressRequest
-): Promise<CheckoutSessionResponse> => {
+): Promise<IApiResponse<CheckoutSession>> => {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get("gratia-checkout-session")?.value;
 
@@ -56,26 +56,10 @@ const updateShippingAddress = async (
     };
   }
 
-  // TODO: Backend API call
-  // const response = await apiClient.post(
-  //   `/checkout/session/${sessionToken}/shipping`,
-  //   request
-  // );
-
-  // Mock response - return updated session
-  const updatedSession = {
-    ...mockCheckoutSessionAfterShipping,
-    shippingAddress: request.shippingAddress,
-    billingAddress: request.billingIsSameAsShipping
-      ? request.shippingAddress
-      : request.billingAddress,
-  };
-
-  return {
-    success: true,
-    message: "Shipping address updated successfully",
-    data: updatedSession as CheckoutSession,
-  };
+  return await apiClient.put(
+    `/checkout/session/${sessionToken}/shipping`,
+    request
+  );
 };
 
 const getCheckoutSessionData = cache(

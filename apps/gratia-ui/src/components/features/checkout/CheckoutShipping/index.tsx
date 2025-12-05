@@ -122,7 +122,7 @@ export default function CheckoutShipping({ session }: Props) {
             loading={isLoading}
             className={styles.continueButton}
           >
-            Continue to Shipping Method
+            Save and Continue
           </Button>
         </div>
       </form>
