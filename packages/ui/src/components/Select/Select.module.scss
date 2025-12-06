@@ -1,0 +1,245 @@
+@use "../../styles/core/colors" as *;
+@use "../../styles/core/spacing" as *;
+@use "../../styles/core/border" as *;
+@use "../../styles/core/variables" as *;
+@use "../../styles/layout/flex.scss" as *;
+@use "../../styles/components/input.scss" as *;
+
+.trigger {
+  @include flex($align: center, $justify: space-between, $gap: $spacing-2);
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: $font-family-sans;
+  color: $text-primary-color;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+
+  &-sm {
+    height: $input-height-sm;
+    padding: $input-padding-sm;
+    font-size: $input-font-sm;
+    font-weight: $input-font-weight-sm;
+    border-radius: $radius-md;
+  }
+
+  &-md {
+    height: $input-height-md;
+    padding: $input-padding-md;
+    font-size: $input-font-md;
+    font-weight: $input-font-weight-md;
+    border-radius: $radius-md;
+  }
+
+  &-lg {
+    height: $input-height-lg;
+    padding: $input-padding-lg;
+    font-size: $input-font-lg;
+    font-weight: $input-font-weight-lg;
+    border-radius: $radius-md;
+  }
+
+  &-filled {
+    background: rgba($primary-color, $input-bg-opacity-md);
+    border: none;
+
+    &.trigger-sm {
+      background: rgba($primary-color, $input-bg-opacity-sm);
+    }
+
+    &.trigger-lg {
+      background: rgba($primary-color, $input-bg-opacity-lg);
+    }
+  }
+
+  &-outlined {
+    background: $bg-color;
+    border: 1px solid $border-medium;
+
+    &:focus {
+      border-color: $primary-color;
+    }
+  }
+
+  &Error {
+    border-color: $text-error-color !important;
+
+    &.trigger-filled {
+      background: rgba($text-error-color, 0.05);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.icon {
+  @include flex-center;
+  transition: transform 0.2s ease;
+
+  &-sm {
+    width: 10px;
+    height: 10px;
+  }
+
+  &-md {
+    width: 12px;
+    height: 12px;
+  }
+
+  &-lg {
+    width: 14px;
+    height: 14px;
+  }
+
+  [data-state="open"] & {
+    transform: rotate(180deg);
+  }
+}
+
+.content {
+  @include rounded($radius-md);
+  @include border(1, $border-light);
+  background: $bg-color;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 2000000;
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+
+  &-sm {
+    font-size: $input-font-sm;
+  }
+
+  &-md {
+    font-size: $input-font-md;
+  }
+
+  &-lg {
+    font-size: $input-font-lg;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.viewport {
+  padding: $spacing-1;
+}
+
+.item {
+  @include flex-start();
+  @include px(4);
+  @include py(3);
+  @include rounded($radius-sm);
+  color: $text-primary-color;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  outline: none;
+
+  &-sm {
+    font-size: $input-font-sm;
+    padding: $spacing-2 $spacing-3;
+  }
+
+  &-md {
+    font-size: $input-font-md;
+    padding: $spacing-3 $spacing-4;
+  }
+
+  &-lg {
+    font-size: $input-font-lg;
+    padding: $spacing-3 $spacing-4;
+  }
+
+  &:hover,
+  &[data-highlighted] {
+    background: $bg-secondary-color;
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.searchContainer {
+  padding: $spacing-1;
+  border-bottom: 1px solid $border-light;
+}
+
+.searchWrapper {
+  position: relative;
+  @include flex($align: center);
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: $spacing-3;
+  color: $text-muted-color;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.searchInput {
+  width: 100%;
+  border: 1px solid $border-medium;
+  border-radius: $radius-md;
+  outline: none;
+  font-family: $font-family-sans;
+  color: $text-primary-color;
+  background: $bg-color;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    border-color: $border-medium;
+    outline: none;
+  }
+
+  &-sm {
+    height: $input-height-xs;
+    padding: 0 $spacing-2 0 calc($spacing-3 + 16px + $spacing-2);
+    font-size: $input-font-sm;
+  }
+
+  &-md {
+    height: $input-height-sm;
+    padding: 0 $spacing-2 0 calc($spacing-3 + 16px + $spacing-2);
+    font-size: $input-font-md;
+  }
+
+  &-lg {
+    height: $input-height-md;
+    padding: 0 $spacing-2 0 calc($spacing-3 + 16px + $spacing-2);
+    font-size: $input-font-lg;
+  }
+}
+
+.noResults {
+  @include flex-center;
+  @include py(4);
+  @include px(4);
+  color: $text-muted-color;
+  font-size: $text-sm;
+  text-align: center;
+}

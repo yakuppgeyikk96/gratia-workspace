@@ -2,19 +2,21 @@
 @use "../../styles/core/spacing.scss" as *;
 
 // Input sizes
+$input-height-xxs: 24px;
+$input-height-xs: 28px;
 $input-height-sm: 32px;
 $input-height-md: 40px;
 $input-height-lg: 48px;
 
 // Input font sizes
-$input-font-sm: 0.8125rem;    // 13px
-$input-font-md: 0.875rem;     // 14px
-$input-font-lg: 0.9375rem;    // 15px
+$input-font-sm: 0.8125rem; // 13px
+$input-font-md: 0.875rem; // 14px
+$input-font-lg: 0.9375rem; // 15px
 
 // Input placeholder font sizes
-$input-placeholder-sm: 0.75rem;   // 12px
+$input-placeholder-sm: 0.75rem; // 12px
 $input-placeholder-md: 0.8125rem; // 13px
-$input-placeholder-lg: 0.875rem;  // 14px
+$input-placeholder-lg: 0.875rem; // 14px
 
 // Input font weights
 $input-font-weight-sm: $font-normal;
@@ -22,9 +24,9 @@ $input-font-weight-md: $font-normal;
 $input-font-weight-lg: $font-medium;
 
 // Input padding
-$input-padding-sm: 0 $spacing-3;  // 0 12px
-$input-padding-md: 0 $spacing-4;  // 0 16px
-$input-padding-lg: 0 $spacing-4;  // 0 16px
+$input-padding-sm: 0 $spacing-3; // 0 12px
+$input-padding-md: 0 $spacing-4; // 0 16px
+$input-padding-lg: 0 $spacing-4; // 0 16px
 
 // Input icon sizes
 $input-icon-sm: 16px;
@@ -37,6 +39,6 @@ $input-icon-spacing-md: 12px;
 $input-icon-spacing-lg: 14px;
 
 // Input background opacity
-$input-bg-opacity-sm: 0.02;  // %2
-$input-bg-opacity-md: 0.03;  // %3
-$input-bg-opacity-lg: 0.05;  // %5
+$input-bg-opacity-sm: 0.02; // %2
+$input-bg-opacity-md: 0.03; // %3
+$input-bg-opacity-lg: 0.05; // %5

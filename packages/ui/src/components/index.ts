@@ -15,6 +15,8 @@ export { default as LoadingSpinner } from "./LoadingSpinner";
 export { default as OneTimePassword } from "./OneTimePassword";
 export { default as Pagination } from "./Pagination";
 export type { PaginationInfo } from "./Pagination";
+export { default as Select } from "./Select";
+export type { SelectOption, SelectProps } from "./Select";
 export { Toast, ToastContainer, ToastProvider } from "./Toast";
 export type { ToastProps, ToastVariant } from "./Toast";
 export {

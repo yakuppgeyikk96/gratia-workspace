@@ -25,18 +25,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    const inputClass2 = [
-      styles.input,
-      styles[`input-${size}`],
-      styles[`input-${variant}`],
-      startIcon && styles[`input-with-start-icon`],
-      endIcon && styles[`input-with-end-icon`],
-      error && styles.inputError,
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
-
     const inputClass = classNames(
       styles.input,
       styles[`input-${size}`],
