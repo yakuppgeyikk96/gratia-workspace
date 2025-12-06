@@ -1,13 +1,22 @@
 "use client";
 
+import {
+  getAvailableCitiesForShipping,
+  getAvailableCountriesForShipping,
+  getAvailableStatesForShipping,
+} from "@/actions";
 import { ShippingAddressFormData } from "@/schemas/checkoutSchema";
+import { IApiResponse } from "@/types/Api.types";
 import { Address } from "@/types/Checkout.types";
-import { FormField, Input } from "@gratia/ui/components";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { ICity, ICountry, IState } from "@/types/Location.types";
+import { FormField, Input, Select } from "@gratia/ui/components";
+import { useQuery } from "@tanstack/react-query";
+import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
 import styles from "./ShippingForm.module.scss";
 
 interface ShippingFormProps {
   register: UseFormRegister<ShippingAddressFormData>;
+  watch: UseFormWatch<ShippingAddressFormData>;
   errors: FieldErrors<ShippingAddressFormData>;
   prefix: "shippingAddress" | "billingAddress";
   title?: string;
@@ -18,8 +27,65 @@ export default function ShippingForm({
   errors,
   prefix,
   title,
+  watch,
 }: ShippingFormProps) {
   const fieldErrors = errors[prefix] as FieldErrors<Address> | undefined;
+
+  const { data: availableCountriesResponse } = useQuery<
+    IApiResponse<ICountry[]>
+  >({
+    queryKey: ["available-countries-for-shipping"],
+    queryFn: getAvailableCountriesForShipping,
+  });
+
+  const countryOptions =
+    availableCountriesResponse?.data?.map((country) => ({
+      label: country.name,
+      value: country.code,
+    })) || [];
+
+  const selectedCountry = watch(`${prefix}.country` as const);
+  const isStateDisabled = !selectedCountry;
+
+  const { data: availableStatesResponse, isLoading: isStateLoading } = useQuery<
+    IApiResponse<IState[]>
+  >({
+    queryKey: ["available-states-for-shipping", selectedCountry],
+    queryFn: () => getAvailableStatesForShipping(selectedCountry as string),
+    enabled: !!selectedCountry && typeof selectedCountry === "string",
+  });
+
+  const stateOptions =
+    availableStatesResponse?.data?.map((state) => ({
+      label: state.name,
+      value: state.code,
+    })) || [];
+
+  const selectedState = watch(`${prefix}.state` as const);
+  const isCityDisabled = !selectedState;
+
+  const { data: availableCitiesResponse, isLoading: isCityLoading } = useQuery<
+    IApiResponse<ICity[]>
+  >({
+    queryKey: ["available-cities-for-shipping", selectedCountry, selectedState],
+    queryFn: () =>
+      getAvailableCitiesForShipping(
+        selectedCountry as string,
+        selectedState as string
+      ),
+    enabled: !!selectedState && typeof selectedState === "string",
+  });
+
+  const cityOptions =
+    availableCitiesResponse?.data?.map((city) => ({
+      label: city.name,
+      value: city.code,
+    })) || [];
+
+  // Get register handlers for country
+  const countryRegister = register(`${prefix}.country` as const);
+  const stateRegister = register(`${prefix}.state` as const);
+  const cityRegister = register(`${prefix}.city` as const);
 
   return (
     <div className={styles.shippingForm}>
@@ -70,6 +136,77 @@ export default function ShippingForm({
           </FormField>
         </div>
 
+        <div className={styles.formFieldHalf}>
+          <FormField
+            label="Country"
+            error={fieldErrors?.country?.message}
+            required
+          >
+            <Select
+              items={countryOptions}
+              placeholder="Select a country"
+              value={selectedCountry || ""}
+              name={countryRegister.name}
+              onValueChange={(value) => {
+                countryRegister.onChange({
+                  target: { name: countryRegister.name, value },
+                });
+              }}
+              onBlur={countryRegister.onBlur}
+            />
+          </FormField>
+        </div>
+
+        <div className={styles.formFieldHalf}>
+          <FormField label="State" error={fieldErrors?.state?.message} required>
+            <Select
+              items={stateOptions}
+              placeholder={
+                isStateLoading
+                  ? "Loading states..."
+                  : isStateDisabled
+                    ? "Select a country first"
+                    : "Select a state"
+              }
+              value={selectedState || ""}
+              name={stateRegister.name}
+              onValueChange={(value) => {
+                stateRegister.onChange({
+                  target: { name: stateRegister.name, value },
+                });
+              }}
+              onBlur={stateRegister.onBlur}
+              searchable
+              disabled={isStateDisabled || isStateLoading}
+            />
+          </FormField>
+        </div>
+
+        <div className={styles.formFieldHalf}>
+          <FormField label="City" error={fieldErrors?.city?.message} required>
+            <Select
+              items={cityOptions}
+              placeholder={
+                isCityLoading
+                  ? "Loading cities..."
+                  : isCityDisabled
+                    ? "Select a state first"
+                    : "Select a city"
+              }
+              value={watch(`${prefix}.city` as const) || ""}
+              name={cityRegister.name}
+              onValueChange={(value) => {
+                cityRegister.onChange({
+                  target: { name: cityRegister.name, value },
+                });
+              }}
+              onBlur={cityRegister.onBlur}
+              searchable
+              disabled={isCityDisabled || isCityLoading}
+            />
+          </FormField>
+        </div>
+
         <div className={styles.formFieldFull}>
           <FormField
             label="Address Line 1"
@@ -96,34 +233,12 @@ export default function ShippingForm({
         </div>
 
         <div className={styles.formFieldHalf}>
-          <FormField label="City" error={fieldErrors?.city?.message} required>
-            <Input {...register(`${prefix}.city`)} placeholder="New York" />
-          </FormField>
-        </div>
-
-        <div className={styles.formFieldHalf}>
-          <FormField label="State" error={fieldErrors?.state?.message} required>
-            <Input {...register(`${prefix}.state`)} placeholder="NY" />
-          </FormField>
-        </div>
-
-        <div className={styles.formFieldHalf}>
           <FormField
             label="Postal Code"
             error={fieldErrors?.postalCode?.message}
             required
           >
             <Input {...register(`${prefix}.postalCode`)} placeholder="10001" />
-          </FormField>
-        </div>
-
-        <div className={styles.formFieldHalf}>
-          <FormField
-            label="Country"
-            error={fieldErrors?.country?.message}
-            required
-          >
-            <Input {...register(`${prefix}.country`)} placeholder="USA" />
           </FormField>
         </div>
       </div>

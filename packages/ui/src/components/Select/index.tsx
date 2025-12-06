@@ -36,7 +36,7 @@ export interface SelectProps {
   searchable?: boolean;
   searchPlaceholder?: string;
   onChange?: (event: { target: { name?: string; value: string } }) => void;
-  onBlur?: () => void;
+  onBlur?: (event: { target: { name?: string; value: string } }) => void;
 }
 
 const extractTextFromNode = (node: ReactNode): string => {
@@ -116,10 +116,6 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
       });
     }, [items, searchQuery, searchable]);
 
-    const selectedItem = useMemo(() => {
-      return items.find((item) => item.value === value);
-    }, [items, value]);
-
     useEffect(() => {
       if (isOpen && searchable && searchInputRef.current) {
         const timeoutId = setTimeout(() => {
@@ -185,12 +181,17 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
         <SelectPrimitive.Trigger
           ref={ref}
           className={triggerClass}
-          onBlur={onBlur}
+          onBlur={() => {
+            onBlur?.({
+              target: {
+                name,
+                value: value || "",
+              },
+            });
+          }}
           {...props}
         >
-          <SelectPrimitive.Value placeholder={placeholder}>
-            {selectedItem?.label}
-          </SelectPrimitive.Value>
+          <SelectPrimitive.Value placeholder={placeholder} />
           <SelectPrimitive.Icon
             className={classNames(styles.icon, styles[`icon-${size}`])}
           >
@@ -199,7 +200,13 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
         </SelectPrimitive.Trigger>
 
         <SelectPrimitive.Portal>
-          <SelectPrimitive.Content className={contentClass} position="popper">
+          <SelectPrimitive.Content
+            className={contentClass}
+            position="popper"
+            side="bottom"
+            sideOffset={4}
+            align="start"
+          >
             {searchable && (
               <div className={styles.searchContainer}>
                 <div className={styles.searchWrapper}>

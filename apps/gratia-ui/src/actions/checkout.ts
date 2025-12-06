@@ -9,9 +9,12 @@ import {
   CreateSessionResponse,
   UpdateShippingAddressRequest,
 } from "@/types/Checkout.types";
+import { ICity, ICountry, IState } from "@/types/Location.types";
 import { cookies } from "next/headers";
 import { cache } from "react";
 import { getAuthHeader } from "./utils";
+
+const API_BASE_ROUTE = "/checkout";
 
 const createCheckoutSession = async (
   payload: CreateCheckoutSessionRequest
@@ -20,7 +23,7 @@ const createCheckoutSession = async (
   const authHeader: Record<string, string> = await getAuthHeader();
 
   const response: CreateSessionResponse = await apiClient.post(
-    `/checkout/session`,
+    `${API_BASE_ROUTE}/session`,
     payload,
     {
       headers: { ...authHeader },
@@ -57,7 +60,7 @@ const updateShippingAddress = async (
   }
 
   return await apiClient.put(
-    `/checkout/session/${sessionToken}/shipping`,
+    `${API_BASE_ROUTE}/session/${sessionToken}/shipping`,
     request
   );
 };
@@ -79,7 +82,7 @@ const getCheckoutSessionData = cache(
       const authHeader: Record<string, string> = await getAuthHeader();
 
       const response: CheckoutSessionResponse = await apiClient.get(
-        `/checkout/session/${sessionToken}`,
+        `${API_BASE_ROUTE}/session/${sessionToken}`,
         {
           headers: { ...authHeader },
         }
@@ -97,4 +100,34 @@ const getCheckoutSessionData = cache(
   }
 );
 
-export { createCheckoutSession, getCheckoutSessionData, updateShippingAddress };
+const getAvailableCountriesForShipping = async (): Promise<
+  IApiResponse<ICountry[]>
+> => {
+  return await apiClient.get(`${API_BASE_ROUTE}/shipping-country-options`);
+};
+
+const getAvailableStatesForShipping = async (
+  countryCode: string
+): Promise<IApiResponse<IState[]>> => {
+  return await apiClient.get(
+    `${API_BASE_ROUTE}/shipping-states-options/${countryCode}`
+  );
+};
+
+const getAvailableCitiesForShipping = async (
+  countryCode: string,
+  stateCode: string
+): Promise<IApiResponse<ICity[]>> => {
+  return await apiClient.get(
+    `${API_BASE_ROUTE}/shipping-cities-options/${countryCode}/${stateCode}`
+  );
+};
+
+export {
+  createCheckoutSession,
+  getAvailableCitiesForShipping,
+  getAvailableCountriesForShipping,
+  getAvailableStatesForShipping,
+  getCheckoutSessionData,
+  updateShippingAddress,
+};

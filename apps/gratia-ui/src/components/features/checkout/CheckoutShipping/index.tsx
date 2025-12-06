@@ -1,6 +1,6 @@
 "use client";
 
-import { updateShippingAddress } from "@/actions/checkout";
+import { updateShippingAddress } from "@/actions";
 import {
   ShippingAddressFormData,
   shippingAddressSchema,
@@ -32,6 +32,7 @@ export default function CheckoutShipping({ session }: Props) {
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
   } = useForm<ShippingAddressFormData>({
     resolver: zodResolver(shippingAddressSchema),
     defaultValues: {
@@ -90,6 +91,7 @@ export default function CheckoutShipping({ session }: Props) {
             errors={errors}
             prefix="shippingAddress"
             title="Shipping Address"
+            watch={watch}
           />
         </section>
 
@@ -109,6 +111,7 @@ export default function CheckoutShipping({ session }: Props) {
                 errors={errors}
                 prefix="billingAddress"
                 title="Billing Address"
+                watch={watch}
               />
             </div>
           )}

@@ -106,11 +106,16 @@
 .content {
   @include rounded($radius-md);
   @include border(1, $border-light);
+  @include flex-column();
   background: $bg-color;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 2000000;
   overflow: hidden;
   animation: slideDown 0.2s ease;
+  width: var(--radix-select-trigger-width);
+  min-width: var(--radix-select-trigger-width);
+  max-width: var(--radix-select-trigger-width);
+  max-height: 300px;
 
   &-sm {
     font-size: $input-font-sm;
@@ -138,6 +143,28 @@
 
 .viewport {
   padding: $spacing-1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100%;
+  flex: 1;
+
+  // Custom scrollbar styling
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-medium;
+    border-radius: 3px;
+
+    &:hover {
+      background: $text-muted-color;
+    }
+  }
 }
 
 .item {
