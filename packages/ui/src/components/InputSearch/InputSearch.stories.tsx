@@ -1,36 +1,28 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import React, { useState } from "react";
-import type { SelectOption } from "./index";
-import Select from "./index";
+import type { SelectOption } from "../Select";
+import InputSearch from "./index";
 
-const meta: Meta<typeof Select> = {
-  title: "Components/Select",
-  component: Select,
+const meta: Meta<typeof InputSearch> = {
+  title: "Components/InputSearch",
+  component: InputSearch,
   parameters: {
     layout: "centered",
     docs: {
       description: {
         component:
-          "Select component allows users to choose from a list of options. Built using Radix UI Select primitive. Can be used as a form item and integrated with react-hook-form.",
+          "InputSearch component allows users to search and select from a list of options. Built with Input component and provides real-time filtering. Can be used as a form item and integrated with react-hook-form.",
       },
     },
   },
   argTypes: {
     items: {
       control: { type: "object" },
-      description: "Select options (label: ReactNode, value: string)",
+      description: "Search options (label: ReactNode, value: string)",
     },
     value: {
       control: { type: "text" },
-      description: "Selected value (controlled)",
-    },
-    defaultValue: {
-      control: { type: "text" },
-      description: "Default selected value (uncontrolled)",
-    },
-    onValueChange: {
-      action: "value changed",
-      description: "Callback called when value changes",
+      description: "Input value (controlled)",
     },
     placeholder: {
       control: { type: "text" },
@@ -38,17 +30,17 @@ const meta: Meta<typeof Select> = {
     },
     disabled: {
       control: { type: "boolean" },
-      description: "Is select disabled?",
+      description: "Is input disabled?",
     },
     size: {
       control: { type: "select" },
       options: ["sm", "md", "lg"],
-      description: "Select size",
+      description: "Input size",
     },
     variant: {
       control: { type: "select" },
       options: ["filled", "outlined"],
-      description: "Select appearance style",
+      description: "Input appearance style",
     },
     error: {
       control: { type: "boolean" },
@@ -57,6 +49,14 @@ const meta: Meta<typeof Select> = {
     name: {
       control: { type: "text" },
       description: "Form field name (for react-hook-form)",
+    },
+    onChange: {
+      action: "value changed",
+      description: "Callback called when input value changes",
+    },
+    onSelect: {
+      action: "item selected",
+      description: "Callback called when an item is selected from the menu",
     },
   },
   tags: ["autodocs"],
@@ -76,17 +76,7 @@ const basicItems: SelectOption[] = [
 export const Default: Story = {
   args: {
     items: basicItems,
-    placeholder: "Select a fruit",
-    size: "md",
-    variant: "filled",
-  },
-};
-
-export const WithDefaultValue: Story = {
-  args: {
-    items: basicItems,
-    defaultValue: "banana",
-    placeholder: "Select a fruit",
+    placeholder: "Search fruits...",
     size: "md",
     variant: "filled",
   },
@@ -95,7 +85,7 @@ export const WithDefaultValue: Story = {
 export const Small: Story = {
   args: {
     items: basicItems,
-    placeholder: "Select a fruit",
+    placeholder: "Search fruits...",
     size: "sm",
     variant: "filled",
   },
@@ -104,7 +94,7 @@ export const Small: Story = {
 export const Medium: Story = {
   args: {
     items: basicItems,
-    placeholder: "Select a fruit",
+    placeholder: "Search fruits...",
     size: "md",
     variant: "filled",
   },
@@ -113,7 +103,7 @@ export const Medium: Story = {
 export const Large: Story = {
   args: {
     items: basicItems,
-    placeholder: "Select a fruit",
+    placeholder: "Search fruits...",
     size: "lg",
     variant: "filled",
   },
@@ -122,7 +112,7 @@ export const Large: Story = {
 export const Filled: Story = {
   args: {
     items: basicItems,
-    placeholder: "Select a fruit",
+    placeholder: "Search fruits...",
     size: "md",
     variant: "filled",
   },
@@ -131,7 +121,7 @@ export const Filled: Story = {
 export const Outlined: Story = {
   args: {
     items: basicItems,
-    placeholder: "Select a fruit",
+    placeholder: "Search fruits...",
     size: "md",
     variant: "outlined",
   },
@@ -140,7 +130,7 @@ export const Outlined: Story = {
 export const WithError: Story = {
   args: {
     items: basicItems,
-    placeholder: "Select a fruit",
+    placeholder: "Search fruits...",
     size: "md",
     variant: "outlined",
     error: true,
@@ -150,7 +140,7 @@ export const WithError: Story = {
 export const Disabled: Story = {
   args: {
     items: basicItems,
-    placeholder: "Select a fruit",
+    placeholder: "Search fruits...",
     size: "md",
     variant: "filled",
     disabled: true,
@@ -160,7 +150,7 @@ export const Disabled: Story = {
 export const WithCustomPlaceholder: Story = {
   args: {
     items: basicItems,
-    placeholder: "Please choose an option...",
+    placeholder: "Type to search for fruits...",
     size: "md",
     variant: "filled",
   },
@@ -171,12 +161,13 @@ const itemsWithIcons: SelectOption[] = [
   { label: "🍌 Banana", value: "banana" },
   { label: "🍊 Orange", value: "orange" },
   { label: "🍇 Grape", value: "grape" },
+  { label: "🍓 Strawberry", value: "strawberry" },
 ];
 
 export const WithIcons: Story = {
   args: {
     items: itemsWithIcons,
-    placeholder: "Select a fruit",
+    placeholder: "Search fruits...",
     size: "md",
     variant: "filled",
   },
@@ -218,7 +209,7 @@ const itemsWithComplexLabels: SelectOption[] = [
 export const WithComplexLabels: Story = {
   args: {
     items: itemsWithComplexLabels,
-    placeholder: "Select a fruit",
+    placeholder: "Search fruits...",
     size: "md",
     variant: "outlined",
   },
@@ -234,19 +225,19 @@ export const AllSizes: Story = {
         width: "300px",
       }}
     >
-      <Select
+      <InputSearch
         items={basicItems}
         placeholder="Small size"
         size="sm"
         variant="filled"
       />
-      <Select
+      <InputSearch
         items={basicItems}
         placeholder="Medium size"
         size="md"
         variant="filled"
       />
-      <Select
+      <InputSearch
         items={basicItems}
         placeholder="Large size"
         size="lg"
@@ -273,13 +264,13 @@ export const AllVariants: Story = {
         width: "300px",
       }}
     >
-      <Select
+      <InputSearch
         items={basicItems}
         placeholder="Filled variant"
         size="md"
         variant="filled"
       />
-      <Select
+      <InputSearch
         items={basicItems}
         placeholder="Outlined variant"
         size="md"
@@ -306,20 +297,20 @@ export const States: Story = {
         width: "300px",
       }}
     >
-      <Select
+      <InputSearch
         items={basicItems}
         placeholder="Normal state"
         size="md"
         variant="outlined"
       />
-      <Select
+      <InputSearch
         items={basicItems}
         placeholder="Error state"
         size="md"
         variant="outlined"
         error={true}
       />
-      <Select
+      <InputSearch
         items={basicItems}
         placeholder="Disabled state"
         size="md"
@@ -343,17 +334,17 @@ export const Controlled: Story = {
 
     return (
       <div style={{ width: "300px" }}>
-        <Select
+        <InputSearch
           items={basicItems}
           value={value}
-          onValueChange={setValue}
-          placeholder="Select a fruit"
+          onChange={(e) => setValue(e.target.value)}
+          placeholder="Search fruits..."
           size="md"
           variant="filled"
         />
         {value && (
           <p style={{ marginTop: "12px", fontSize: "14px", color: "#666" }}>
-            Selected: <strong>{value}</strong>
+            Current value: <strong>{value}</strong>
           </p>
         )}
       </div>
@@ -368,30 +359,105 @@ export const Controlled: Story = {
   },
 };
 
+export const WithOnSelect: Story = {
+  render: () => {
+    const [selectedItem, setSelectedItem] = useState<SelectOption | null>(null);
+
+    return (
+      <div style={{ width: "300px" }}>
+        <InputSearch
+          items={basicItems}
+          placeholder="Search fruits..."
+          size="md"
+          variant="filled"
+          onSelect={(value, item) => {
+            setSelectedItem(item);
+            console.log("Selected:", value, item);
+          }}
+        />
+        {selectedItem && (
+          <p style={{ marginTop: "12px", fontSize: "14px", color: "#666" }}>
+            Selected: <strong>{selectedItem.value}</strong>
+          </p>
+        )}
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: "Example with onSelect callback to handle item selection",
+      },
+    },
+  },
+};
+
+const manyItems: SelectOption[] = [
+  { label: "Apple", value: "apple" },
+  { label: "Apricot", value: "apricot" },
+  { label: "Avocado", value: "avocado" },
+  { label: "Banana", value: "banana" },
+  { label: "Blueberry", value: "blueberry" },
+  { label: "Cherry", value: "cherry" },
+  { label: "Grape", value: "grape" },
+  { label: "Grapefruit", value: "grapefruit" },
+  { label: "Kiwi", value: "kiwi" },
+  { label: "Lemon", value: "lemon" },
+  { label: "Lime", value: "lime" },
+  { label: "Mango", value: "mango" },
+  { label: "Orange", value: "orange" },
+  { label: "Papaya", value: "papaya" },
+  { label: "Peach", value: "peach" },
+  { label: "Pear", value: "pear" },
+  { label: "Pineapple", value: "pineapple" },
+  { label: "Plum", value: "plum" },
+  { label: "Raspberry", value: "raspberry" },
+  { label: "Strawberry", value: "strawberry" },
+  { label: "Watermelon", value: "watermelon" },
+];
+
 export const WithManyOptions: Story = {
   args: {
-    items: [
-      { label: "Option 1", value: "1" },
-      { label: "Option 2", value: "2" },
-      { label: "Option 3", value: "3" },
-      { label: "Option 4", value: "4" },
-      { label: "Option 5", value: "5" },
-      { label: "Option 6", value: "6" },
-      { label: "Option 7", value: "7" },
-      { label: "Option 8", value: "8" },
-      { label: "Option 9", value: "9" },
-      { label: "Option 10", value: "10" },
-      { label: "Option 11", value: "11" },
-      { label: "Option 12", value: "12" },
-    ],
-    placeholder: "Select an option",
+    items: manyItems,
+    placeholder: "Type to search...",
     size: "md",
     variant: "filled",
   },
   parameters: {
     docs: {
       description: {
-        story: "Test with many options",
+        story: "Test with many options - search filters results in real-time",
+      },
+    },
+  },
+};
+
+export const KeyboardNavigation: Story = {
+  render: () => (
+    <div style={{ width: "300px" }}>
+      <InputSearch
+        items={manyItems}
+        placeholder="Try keyboard navigation..."
+        size="md"
+        variant="filled"
+      />
+      <div style={{ marginTop: "16px", fontSize: "12px", color: "#666" }}>
+        <p>
+          <strong>Keyboard shortcuts:</strong>
+        </p>
+        <ul style={{ marginTop: "8px", paddingLeft: "20px" }}>
+          <li>Arrow Down: Navigate down</li>
+          <li>Arrow Up: Navigate up</li>
+          <li>Enter: Select highlighted item</li>
+          <li>Escape: Close menu</li>
+        </ul>
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: "Demonstrates keyboard navigation support",
       },
     },
   },
@@ -400,7 +466,7 @@ export const WithManyOptions: Story = {
 export const Playground: Story = {
   args: {
     items: basicItems,
-    placeholder: "Select a fruit",
+    placeholder: "Search fruits...",
     size: "md",
     variant: "filled",
     disabled: false,
@@ -409,7 +475,7 @@ export const Playground: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Test the Select component with different values",
+        story: "Test the InputSearch component with different values",
       },
     },
   },

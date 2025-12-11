@@ -1,0 +1,117 @@
+@use "../../styles/core/colors" as *;
+@use "../../styles/core/spacing" as *;
+@use "../../styles/core/border" as *;
+@use "../../styles/core/variables" as *;
+@use "../../styles/layout/flex.scss" as *;
+@use "../../styles/components/input.scss" as *;
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  @include rounded($radius-md);
+  @include border(1, $border-light);
+  @include flex-column();
+  background: $bg-color;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 2000000;
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+
+  &-sm {
+    font-size: $input-font-sm;
+  }
+
+  &-md {
+    font-size: $input-font-md;
+  }
+
+  &-lg {
+    font-size: $input-font-lg;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.viewport {
+  padding: $spacing-1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 300px;
+  flex: 1;
+
+  // Custom scrollbar styling
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-medium;
+    border-radius: 3px;
+
+    &:hover {
+      background: $text-muted-color;
+    }
+  }
+}
+
+.item {
+  @include flex-start();
+  @include px(4);
+  @include py(3);
+  @include rounded($radius-sm);
+  color: $text-primary-color;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  outline: none;
+
+  &-sm {
+    font-size: $input-font-sm;
+    padding: $spacing-2 $spacing-3;
+  }
+
+  &-md {
+    font-size: $input-font-md;
+    padding: $spacing-3 $spacing-4;
+  }
+
+  &-lg {
+    font-size: $input-font-lg;
+    padding: $spacing-3 $spacing-4;
+  }
+
+  &:hover,
+  &.itemHighlighted {
+    background: $bg-secondary-color;
+  }
+}
+
+.noResults {
+  @include flex-center;
+  @include py(4);
+  @include px(4);
+  color: $text-muted-color;
+  font-size: $text-sm;
+  text-align: center;
+}

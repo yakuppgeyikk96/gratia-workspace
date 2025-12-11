@@ -9,7 +9,7 @@ import { ShippingAddressFormData } from "@/schemas/checkoutSchema";
 import { IApiResponse } from "@/types/Api.types";
 import { Address } from "@/types/Checkout.types";
 import { ICity, ICountry, IState } from "@/types/Location.types";
-import { FormField, Input, Select } from "@gratia/ui/components";
+import { FormField, Input, InputSearch, Select } from "@gratia/ui/components";
 import { useQuery } from "@tanstack/react-query";
 import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
 import styles from "./ShippingForm.module.scss";
@@ -82,14 +82,16 @@ export default function ShippingForm({
       value: city.code,
     })) || [];
 
-  // Get register handlers for country
+  // Get register handlers
   const countryRegister = register(`${prefix}.country` as const);
   const stateRegister = register(`${prefix}.state` as const);
   const cityRegister = register(`${prefix}.city` as const);
 
+  const selectedCity = watch(`${prefix}.city` as const);
+
   return (
     <div className={styles.shippingForm}>
-      {title && <h3 className={styles.title}>{title}</h3>}
+      {title && <h2 className={styles.title}>{title}</h2>}
 
       <div className={styles.formGrid}>
         <div className={styles.formFieldHalf}>
@@ -159,14 +161,14 @@ export default function ShippingForm({
 
         <div className={styles.formFieldHalf}>
           <FormField label="State" error={fieldErrors?.state?.message} required>
-            <Select
+            <InputSearch
               items={stateOptions}
               placeholder={
                 isStateLoading
                   ? "Loading states..."
                   : isStateDisabled
                     ? "Select a country first"
-                    : "Select a state"
+                    : "Search a state"
               }
               value={selectedState || ""}
               name={stateRegister.name}
@@ -176,7 +178,6 @@ export default function ShippingForm({
                 });
               }}
               onBlur={stateRegister.onBlur}
-              searchable
               disabled={isStateDisabled || isStateLoading}
             />
           </FormField>
@@ -184,16 +185,16 @@ export default function ShippingForm({
 
         <div className={styles.formFieldHalf}>
           <FormField label="City" error={fieldErrors?.city?.message} required>
-            <Select
+            <InputSearch
               items={cityOptions}
               placeholder={
                 isCityLoading
                   ? "Loading cities..."
                   : isCityDisabled
                     ? "Select a state first"
-                    : "Select a city"
+                    : "Search a city"
               }
-              value={watch(`${prefix}.city` as const) || ""}
+              value={selectedCity || ""}
               name={cityRegister.name}
               onValueChange={(value) => {
                 cityRegister.onChange({
@@ -201,7 +202,6 @@ export default function ShippingForm({
                 });
               }}
               onBlur={cityRegister.onBlur}
-              searchable
               disabled={isCityDisabled || isCityLoading}
             />
           </FormField>

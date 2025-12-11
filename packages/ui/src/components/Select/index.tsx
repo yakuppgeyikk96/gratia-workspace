@@ -2,22 +2,13 @@
 
 import * as SelectPrimitive from "@radix-ui/react-select";
 import classNames from "classnames";
-import {
-  forwardRef,
-  isValidElement,
-  ReactNode,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { IconChevronDown, IconSearch } from "../../icons";
+import { forwardRef, ReactNode, useCallback, useMemo } from "react";
+import { IconChevronDown } from "../../icons";
 import styles from "./Select.module.scss";
 
 export interface SelectOption {
   label: ReactNode;
   value: string;
-  searchText?: string;
 }
 
 export interface SelectProps {
@@ -32,30 +23,9 @@ export interface SelectProps {
   error?: boolean;
   className?: string;
   name?: string;
-  searchable?: boolean;
-  searchPlaceholder?: string;
   onChange?: (event: { target: { name?: string; value: string } }) => void;
   onBlur?: (event: { target: { name?: string; value: string } }) => void;
 }
-
-const extractTextFromNode = (node: ReactNode): string => {
-  if (typeof node === "string") {
-    return node;
-  }
-  if (typeof node === "number") {
-    return String(node);
-  }
-  if (Array.isArray(node)) {
-    return node.map(extractTextFromNode).join(" ");
-  }
-  if (node && isValidElement(node)) {
-    const props = node.props as { children?: ReactNode };
-    if (props.children) {
-      return extractTextFromNode(props.children);
-    }
-  }
-  return "";
-};
 
 const Select = forwardRef<HTMLButtonElement, SelectProps>(
   (
@@ -71,18 +41,12 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
       error = false,
       className = "",
       name,
-      searchable = false,
-      searchPlaceholder = "Search...",
       onChange,
       onBlur,
       ...props
     },
     ref
   ) => {
-    const [searchQuery, setSearchQuery] = useState("");
-    const [isOpen, setIsOpen] = useState(false);
-    const searchInputRef = useRef<HTMLInputElement>(null);
-
     const handleValueChange = useCallback(
       (newValue: string) => {
         onValueChange?.(newValue);
@@ -92,49 +56,26 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
             value: newValue,
           },
         });
-        if (searchable) {
-          setSearchQuery("");
-        }
       },
-      [onValueChange, onChange, name, searchable]
+      [onValueChange, onChange, name]
     );
 
-    const filteredItems = useMemo(() => {
-      if (!searchable || !searchQuery.trim()) {
-        return items;
+    // Get selected item label for aria-label
+    const selectedItem = useMemo(() => {
+      if (!value) return null;
+      return items.find((item) => item.value === value) || null;
+    }, [items, value]);
+
+    const ariaLabel = useMemo(() => {
+      if (selectedItem) {
+        const labelText =
+          typeof selectedItem.label === "string"
+            ? selectedItem.label
+            : placeholder;
+        return labelText;
       }
-
-      const query = searchQuery.toLowerCase().trim();
-
-      return items.filter((item) => {
-        const searchableText = item.searchText
-          ? item.searchText.toLowerCase()
-          : extractTextFromNode(item.label).toLowerCase();
-
-        return searchableText.includes(query);
-      });
-    }, [items, searchQuery, searchable]);
-
-    const handleSearchChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
-      },
-      []
-    );
-
-    const handleSearchKeyDown = useCallback(
-      (e: React.KeyboardEvent<HTMLInputElement>) => {
-        e.stopPropagation();
-      },
-      []
-    );
-
-    const handleSearchClick = useCallback(
-      (e: React.MouseEvent<HTMLInputElement>) => {
-        e.stopPropagation();
-      },
-      []
-    );
+      return placeholder;
+    }, [selectedItem, placeholder]);
 
     const triggerClass = classNames(
       styles.trigger,
@@ -151,11 +92,6 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
 
     const itemClass = classNames(styles.item, styles[`item-${size}`]);
 
-    const searchInputClass = classNames(
-      styles.searchInput,
-      styles[`searchInput-${size}`]
-    );
-
     return (
       <SelectPrimitive.Root
         value={value}
@@ -163,11 +99,11 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
         onValueChange={handleValueChange}
         disabled={disabled}
         name={name}
-        onOpenChange={setIsOpen}
       >
         <SelectPrimitive.Trigger
           ref={ref}
           className={triggerClass}
+          aria-label={ariaLabel}
           onBlur={() => {
             onBlur?.({
               target: {
@@ -194,43 +130,19 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
             sideOffset={4}
             align="start"
           >
-            {searchable && (
-              <div className={styles.searchContainer}>
-                <div className={styles.searchWrapper}>
-                  <span className={styles.searchIcon}>
-                    <IconSearch />
-                  </span>
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    className={searchInputClass}
-                    placeholder={searchPlaceholder}
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    onKeyDown={handleSearchKeyDown}
-                    onClick={handleSearchClick}
-                  />
-                </div>
-              </div>
-            )}
-
             <SelectPrimitive.Viewport className={styles.viewport}>
-              {filteredItems.length > 0 ? (
-                filteredItems.map((item) => (
-                  <SelectPrimitive.Item
-                    key={item.value}
-                    value={item.value}
-                    className={itemClass}
-                    disabled={disabled}
-                  >
-                    <SelectPrimitive.ItemText>
-                      {item.label}
-                    </SelectPrimitive.ItemText>
-                  </SelectPrimitive.Item>
-                ))
-              ) : (
-                <div className={styles.noResults}>No results found</div>
-              )}
+              {items.map((item) => (
+                <SelectPrimitive.Item
+                  key={item.value}
+                  value={item.value}
+                  className={itemClass}
+                  disabled={disabled}
+                >
+                  <SelectPrimitive.ItemText>
+                    {item.label}
+                  </SelectPrimitive.ItemText>
+                </SelectPrimitive.Item>
+              ))}
             </SelectPrimitive.Viewport>
           </SelectPrimitive.Content>
         </SelectPrimitive.Portal>

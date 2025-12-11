@@ -11,6 +11,7 @@ export { default as Flex } from "./Flex";
 export { default as FormField } from "./FormField";
 export { default as IconButton } from "./IconButton";
 export { default as Input } from "./Input";
+export { default as InputSearch } from "./InputSearch";
 export { default as LoadingSpinner } from "./LoadingSpinner";
 export { default as OneTimePassword } from "./OneTimePassword";
 export { default as Pagination } from "./Pagination";

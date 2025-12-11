@@ -51,7 +51,7 @@ export default function OrderSummary({
           return (
             <div key={item.sku} className={styles.item}>
               <div className={styles.itemRow}>
-                <h4 className={styles.itemName}>{item.productName}</h4>
+                <div className={styles.itemName}>{item.productName}</div>
                 <span className={styles.quantityBadge}>×{item.quantity}</span>
                 <span className={styles.totalPrice}>
                   {formatPrice(totalPrice)}
