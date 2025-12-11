@@ -7,7 +7,6 @@ import {
   isValidElement,
   ReactNode,
   useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -115,18 +114,6 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
         return searchableText.includes(query);
       });
     }, [items, searchQuery, searchable]);
-
-    useEffect(() => {
-      if (isOpen && searchable && searchInputRef.current) {
-        const timeoutId = setTimeout(() => {
-          searchInputRef.current?.focus();
-        }, 100);
-
-        return () => {
-          clearTimeout(timeoutId);
-        };
-      }
-    }, [isOpen, searchable]);
 
     const handleSearchChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
