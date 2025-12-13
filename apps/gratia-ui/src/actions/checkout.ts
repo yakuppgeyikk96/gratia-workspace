@@ -1,18 +1,19 @@
 "use server";
 
 import { apiClient } from "@/lib/apiClient";
+import { ShippingMethodResponse } from "@/types";
 import { IApiResponse } from "@/types/Api.types";
 import {
   CheckoutSession,
   CheckoutSessionResponse,
   CreateCheckoutSessionRequest,
   CreateSessionResponse,
+  SelectShippingMethodRequest,
   UpdateShippingAddressRequest,
 } from "@/types/Checkout.types";
 import { ICity, ICountry, IState } from "@/types/Location.types";
 import { cookies } from "next/headers";
 import { cache } from "react";
-import { getAuthHeader } from "./utils";
 
 const API_BASE_ROUTE = "/checkout";
 
@@ -20,14 +21,10 @@ const createCheckoutSession = async (
   payload: CreateCheckoutSessionRequest
 ): Promise<CreateSessionResponse> => {
   const cookieStore = await cookies();
-  const authHeader: Record<string, string> = await getAuthHeader();
 
   const response: CreateSessionResponse = await apiClient.post(
     `${API_BASE_ROUTE}/session`,
-    payload,
-    {
-      headers: { ...authHeader },
-    }
+    payload
   );
 
   if (response.success && response.data?.sessionToken) {
@@ -79,13 +76,8 @@ const getCheckoutSessionData = cache(
     }
 
     try {
-      const authHeader: Record<string, string> = await getAuthHeader();
-
       const response: CheckoutSessionResponse = await apiClient.get(
-        `${API_BASE_ROUTE}/session/${sessionToken}`,
-        {
-          headers: { ...authHeader },
-        }
+        `${API_BASE_ROUTE}/session/${sessionToken}`
       );
 
       return response;
@@ -123,11 +115,63 @@ const getAvailableCitiesForShipping = async (
   );
 };
 
+const getAvailableShippingMethods = cache(
+  async (): Promise<ShippingMethodResponse> => {
+    const cookieStore = await cookies();
+    const sessionToken = cookieStore.get("gratia-checkout-session")?.value;
+
+    if (!sessionToken) {
+      return {
+        success: false,
+        message: "No checkout session found",
+        errorCode: "SESSION_NOT_FOUND",
+      };
+    }
+
+    try {
+      const response: ShippingMethodResponse = await apiClient.get(
+        `${API_BASE_ROUTE}/session/${sessionToken}/shipping-methods`
+      );
+
+      return response;
+    } catch (error) {
+      console.error("Error fetching checkout session:", error);
+      return {
+        success: false,
+        message: "Failed to retrieve checkout session",
+        errorCode: "FETCH_ERROR",
+      };
+    }
+  }
+);
+
+const selectShippingMethod = async (
+  request: SelectShippingMethodRequest
+): Promise<IApiResponse<CheckoutSession>> => {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get("gratia-checkout-session")?.value;
+
+  if (!sessionToken) {
+    return {
+      success: false,
+      message: "No checkout session found",
+      errorCode: "SESSION_NOT_FOUND",
+    };
+  }
+
+  return await apiClient.put(
+    `${API_BASE_ROUTE}/session/${sessionToken}/shipping-method`,
+    request
+  );
+};
+
 export {
   createCheckoutSession,
   getAvailableCitiesForShipping,
   getAvailableCountriesForShipping,
+  getAvailableShippingMethods,
   getAvailableStatesForShipping,
   getCheckoutSessionData,
+  selectShippingMethod,
   updateShippingAddress,
 };

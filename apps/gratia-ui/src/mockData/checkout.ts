@@ -1,5 +1,5 @@
+import { CheckoutSession, ShippingMethod } from "@/types";
 import { CartItem } from "@/types/Cart.types";
-import { CheckoutSession, ShippingMethod } from "@/types/Checkout.types";
 
 // Mock cart items for cart snapshot
 const mockCartItems: CartItem[] = [

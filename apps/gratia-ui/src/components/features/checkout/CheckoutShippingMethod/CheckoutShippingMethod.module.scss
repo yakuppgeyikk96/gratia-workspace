@@ -1,0 +1,61 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+@use "sass:map";
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  @include py(6);
+}
+
+.header {
+  @include mb(8);
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+  margin: 0 0 $spacing-2 0;
+}
+
+.subtitle {
+  font-size: $text-base;
+  color: $text-secondary-color;
+  margin: 0;
+}
+
+.methodsList {
+  @include flex-column;
+  @include gap(4);
+  @include mb(8);
+}
+
+.actions {
+  @include flex(row, flex-end, center);
+  @include mt(8);
+}
+
+.continueButton {
+  min-width: 200px;
+}
+
+.error {
+  @include flex-center;
+  @include py(12);
+  font-size: $text-base;
+  color: $text-error-color;
+}
+
+// Mobile responsive
+@media (max-width: 640px) {
+  .continueButton {
+    width: 100%;
+    min-width: unset;
+  }
+}

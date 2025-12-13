@@ -1,0 +1,158 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.methodCard {
+  @include flex(row, flex-start, flex-start);
+  @include gap(4);
+  @include p(5);
+  @include border($border-2, $border-light);
+  @include rounded($radius-lg);
+  background-color: $bg-color;
+}
+
+.radioIndicator {
+  @include flex-center;
+  flex-shrink: 0;
+  @include mt(1);
+}
+
+.radioCircle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.methodContent {
+  @include flex-column;
+  @include gap(2);
+  flex: 1;
+  min-width: 0;
+}
+
+.methodHeader {
+  @include flex(row, space-between, flex-start);
+  @include gap(4);
+  width: 100%;
+}
+
+.methodInfo {
+  @include flex-column;
+  @include gap(1);
+  flex: 1;
+  min-width: 0;
+}
+
+.methodNameSkeleton {
+  height: 24px;
+  width: 60%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.carrierSkeleton {
+  height: 16px;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.methodPriceSkeleton {
+  height: 28px;
+  width: 80px;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+  flex-shrink: 0;
+}
+
+.descriptionSkeleton {
+  height: 16px;
+  width: 85%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.methodMeta {
+  @include flex(row, flex-start, center);
+  @include gap(2);
+  @include mt(1);
+}
+
+.estimatedDaysSkeleton {
+  height: 16px;
+  width: 50%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// Mobile responsive
+@media (max-width: 640px) {
+  .methodCard {
+    @include flex-column;
+    @include gap(3);
+  }
+
+  .methodHeader {
+    @include flex-column;
+    @include gap(2);
+  }
+
+  .radioIndicator {
+    @include mt(0);
+  }
+}
+

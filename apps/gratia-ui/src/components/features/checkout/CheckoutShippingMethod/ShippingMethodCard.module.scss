@@ -1,0 +1,152 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+@use "sass:map";
+
+.methodCard {
+  @include flex(row, flex-start, flex-start);
+  @include gap(4);
+  @include p(5);
+  @include border($border-2, $border-light);
+  @include rounded($radius-lg);
+  background-color: $bg-color;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $border-medium;
+    background-color: rgba(map.get($colors, "primary"), 0.02);
+  }
+
+  &.selected {
+    border-color: map.get($colors, "success");
+    background-color: rgba(map.get($colors, "success"), 0.05);
+    box-shadow: 0 0 0 3px rgba(map.get($colors, "success"), 0.1);
+  }
+
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.radioIndicator {
+  @include flex-center;
+  flex-shrink: 0;
+  @include mt(1);
+}
+
+.radioCircle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid $border-medium;
+  background-color: $bg-color;
+  @include flex-center;
+  transition: all 0.2s ease;
+
+  &.checked {
+    border-color: map.get($colors, "success");
+    background-color: map.get($colors, "success");
+  }
+}
+
+.radioDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.methodContent {
+  @include flex-column;
+  @include gap(2);
+  flex: 1;
+  min-width: 0;
+}
+
+.methodHeader {
+  @include flex(row, space-between, flex-start);
+  @include gap(4);
+  width: 100%;
+}
+
+.methodInfo {
+  @include flex-column;
+  @include gap(1);
+  flex: 1;
+  min-width: 0;
+}
+
+.methodName {
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  margin: 0;
+  line-height: $leading-tight;
+}
+
+.carrier {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-secondary-color;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.methodPrice {
+  flex-shrink: 0;
+}
+
+.price {
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+  white-space: nowrap;
+}
+
+.free {
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  color: $text-success-color;
+  white-space: nowrap;
+}
+
+.description {
+  font-size: $text-sm;
+  color: $text-secondary-color;
+  margin: 0;
+  line-height: $leading-relaxed;
+}
+
+.methodMeta {
+  @include flex(row, flex-start, center);
+  @include gap(2);
+  @include mt(1);
+}
+
+.estimatedDays {
+  font-size: $text-sm;
+  color: $text-muted-color;
+}
+
+// Mobile responsive
+@media (max-width: 640px) {
+  .methodCard {
+    @include flex-column;
+    @include gap(3);
+  }
+
+  .methodHeader {
+    @include flex-column;
+    @include gap(2);
+  }
+
+  .radioIndicator {
+    @include mt(0);
+  }
+}

@@ -1,0 +1,60 @@
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  @include py(6);
+}
+
+.header {
+  @include mb(8);
+  @include flex-column;
+  @include gap(2);
+}
+
+.titleSkeleton {
+  height: 32px;
+  width: 50%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.subtitleSkeleton {
+  height: 20px;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.methodsList {
+  @include flex-column;
+  @include gap(4);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

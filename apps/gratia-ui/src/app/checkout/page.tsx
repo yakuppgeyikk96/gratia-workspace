@@ -1,5 +1,6 @@
 import { getCheckoutSessionData } from "@/actions/checkout";
 import CheckoutShipping from "@/components/features/checkout/CheckoutShipping";
+import CheckoutShippingMethod from "@/components/features/checkout/CheckoutShippingMethod";
 import { CheckoutStep } from "@/types/Checkout.types";
 import { redirect } from "next/navigation";
 
@@ -26,8 +27,7 @@ const CheckoutPage = async ({ searchParams }: CheckoutPageProps) => {
       return <CheckoutShipping session={session} />;
 
     case "shipping_method":
-      // TODO: CheckoutShippingMethod component
-      return <div>Shipping Method - Coming soon</div>;
+      return <CheckoutShippingMethod session={session} />;
 
     case "payment":
       // TODO: CheckoutPayment component
