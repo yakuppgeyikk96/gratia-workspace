@@ -1,0 +1,128 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.carouselWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.emblaViewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.emblaContainer {
+  @include flex-row;
+  @include gap(6);
+  will-change: transform;
+}
+
+.emblaSlide {
+  flex: 0 0 calc(25% - 18px); // Desktop: 4 products, gap included
+  min-width: 0;
+
+  @include media-lg {
+    flex: 0 0 calc(33.333% - 16px); // Tablet: 3 products
+  }
+
+  @include media-md {
+    flex: 0 0 calc(50% - 12px); // Mobile: 2 products
+  }
+
+  @include media-sm {
+    flex: 0 0 calc(50% - 8px); // Small mobile: 2 products
+  }
+
+  @include media-xs {
+    flex: 0 0 100%; // Very small mobile: 1 product
+  }
+}
+
+.productCard {
+  height: 100%;
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: $z-fixed;
+  width: 48px;
+  height: 48px;
+  background-color: rgba(255, 255, 255, 0.95);
+  @include border($border-1, $border-light);
+  @include rounded-full;
+  box-shadow: $shadow-md;
+  transition: all $transition-normal;
+
+  &:hover:not(.navButtonDisabled) {
+    background-color: $bg-color;
+    box-shadow: $shadow-lg;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &:active:not(.navButtonDisabled) {
+    transform: translateY(-50%) scale(0.95);
+  }
+
+  &.navButtonDisabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  svg {
+    color: $text-primary-color;
+  }
+}
+
+.navButtonPrev {
+  left: -24px;
+
+  @include media-md {
+    left: -16px;
+  }
+
+  @include media-sm {
+    left: -8px;
+    width: 40px;
+    height: 40px;
+  }
+
+  @include media-xs {
+    left: -4px;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.navButtonNext {
+  right: -24px;
+
+  @include media-md {
+    right: -16px;
+  }
+
+  @include media-sm {
+    right: -8px;
+    width: 40px;
+    height: 40px;
+  }
+
+  @include media-xs {
+    right: -4px;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+// Hide navigation on very small screens if not needed
+@include media-xs {
+  .navButton {
+    display: none;
+  }
+}

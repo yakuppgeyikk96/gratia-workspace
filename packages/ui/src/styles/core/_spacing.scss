@@ -21,6 +21,9 @@ $spacing-40: 10rem; // 160px
 $spacing-44: 11rem; // 176px
 $spacing-48: 12rem; // 192px
 $spacing-52: 13rem; // 208px
+$spacing-56: 14rem; // 224px
+$spacing-60: 15rem; // 240px
+$spacing-64: 16rem; // 256px
 
 $spacing-xxs: 0.125rem; // 2px
 $spacing-xs: 0.25rem; // 4px
@@ -52,6 +55,9 @@ $spacings: (
   44: $spacing-44,
   48: $spacing-48,
   52: $spacing-52,
+  56: $spacing-56,
+  60: $spacing-60,
+  64: $spacing-64,
 );
 
 // Padding utilities

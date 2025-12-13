@@ -1,0 +1,105 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.skeletonContainer {
+  width: 100%;
+}
+
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  @include gap(6);
+
+  @include media-lg {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include media-md {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include media-sm {
+    grid-template-columns: repeat(2, 1fr);
+    @include gap(4);
+  }
+
+  @include media-xs {
+    grid-template-columns: 1fr; // Mobile: 1 product
+  }
+}
+
+.skeletonCard {
+  @include flex-column;
+  @include gap(3);
+  @include rounded($radius-lg);
+  overflow: hidden;
+}
+
+.skeletonImage {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.skeletonText {
+  height: 20px;
+  width: 80%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.skeletonTextShort {
+  height: 16px;
+  width: 60%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+.skeletonPrice {
+  height: 24px;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    rgba($border-light, 0.5) 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  @include rounded($radius-sm);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

@@ -1,0 +1,46 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.featuredProductsSection {
+  @include py(12);
+  background-color: $bg-color;
+}
+
+.container {
+  width: 100%;
+}
+
+.header {
+  text-align: center;
+  @include mb(8);
+}
+
+.title {
+  font-size: $text-3xl;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+  margin: 0 0 $spacing-2 0;
+}
+
+.subtitle {
+  font-size: $text-base;
+  color: $text-secondary-color;
+  margin: 0;
+}
+
+@include media-sm {
+  .featuredProductsSection {
+    @include pt(8);
+    padding-bottom: calc($spacing-8 + 70px);
+  }
+
+  .title {
+    font-size: $text-2xl;
+  }
+
+  .subtitle {
+    font-size: $text-sm;
+  }
+}

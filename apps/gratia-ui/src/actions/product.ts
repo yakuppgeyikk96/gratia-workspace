@@ -1,10 +1,11 @@
 import { apiClient } from "@/lib/apiClient";
-import { IApiResponse } from "@/types";
 import {
+  IApiResponse,
+  Product,
   ProductQueryOptionsDto,
   ProductsResponseDto,
   ProductWithVariantsDto,
-} from "@/types/Product.types";
+} from "@/types";
 
 export async function getProducts(
   options: ProductQueryOptionsDto
@@ -20,4 +21,8 @@ export async function getProductBySlug(
   slug: string
 ): Promise<IApiResponse<ProductWithVariantsDto>> {
   return await apiClient.get(`/products/${slug}/with-variants`);
+}
+
+export async function getFeaturedProducts(): Promise<IApiResponse<Product[]>> {
+  return await apiClient.get("/products/featured");
 }
