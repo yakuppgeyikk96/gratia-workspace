@@ -4,5 +4,6 @@ export * from "./Cart.types";
 export * from "./Category.types";
 export * from "./Checkout.types";
 export * from "./Navigation.types";
+export * from "./Order.types";
 export * from "./Product.types";
 export * from "./Shipping.types";
