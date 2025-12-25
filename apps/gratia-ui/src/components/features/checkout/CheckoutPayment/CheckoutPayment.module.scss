@@ -38,34 +38,6 @@
   @include mt(8);
 }
 
-.completeButton {
-  min-width: 200px;
-  padding: $spacing-3 $spacing-6;
-  font-size: $text-base;
-  font-weight: $font-semibold;
-  color: $text-on-primary-color;
-  background-color: $primary-color;
-  @include border(none);
-  @include rounded($radius-md);
-  cursor: pointer;
-  transition: all $transition-normal;
-
-  &:hover:not(:disabled) {
-    background-color: darken($primary-color, 5%);
-    transform: translateY(-1px);
-    box-shadow: $shadow-md;
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
 // Mobile responsive
 @include media-sm {
   .container {
@@ -79,9 +51,14 @@
   .subtitle {
     font-size: $text-sm;
   }
+}
 
-  .completeButton {
-    width: 100%;
-    min-width: unset;
-  }
+.error {
+  @include mb(4);
+  padding: $spacing-3 $spacing-4;
+  background-color: rgba($text-error-color, 0.1);
+  color: $text-error-color;
+  @include border($border-1, $text-error-color);
+  @include rounded($radius-md);
+  font-size: $text-sm;
 }
