@@ -1,0 +1,35 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_grid.scss" as *;
+
+.creditCardForm {
+  width: 100%;
+}
+
+.formGrid {
+  @include form-grid;
+  @include gap-y(4);
+}
+
+.formFieldFull {
+  @include form-field;
+}
+
+.formFieldHalf {
+  @include form-field-half;
+}
+
+.cardElementWrapper {
+  padding: $spacing-3;
+  @include border($border-1, $border-light);
+  @include rounded($radius-md);
+  background-color: $bg-color;
+  transition: all $transition-normal;
+
+  &:focus-within {
+    @include border($border-2, $primary-color);
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+  }
+}

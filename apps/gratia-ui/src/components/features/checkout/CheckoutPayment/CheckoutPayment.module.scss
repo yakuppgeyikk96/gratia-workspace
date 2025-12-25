@@ -1,0 +1,87 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  @include py(6);
+}
+
+.header {
+  @include mb(8);
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+  margin: 0 0 $spacing-2 0;
+}
+
+.subtitle {
+  font-size: $text-base;
+  color: $text-secondary-color;
+  margin: 0;
+}
+
+.paymentSection {
+  @include mb(8);
+}
+
+.actions {
+  @include flex(row, flex-end, center);
+  @include mt(8);
+}
+
+.completeButton {
+  min-width: 200px;
+  padding: $spacing-3 $spacing-6;
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  color: $text-on-primary-color;
+  background-color: $primary-color;
+  @include border(none);
+  @include rounded($radius-md);
+  cursor: pointer;
+  transition: all $transition-normal;
+
+  &:hover:not(:disabled) {
+    background-color: darken($primary-color, 5%);
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Mobile responsive
+@include media-sm {
+  .container {
+    @include py(4);
+  }
+
+  .title {
+    font-size: $text-xl;
+  }
+
+  .subtitle {
+    font-size: $text-sm;
+  }
+
+  .completeButton {
+    width: 100%;
+    min-width: unset;
+  }
+}
