@@ -61,6 +61,8 @@ export default function CartSummary({ items }: CartSummaryProps) {
       <div className={styles.summaryContent}>
         <h2 className={styles.title}>Order Summary</h2>
 
+        <Divider />
+
         <div className={styles.summaryDetails}>
           <div className={styles.summaryRow}>
             <span className={styles.label}>
@@ -80,17 +82,16 @@ export default function CartSummary({ items }: CartSummaryProps) {
             </div>
           )}
 
-          <Divider className={styles.divider} />
-
           <div className={styles.summaryRow}>
             <span className={styles.totalLabel}>Total</span>
             <span className={styles.totalValue}>${total.toFixed(2)}</span>
           </div>
         </div>
 
+        <Divider />
+
         <Button
           variant="primary"
-          size="lg"
           className={styles.checkoutButton}
           onClick={handleCheckout}
           disabled={totalItems === 0 || isPending}

@@ -24,18 +24,17 @@
   font-size: $text-xl;
   font-weight: $font-bold;
   color: $text-primary-color;
-  margin: 0 0 $spacing-6 0;
+  @include mb(2);
 }
 
 .summaryDetails {
   @include flex-column;
   @include gap(4);
-  @include mb(6);
+  @include my(4);
 }
 
 .summaryRow {
-  @include flex-between;
-  align-items: center;
+  @include flex(row, space-between, center);
 }
 
 .label {
@@ -58,19 +57,14 @@
   font-weight: $font-semibold;
 }
 
-.divider {
-  margin-top: $spacing-2;
-  margin-bottom: $spacing-2;
-}
-
 .totalLabel {
-  font-size: $text-lg;
+  font-size: $text-base;
   font-weight: $font-semibold;
   color: $text-primary-color;
 }
 
 .totalValue {
-  font-size: $text-2xl;
+  font-size: $text-lg;
   font-weight: $font-bold;
   color: $text-primary-color;
 }

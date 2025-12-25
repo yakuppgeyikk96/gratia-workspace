@@ -1,6 +1,5 @@
 import { getCheckoutSessionData } from "@/actions/checkout";
 import CheckoutPagesLayout from "@/components/features/checkout/CheckoutPagesLayout";
-import { CheckoutStep } from "@/types/Checkout.types";
 import { redirect } from "next/navigation";
 
 export default async function CheckoutLayout({
@@ -15,10 +14,7 @@ export default async function CheckoutLayout({
   }
 
   const session = sessionResponse.data;
-  const currentStep = session.currentStep;
-
-  const stepperStep: Exclude<CheckoutStep, "completed"> =
-    currentStep === "completed" ? "payment" : currentStep;
+  const stepperStep = session.currentStep;
 
   return (
     <CheckoutPagesLayout currentStep={stepperStep} session={session}>
