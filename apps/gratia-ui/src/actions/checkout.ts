@@ -6,6 +6,8 @@ import { IApiResponse } from "@/types/Api.types";
 import {
   CheckoutSession,
   CheckoutSessionResponse,
+  CompleteCheckoutRequest,
+  CompleteCheckoutResponseType,
   CreateCheckoutSessionRequest,
   CreateSessionResponse,
   SelectShippingMethodRequest,
@@ -16,6 +18,8 @@ import { cookies } from "next/headers";
 import { cache } from "react";
 
 const API_BASE_ROUTE = "/checkout";
+
+const gratiaSessionCookieName = "gratia-checkout-session";
 
 const createCheckoutSession = async (
   payload: CreateCheckoutSessionRequest
@@ -30,7 +34,7 @@ const createCheckoutSession = async (
   if (response.success && response.data?.sessionToken) {
     const sessionToken = response.data.sessionToken;
 
-    cookieStore.set("gratia-checkout-session", sessionToken, {
+    cookieStore.set(gratiaSessionCookieName, sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -46,7 +50,7 @@ const updateShippingAddress = async (
   request: UpdateShippingAddressRequest
 ): Promise<IApiResponse<CheckoutSession>> => {
   const cookieStore = await cookies();
-  const sessionToken = cookieStore.get("gratia-checkout-session")?.value;
+  const sessionToken = cookieStore.get(gratiaSessionCookieName)?.value;
 
   if (!sessionToken) {
     return {
@@ -65,7 +69,7 @@ const updateShippingAddress = async (
 const getCheckoutSessionData = cache(
   async (): Promise<CheckoutSessionResponse> => {
     const cookieStore = await cookies();
-    const sessionToken = cookieStore.get("gratia-checkout-session")?.value;
+    const sessionToken = cookieStore.get(gratiaSessionCookieName)?.value;
 
     if (!sessionToken) {
       return {
@@ -118,7 +122,7 @@ const getAvailableCitiesForShipping = async (
 const getAvailableShippingMethods = cache(
   async (): Promise<ShippingMethodResponse> => {
     const cookieStore = await cookies();
-    const sessionToken = cookieStore.get("gratia-checkout-session")?.value;
+    const sessionToken = cookieStore.get(gratiaSessionCookieName)?.value;
 
     if (!sessionToken) {
       return {
@@ -149,7 +153,7 @@ const selectShippingMethod = async (
   request: SelectShippingMethodRequest
 ): Promise<IApiResponse<CheckoutSession>> => {
   const cookieStore = await cookies();
-  const sessionToken = cookieStore.get("gratia-checkout-session")?.value;
+  const sessionToken = cookieStore.get(gratiaSessionCookieName)?.value;
 
   if (!sessionToken) {
     return {
@@ -164,6 +168,26 @@ const selectShippingMethod = async (
     request
   );
 };
+
+export async function completeCheckout(
+  payload: CompleteCheckoutRequest
+): Promise<CompleteCheckoutResponseType> {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get(gratiaSessionCookieName)?.value;
+
+  if (!sessionToken) {
+    return {
+      success: false,
+      message: "No checkout session found",
+      errorCode: "SESSION_NOT_FOUND",
+    };
+  }
+
+  return await apiClient.post(
+    `${API_BASE_ROUTE}/session/${sessionToken}/complete`,
+    payload
+  );
+}
 
 export {
   createCheckoutSession,

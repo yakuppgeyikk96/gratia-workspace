@@ -1,6 +1,7 @@
 "use client";
 
 // import { completePayment } from "@/actions/checkout";
+import { completeCheckout } from "@/actions";
 import StripeElementsProvider from "@/components/providers/StripeElementsProvider";
 import { CheckoutSession } from "@/types";
 import { Button } from "@gratia/ui/components";
@@ -42,21 +43,22 @@ export default function CheckoutPayment({
         return;
       }
 
-      // // Then send to backend
-      // const response = await completePayment({
-      //   paymentMethodType: "credit_card",
-      //   paymentToken: paymentMethodId,
-      // });
+      // Then send to backend
+      const response = await completeCheckout({
+        paymentMethodType: "credit_card",
+        paymentToken: paymentMethodId,
+      });
 
-      // if (response.success && response.data) {
-      //   // Redirect to order confirmation
-      //   router.push(
-      //     `/order/confirmation?orderId=${response.data.orderId}&orderNumber=${response.data.orderNumber}`
-      //   );
-      // } else {
-      //   setError(response.message || "Payment failed. Please try again.");
-      //   setIsProcessing(false);
-      // }
+      if (
+        response.success &&
+        response.data?.orderId &&
+        response.data?.orderNumber
+      ) {
+        console.log(response.data);
+      } else {
+        setError(response.message || "Payment failed. Please try again.");
+        setIsProcessing(false);
+      }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An unexpected error occurred";

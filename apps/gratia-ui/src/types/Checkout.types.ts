@@ -84,13 +84,13 @@ export interface SelectShippingMethodRequest {
   shippingMethodId: string;
 }
 
-export interface CompletePaymentRequest {
+export interface CompleteCheckoutRequest {
   paymentMethodType: PaymentMethodType;
   paymentToken?: string;
   notes?: string;
 }
 
-export interface CreateOrderResponse {
+export interface CompleteCheckoutResponse {
   orderId: string;
   orderNumber: string;
 }
@@ -98,7 +98,8 @@ export interface CreateOrderResponse {
 // Response Types
 export type CheckoutSessionResponse = IApiResponse<CheckoutSession>;
 export type CreateSessionResponse = IApiResponse<CreateCheckoutSessionResponse>;
-export type CreateOrderResponseType = IApiResponse<CreateOrderResponse>;
+export type CompleteCheckoutResponseType =
+  IApiResponse<CompleteCheckoutResponse>;
 
 // For GET session response with metadata
 export interface CheckoutSessionWithMeta {
