@@ -1,4 +1,4 @@
-import Logo from "@/components/common/Logo";
+import { Logo } from "@/components/common";
 import { CheckoutSession, CheckoutStep } from "@/types/Checkout.types";
 import CheckoutStepper from "../CheckoutStepper";
 import OrderSummary from "../OrderSummary";

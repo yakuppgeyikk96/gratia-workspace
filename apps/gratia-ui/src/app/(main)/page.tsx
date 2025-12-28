@@ -1,5 +1,5 @@
-import FeaturedProductsSection from "@/components/features/featured-products/FeaturedProductsSection";
-import HeroSection from "@/components/features/hero/HeroSection";
+import { FeaturedProductsSection } from "@/components/featured-products";
+import { HeroSection } from "@/components/hero";
 
 export default async function Home() {
   return (

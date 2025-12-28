@@ -1,4 +1,4 @@
-import VerifyEmail from "@/components/features/auth/VerifyEmail";
+import { VerifyEmail } from "@/components/auth";
 
 interface VerifyEmailPageProps {
   searchParams: Promise<{

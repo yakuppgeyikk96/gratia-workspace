@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Concert_One, Inter } from "next/font/google";
 
-import TanstackQueryClientProvider from "@/components/common/TanstackQueryClientProvider";
 import CartInitializer from "@/components/features/cart/CartInitializer";
+import { TanstackQueryClientProvider } from "@/components/providers";
 import { isAuthenticated } from "@/lib/utils/auth";
 import { ToastContainer, ToastContextProvider } from "@gratia/ui/components";
+
 import "./globals.scss";
 
 const inter = Inter({

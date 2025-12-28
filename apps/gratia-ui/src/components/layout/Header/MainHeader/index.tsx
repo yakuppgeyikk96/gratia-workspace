@@ -1,5 +1,4 @@
-import Logo from "@/components/common/Logo";
-import { SearchInput } from "@/components/features/search";
+import { Logo, SearchInput } from "@/components/common";
 import { Container, Flex } from "@gratia/ui/components";
 import HeaderCartButton from "./HeaderCartButton";
 import HeaderLoginButton from "./HeaderLoginButton";

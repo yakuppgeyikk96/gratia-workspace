@@ -1,5 +1,4 @@
-import AuthPageLayout from "@/components/features/auth/AuthPageLayout";
-import RegisterForm from "@/components/features/auth/RegisterForm";
+import { AuthPageLayout, RegisterForm } from "@/components/auth";
 
 export default async function RegisterPage() {
   return (

@@ -1,18 +1,13 @@
 "use client";
 
 import { loginUser } from "@/actions/auth";
-import { COLORS } from "@/constants/colors";
 import { loginSchema, type LoginFormData } from "@/schemas/loginSchema";
-import {
-  Button,
-  FormField,
-  Input,
-  useToastContext,
-} from "@gratia/ui/components";
-import { IconAt, IconPassword, IconVisibility } from "@gratia/ui/icons";
+import { Button, useToastContext } from "@gratia/ui/components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
+import EmailField from "../shared/EmailField";
+import PasswordField from "../shared/PasswordField";
 import styles from "./LoginForm.module.scss";
 
 export default function LoginForm() {
@@ -45,44 +40,21 @@ export default function LoginForm() {
     <div className={styles.container}>
       <div className={styles.form}>
         <h1 className={styles.brand}>GRATIA</h1>
-        <h2 className={styles.title}>Create an account</h2>
+        <h2 className={styles.title}>Login to your account</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.formContent}>
-            <div className={styles.formFieldFull}>
-              <FormField error={errors.email?.message} required name="email">
-                <Input
-                  {...register("email")}
-                  variant="outlined"
-                  size="lg"
-                  startIcon={<IconAt color={COLORS.ICON_MUTED} size={16} />}
-                  placeholder="Enter your email"
-                  error={!!errors.email}
-                />
-              </FormField>
-            </div>
+            <EmailField
+              register={register("email")}
+              error={errors.email}
+              className={styles.formFieldFull}
+            />
 
-            <div className={styles.formFieldFull}>
-              <FormField
-                error={errors.password?.message}
-                required
-                name="password"
-              >
-                <Input
-                  {...register("password")}
-                  variant="outlined"
-                  size="lg"
-                  startIcon={
-                    <IconPassword color={COLORS.ICON_MUTED} size={16} />
-                  }
-                  endIcon={
-                    <IconVisibility color={COLORS.ICON_MUTED} size={16} />
-                  }
-                  placeholder="Enter your password"
-                  error={!!errors.password}
-                />
-              </FormField>
-            </div>
+            <PasswordField
+              register={register("password")}
+              error={errors.password}
+              className={styles.formFieldFull}
+            />
 
             <div className={styles.formFieldFull}>
               <Button

@@ -2,7 +2,7 @@
 
 // import { completePayment } from "@/actions/checkout";
 import { completeCheckout } from "@/actions";
-import StripeElementsProvider from "@/components/providers/StripeElementsProvider";
+import { StripeElementsProvider } from "@/components/providers";
 import { CheckoutSession } from "@/types";
 import { Button } from "@gratia/ui/components";
 import { useRef, useState } from "react";

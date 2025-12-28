@@ -1,6 +1,6 @@
 "use client";
 
-import QuantitySelector from "@/components/common/QuantitySelector";
+import { QuantitySelector } from "@/components/common";
 import { useCartStore } from "@/store/cartStore";
 
 import { COLORS } from "@/constants";

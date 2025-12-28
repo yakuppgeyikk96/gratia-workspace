@@ -1,6 +1,6 @@
 "use client";
 
-import QuantitySelector from "@/components/common/QuantitySelector";
+import { QuantitySelector } from "@/components/common";
 import { useCart } from "@/hooks/useCart";
 import { useCartStore } from "@/store/cartStore";
 import { IconButton } from "@gratia/ui/components";
