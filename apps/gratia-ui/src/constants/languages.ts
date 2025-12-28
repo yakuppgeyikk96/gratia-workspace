@@ -1,8 +1,4 @@
-export interface Language {
-  value: string;
-  label: string;
-  icon: string;
-}
+import { Language } from "@/types/Common.types";
 
 export const LANGUAGES: Language[] = [
   { value: "en", label: "English", icon: "🇺🇸" },

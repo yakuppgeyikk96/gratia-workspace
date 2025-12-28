@@ -1,2 +1,5 @@
-export const API_BASE_URL = process.env.API_URL || "";
-export const API_BASE_PATH = `${API_BASE_URL}/api`;
+if (!process.env.API_URL) {
+  throw new Error("API_URL is not set");
+}
+
+export const API_BASE_PATH = `${process.env.API_URL}/api`;

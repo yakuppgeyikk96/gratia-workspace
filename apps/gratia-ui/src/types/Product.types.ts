@@ -1,4 +1,7 @@
-import { Category } from "@/constants/categories";
+export interface ProductCategory {
+  label: string;
+  value: string;
+}
 
 export type ProductColor =
   | "black"
@@ -71,7 +74,7 @@ export interface Product {
   slug: string;
   description?: string;
   sku: string;
-  categoryId: string | Partial<Category>;
+  categoryId: string | Partial<ProductCategory>;
   categoryPath?: string;
   collectionSlugs?: string[];
   price: number;

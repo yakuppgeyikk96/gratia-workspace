@@ -1,8 +1,4 @@
-export interface Currency {
-  value: string;
-  label: string;
-  icon: string;
-}
+import { Currency } from "@/types/Common.types";
 
 export const CURRENCIES: Currency[] = [
   { value: "USD", label: "USD", icon: "$" },
