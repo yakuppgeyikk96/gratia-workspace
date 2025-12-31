@@ -1,7 +1,6 @@
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
 
 export interface StateDoc extends Document {
-  _id: ObjectId;
   countryId: ObjectId;
   code: string;
   name: string;

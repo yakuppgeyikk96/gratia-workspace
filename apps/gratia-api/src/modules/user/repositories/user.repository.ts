@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { ObjectId } from "mongoose";
+import { Types } from "mongoose";
 import { BCRYPT_ROUNDS } from "../../../shared/constants/crypto.constants";
 import User, { UserDoc } from "../../../shared/models/user.model";
 import CreateUserDto from "../types/CreateUserDto";
@@ -24,7 +24,7 @@ export const findUserByEmail = async (
 
 export const findUserIdByEmail = async (
   email: string
-): Promise<ObjectId | undefined> => {
+): Promise<Types.ObjectId | undefined> => {
   const user = await findUserByEmail(email);
   return user?._id;
 };

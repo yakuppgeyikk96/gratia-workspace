@@ -1,7 +1,6 @@
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
 
 export interface CityDoc extends Document {
-  _id: ObjectId;
   stateId: ObjectId;
   code: string;
   name: string;

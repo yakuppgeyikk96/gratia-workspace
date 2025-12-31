@@ -1,7 +1,6 @@
-import mongoose, { Document, ObjectId, Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface CountryDoc extends Document {
-  _id: ObjectId;
   code: string;
   name: string;
   isAvailableForShipping: boolean;

@@ -14,7 +14,6 @@ export interface CartItem {
 }
 
 export interface CartDoc extends Document {
-  _id: ObjectId;
   userId: ObjectId;
   items: CartItem[];
   totalItems: number;

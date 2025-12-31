@@ -1,7 +1,6 @@
-import { Document, model, ObjectId, Schema } from "mongoose";
+import { Document, model, Schema } from "mongoose";
 
 export interface EmailVerificationDoc extends Document {
-  _id: ObjectId;
   verificationCode: string;
   token: string;
   encryptedUserData: string;

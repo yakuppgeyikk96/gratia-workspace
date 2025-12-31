@@ -1,7 +1,6 @@
-import mongoose, { Document, ObjectId, Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface CollectionDoc extends Document {
-  _id: ObjectId;
   name: string;
   slug: string;
   description?: string;

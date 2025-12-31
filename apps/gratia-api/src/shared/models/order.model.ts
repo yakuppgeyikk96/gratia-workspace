@@ -1,4 +1,4 @@
-import mongoose, { Document, ObjectId, Schema } from "mongoose";
+import mongoose, { Document, ObjectId, Schema, Types } from "mongoose";
 import { Address } from "../types";
 import { CartItem } from "./cart.model";
 
@@ -19,9 +19,8 @@ export enum PaymentStatus {
 }
 
 export interface OrderDoc extends Document {
-  _id: ObjectId;
   orderNumber: string;
-  userId?: ObjectId;
+  userId?: Types.ObjectId;
   email: string;
   items: CartItem[];
   shippingAddress: Address;

@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { ObjectId } from "mongoose";
+import { Types } from "mongoose";
 import {
   OrderDoc,
   OrderStatus,
@@ -34,7 +34,7 @@ export const generateOrderNumber = (): OrderNumber => {
 export const mapCheckoutSessionToOrder = (
   session: CheckoutSession,
   orderNumber: OrderNumber,
-  userId: ObjectId | undefined,
+  userId: Types.ObjectId | undefined,
   paymentIntentId?: string
 ): Partial<OrderDoc> => {
   return {

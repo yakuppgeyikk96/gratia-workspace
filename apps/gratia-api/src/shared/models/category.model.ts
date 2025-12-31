@@ -1,7 +1,6 @@
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
 
 export interface CategoryDoc extends Document {
-  _id: ObjectId;
   name: string;
   slug: string;
   description?: string;

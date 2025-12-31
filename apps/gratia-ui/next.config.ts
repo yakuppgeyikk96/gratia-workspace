@@ -20,9 +20,7 @@ const nextConfig: NextConfig = {
     ],
   },
   reactStrictMode: false,
-  experimental: {
-    optimizeCss: true,
-  },
+  experimental: {},
 };
 
 export default nextConfig;
