@@ -1,4 +1,4 @@
-import { Container } from "@gratia/ui/components";
+import Container from "@gratia/ui/components/Container/";
 import HeroBackground from "./HeroBackground";
 import HeroContent from "./HeroContent";
 import styles from "./HeroSection.module.scss";

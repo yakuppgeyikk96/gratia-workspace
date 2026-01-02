@@ -1,4 +1,4 @@
-import { Divider } from "@gratia/ui/components";
+import Divider from "@gratia/ui/components/Divider/";
 import BottomHeader from "./BottomHeader";
 import styles from "./Header.module.scss";
 import MainHeader from "./MainHeader";

@@ -80,8 +80,8 @@ export default function ProductDetailImageGallery({
                     fill
                     className={styles.image}
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 60vw, (max-width: 1024px) 42vw, (max-width: 1280px) 42vw, 33vw"
+                    quality={70}
                     priority={index === 0}
-                    quality={75}
                     loading={index === 0 ? undefined : "lazy"}
                   />
                 </div>

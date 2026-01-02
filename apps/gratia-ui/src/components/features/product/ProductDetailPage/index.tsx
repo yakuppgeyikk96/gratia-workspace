@@ -1,8 +1,18 @@
-import ProductDetailImageGallery from "@/components/features/product/ProductDetailImageGallery";
 import ProductDetailInfoCard from "@/components/features/product/ProductDetailInfoCard";
 import { ProductWithVariantsDto } from "@/types/Product.types";
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import styles from "./ProductDetailPage.module.scss";
+
+const ProductDetailImageGallery = dynamic(
+  () =>
+    import("@/components/features/product/ProductDetailImageGallery").then(
+      (mod) => mod.default
+    ),
+  {
+    ssr: true,
+  }
+);
 
 interface ProductDetailPageProps {
   productData: ProductWithVariantsDto;

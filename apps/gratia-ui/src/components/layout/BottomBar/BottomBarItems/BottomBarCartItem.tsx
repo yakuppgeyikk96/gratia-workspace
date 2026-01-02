@@ -1,7 +1,8 @@
 "use client";
 
 import { useCartStore } from "@/store/cartStore";
-import { Badge, LoadingSpinner } from "@gratia/ui/components";
+import Badge from "@gratia/ui/components/Badge/";
+import LoadingSpinner from "@gratia/ui/components/LoadingSpinner/";
 import { IconShoppingBag } from "@gratia/ui/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";

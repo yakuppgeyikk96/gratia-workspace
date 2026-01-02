@@ -1,7 +1,9 @@
 "use client";
 
 import { COLORS } from "@/constants/colors";
-import { Button, Container, Flex } from "@gratia/ui/components";
+import Button from "@gratia/ui/components/Button/";
+import Container from "@gratia/ui/components/Container/";
+import Flex from "@gratia/ui/components/Flex/";
 import { IconBagXFill } from "@gratia/ui/icons";
 import Link from "next/link";
 import styles from "./CartIsEmpty.module.scss";

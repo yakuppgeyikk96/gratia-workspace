@@ -59,7 +59,8 @@ export default function ProductCardImage({
                     alt={`${productName} - Image ${index + 1}`}
                     fill
                     className={styles.image}
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 45vw, (max-width: 1024px) 33vw, 280px"
+                    quality={70}
                     priority={index === 0}
                     fetchPriority={index === 0 ? "high" : "auto"}
                   />

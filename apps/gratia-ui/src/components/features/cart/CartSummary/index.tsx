@@ -4,7 +4,10 @@ import { createCheckoutSession } from "@/actions";
 import { useCartStore } from "@/store/cartStore";
 import { CreateCheckoutSessionRequest } from "@/types";
 import { CartItem } from "@/types/Cart.types";
-import { Button, Divider, useToastContext } from "@gratia/ui/components";
+import { useToastContext } from "@gratia/ui/components";
+import Button from "@gratia/ui/components/Button/";
+import Divider from "@gratia/ui/components/Divider/";
+
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import styles from "./CartSummary.module.scss";

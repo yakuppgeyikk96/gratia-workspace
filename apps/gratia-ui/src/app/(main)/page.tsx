@@ -1,14 +1,5 @@
-import dynamic from "next/dynamic";
-
-const HeroSection = dynamic(() => import("@/components/hero/HeroSection"), {
-  ssr: true,
-});
-const FeaturedProductsSection = dynamic(
-  () => import("@/components/featured-products/FeaturedProductsSection"),
-  {
-    ssr: true,
-  }
-);
+import FeaturedProductsSection from "@/components/featured-products/FeaturedProductsSection";
+import HeroSection from "@/components/hero/HeroSection";
 
 export default async function Home() {
   return (

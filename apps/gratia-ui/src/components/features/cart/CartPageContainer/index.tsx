@@ -4,7 +4,7 @@ import CartIsEmpty from "@/components/features/cart/CartIsEmpty";
 import CartList from "@/components/features/cart/CartList";
 import CartSummary from "@/components/features/cart/CartSummary";
 import { useCartStore } from "@/store/cartStore";
-import { LoadingSpinner } from "@gratia/ui/components";
+import LoadingSpinner from "@gratia/ui/components/LoadingSpinner/";
 import styles from "./CartPageContainer.module.scss";
 
 interface CartPageContainerProps {
