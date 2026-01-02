@@ -2,9 +2,13 @@
 
 import { registerUser } from "@/actions";
 import Container from "@gratia/ui/components/Container";
-import OneTimePassword from "@gratia/ui/components/OneTimePassword";
 import { useToastContext } from "@gratia/ui/components/Toast";
+import { lazy, Suspense } from "react";
 import styles from "./VerifyEmail.module.scss";
+
+const OneTimePassword = lazy(
+  () => import("@gratia/ui/components/OneTimePassword")
+);
 
 interface VerifyEmailProps {
   token: string;
@@ -38,13 +42,15 @@ export default function VerifyEmail({ token }: VerifyEmailProps) {
             verify your email.
           </p>
         </div>
-        <OneTimePassword
-          length={6}
-          size="md"
-          variant="outlined"
-          onComplete={handleComplete}
-          autoFocus
-        />
+        <Suspense fallback={null}>
+          <OneTimePassword
+            length={6}
+            size="md"
+            variant="outlined"
+            onComplete={handleComplete}
+            autoFocus
+          />
+        </Suspense>
       </Container>
     </div>
   );

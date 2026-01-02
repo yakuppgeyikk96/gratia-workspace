@@ -1,11 +1,15 @@
 "use client";
 
-import CartIsEmpty from "@/components/features/cart/CartIsEmpty";
-import CartList from "@/components/features/cart/CartList";
-import CartSummary from "@/components/features/cart/CartSummary";
 import { useCartStore } from "@/store/cartStore";
-import LoadingSpinner from "@gratia/ui/components/LoadingSpinner/";
+import LoadingSpinner from "@gratia/ui/components/LoadingSpinner";
+import { lazy, Suspense } from "react";
+import CartIsEmpty from "../CartIsEmpty";
 import styles from "./CartPageContainer.module.scss";
+
+const CartList = lazy(() => import("@/components/features/cart/CartList"));
+const CartSummary = lazy(
+  () => import("@/components/features/cart/CartSummary")
+);
 
 interface CartPageContainerProps {
   isLoggedIn: boolean;
@@ -27,10 +31,14 @@ export default function CartPageContainer(props: CartPageContainerProps) {
   return (
     <div className={styles.cartPageContainer}>
       <div className={styles.cartList}>
-        <CartList cartItems={cartItems} isLoggedIn={isLoggedIn} />
+        <Suspense fallback={null}>
+          <CartList cartItems={cartItems} isLoggedIn={isLoggedIn} />
+        </Suspense>
       </div>
       <div className={styles.cartSummary}>
-        <CartSummary items={cartItems} />
+        <Suspense fallback={null}>
+          <CartSummary items={cartItems} />
+        </Suspense>
       </div>
     </div>
   );
