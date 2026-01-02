@@ -1,6 +1,6 @@
 "use client";
 
-import { FormField } from "@gratia/ui/components";
+import FormField from "@gratia/ui/components/FormField";
 import {
   CardCvcElement,
   CardExpiryElement,

@@ -1,6 +1,6 @@
 "use client";
 
-import { IconCross } from "@gratia/ui/icons";
+import IconCross from "@gratia/ui/icons/IconCross";
 import styles from "./CartItemRemoveButton.module.scss";
 
 interface CartItemRemoveButtonProps {

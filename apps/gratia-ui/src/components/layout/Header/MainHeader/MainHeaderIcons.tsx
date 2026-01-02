@@ -1,7 +1,8 @@
 "use client";
 
-import { IconButton } from "@gratia/ui/components";
-import { IconBell, IconHeart } from "@gratia/ui/icons";
+import IconButton from "@gratia/ui/components/IconButton";
+import IconBell from "@gratia/ui/icons/IconBell";
+import IconHeart from "@gratia/ui/icons/IconHeart";
 
 export default function MainHeaderIcons() {
   const handleBellClick = () => {

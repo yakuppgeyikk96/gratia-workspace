@@ -1,6 +1,8 @@
 "use client";
 
-import { Pagination, PaginationInfo } from "@gratia/ui/components";
+import Pagination, {
+  type PaginationInfo,
+} from "@gratia/ui/components/Pagination";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo } from "react";
 

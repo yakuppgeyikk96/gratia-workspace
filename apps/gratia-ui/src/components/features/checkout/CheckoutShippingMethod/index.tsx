@@ -5,7 +5,7 @@ import {
   selectShippingMethod,
 } from "@/actions/checkout";
 import { CheckoutSession } from "@/types";
-import { Button } from "@gratia/ui/components";
+import Button from "@gratia/ui/components/Button";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

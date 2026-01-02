@@ -1,8 +1,10 @@
 "use client";
 
 import { COLORS } from "@/constants/colors";
-import { FormField, Input } from "@gratia/ui/components";
-import { IconPassword, IconVisibility } from "@gratia/ui/icons";
+import FormField from "@gratia/ui/components/FormField";
+import Input from "@gratia/ui/components/Input";
+import IconPassword from "@gratia/ui/icons/IconPassword";
+import IconVisibility from "@gratia/ui/icons/IconVisibility";
 import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
 interface PasswordFieldProps {

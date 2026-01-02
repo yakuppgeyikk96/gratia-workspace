@@ -1,14 +1,17 @@
 "use client";
 
 import { getCategoryTree } from "@/actions/category";
-import { CategoryTreeNode } from "@/types/Category.types";
-import { Button, Flex } from "@gratia/ui/components";
-import { IconChevronDown, IconChevronRight } from "@gratia/ui/icons";
+import type { CategoryTreeNode } from "@/types/Category.types";
+import Button from "@gratia/ui/components/Button";
+import Flex from "@gratia/ui/components/Flex";
+import IconChevronDown from "@gratia/ui/icons/IconChevronDown";
+import IconChevronRight from "@gratia/ui/icons/IconChevronRight";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useQuery } from "@tanstack/react-query";
 import classNames from "classnames";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+
 import styles from "./CategoryDropdownTree.module.scss";
 
 interface CategoryDropdownTreeProps {

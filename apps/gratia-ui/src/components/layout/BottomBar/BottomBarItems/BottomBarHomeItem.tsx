@@ -1,4 +1,4 @@
-import { IconHome } from "@gratia/ui/icons";
+import IconHome from "@gratia/ui/icons/IconHome";
 import Link from "next/link";
 import styles from "./BottomBarItems.module.scss";
 

@@ -1,10 +1,12 @@
 "use client";
 
-import { Button, Dropdown, DropdownOption } from "@gratia/ui/components";
-import { IconThreeDotsVertical } from "@gratia/ui/icons";
+import Button from "@gratia/ui/components/Button";
+import Dropdown, { type DropdownOption } from "@gratia/ui/components/Dropdown";
+import IconThreeDotsVertical from "@gratia/ui/icons/IconThreeDotsVertical";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import HeaderCategoryLinkItem from "./HeaderCategoryLinkItem";
+
 import styles from "./HeaderCategoryLinks.module.scss";
 
 interface Link {

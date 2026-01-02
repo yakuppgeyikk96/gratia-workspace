@@ -1,12 +1,12 @@
 "use client";
 
 import { COLORS } from "@/constants/colors";
-import { IconButton } from "@gratia/ui/components";
-import { IconHeart } from "@gratia/ui/icons";
+import IconButton from "@gratia/ui/components/IconButton";
+import IconHeart from "@gratia/ui/icons/IconHeart";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ProductCardImageProps } from "../ProductCard.types";
+import type { ProductCardImageProps } from "../ProductCard.types";
 import styles from "./ProductCardImage.module.scss";
 
 export default function ProductCardImage({

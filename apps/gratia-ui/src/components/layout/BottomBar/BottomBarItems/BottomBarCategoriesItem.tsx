@@ -2,11 +2,12 @@
 
 import { getCategoryTree } from "@/actions/category";
 import { CategoryTreeNode } from "@/types/Category.types";
-import { Drawer, DrawerItem } from "@gratia/ui/components";
-import { IconColumnsGap } from "@gratia/ui/icons";
+import Drawer, { type DrawerItem } from "@gratia/ui/components/Drawer";
+import IconColumnsGap from "@gratia/ui/icons/IconColumnsGap";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+
 import styles from "./BottomBarItems.module.scss";
 
 export default function BottomBarCategoriesItem() {

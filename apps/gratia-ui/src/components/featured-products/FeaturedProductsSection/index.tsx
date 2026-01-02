@@ -1,9 +1,10 @@
 import { isAuthenticatedUser } from "@/actions/auth";
 import { getFeaturedProducts } from "@/actions/product";
-import { Container } from "@gratia/ui/components";
+import Container from "@gratia/ui/components/Container";
 import { Suspense } from "react";
 import FeaturedProductsCarousel from "../FeaturedProductsCarousel";
 import FeaturedProductsSkeleton from "../FeaturedProductsSkeleton";
+
 import styles from "./FeaturedProductsSection.module.scss";
 
 export default async function FeaturedProductsSection() {

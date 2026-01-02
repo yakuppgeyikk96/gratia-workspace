@@ -1,6 +1,7 @@
 "use client";
 
-import { IconChevronLeft, IconChevronRight } from "@gratia/ui/icons";
+import IconChevronLeft from "@gratia/ui/icons/IconChevronLeft";
+import IconChevronRight from "@gratia/ui/icons/IconChevronRight";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";

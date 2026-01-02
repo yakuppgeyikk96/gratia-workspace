@@ -3,7 +3,10 @@ import type { Metadata } from "next";
 import CartInitializer from "@/components/features/cart/CartInitializer";
 import { TanstackQueryClientProvider } from "@/components/providers";
 import { isAuthenticated } from "@/lib/utils/auth";
-import { ToastContainer, ToastContextProvider } from "@gratia/ui/components";
+import {
+  ToastContainer,
+  ToastContextProvider,
+} from "@gratia/ui/components/Toast";
 
 import "./globals.scss";
 

@@ -1,14 +1,14 @@
 import { logoutUser } from "@/actions";
-import { Drawer, DrawerItem } from "@gratia/ui/components";
-import {
-  IconBox,
-  IconBoxArrowLeft,
-  IconBoxArrowRight,
-  IconCash,
-  IconHeart,
-  IconPerson,
-  IconTranslate,
-} from "@gratia/ui/icons";
+import Drawer, { type DrawerItem } from "@gratia/ui/components/Drawer";
+
+import IconBox from "@gratia/ui/icons/IconBox";
+import IconBoxArrowLeft from "@gratia/ui/icons/IconBoxArrowLeft";
+import IconBoxArrowRight from "@gratia/ui/icons/IconBoxArrowRight";
+import IconCash from "@gratia/ui/icons/IconCash";
+import IconHeart from "@gratia/ui/icons/IconHeart";
+import IconPerson from "@gratia/ui/icons/IconPerson";
+import IconTranslate from "@gratia/ui/icons/IconTranslate";
+
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import styles from "./BottomBarItems.module.scss";

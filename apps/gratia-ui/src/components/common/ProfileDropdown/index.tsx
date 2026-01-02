@@ -2,8 +2,11 @@
 
 import { logoutUser } from "@/actions/auth";
 import { useCartStore } from "@/store/cartStore";
-import { Button, Dropdown, DropdownOption, Flex } from "@gratia/ui/components";
-import { IconChevronDown, IconPerson } from "@gratia/ui/icons";
+import Button from "@gratia/ui/components/Button";
+import Dropdown, { type DropdownOption } from "@gratia/ui/components/Dropdown";
+import Flex from "@gratia/ui/components/Flex";
+import IconChevronDown from "@gratia/ui/icons/IconChevronDown";
+import IconPerson from "@gratia/ui/icons/IconPerson";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 

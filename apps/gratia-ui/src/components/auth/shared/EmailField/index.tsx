@@ -1,8 +1,9 @@
 "use client";
 
 import { COLORS } from "@/constants/colors";
-import { FormField, Input } from "@gratia/ui/components";
-import { IconAt } from "@gratia/ui/icons";
+import FormField from "@gratia/ui/components/FormField";
+import Input from "@gratia/ui/components/Input";
+import IconAt from "@gratia/ui/icons/IconAt";
 import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
 interface EmailFieldProps {

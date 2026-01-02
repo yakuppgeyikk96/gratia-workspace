@@ -1,7 +1,7 @@
 "use client";
 
 import type { CheckoutStep } from "@/types/Checkout.types";
-import { IconTick } from "@gratia/ui/icons";
+import IconTick from "@gratia/ui/icons/IconTick";
 import classNames from "classnames";
 import styles from "./CheckoutStepper.module.scss";
 

@@ -6,7 +6,8 @@ import {
   shippingAddressSchema,
 } from "@/schemas/checkoutSchema";
 import { CheckoutSession } from "@/types/Checkout.types";
-import { Button, Checkbox } from "@gratia/ui/components";
+import Button from "@gratia/ui/components/Button";
+import Checkbox from "@gratia/ui/components/Checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

@@ -1,11 +1,13 @@
 "use client";
 
 import ProductCard from "@/components/features/product/ProductCard";
-import { Product } from "@/types";
-import { IconButton } from "@gratia/ui/components";
-import { IconChevronLeft, IconChevronRight } from "@gratia/ui/icons";
+import type { Product } from "@/types";
+import IconButton from "@gratia/ui/components/IconButton";
+import IconChevronLeft from "@gratia/ui/icons/IconChevronLeft";
+import IconChevronRight from "@gratia/ui/icons/IconChevronRight";
 import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
+
 import styles from "./FeaturedProductsCarousel.module.scss";
 
 interface FeaturedProductsCarouselProps {

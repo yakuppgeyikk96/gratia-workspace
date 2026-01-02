@@ -1,6 +1,7 @@
 "use client";
 
-import { IconDash, IconPlus } from "@gratia/ui/icons";
+import IconDash from "@gratia/ui/icons/IconDash";
+import IconPlus from "@gratia/ui/icons/IconPlus";
 import classNames from "classnames";
 import { memo } from "react";
 import styles from "./QuantitySelector.module.scss";

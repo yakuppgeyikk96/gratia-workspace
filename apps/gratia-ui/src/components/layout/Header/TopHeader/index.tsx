@@ -1,8 +1,13 @@
-import { CurrencyDropdown, LanguageDropdown } from "@/components/common";
+import CurrencyDropdown from "@/components/common/CurrencyDropdown";
+import LanguageDropdown from "@/components/common/LanguageDropdown";
 import TopHeaderLinks from "@/components/layout/Header/TopHeaderLinks";
 import { COLORS } from "@/constants/colors";
-import { Container, Flex } from "@gratia/ui/components";
-import { IconInstagram, IconWhatsapp, IconX } from "@gratia/ui/icons";
+import Container from "@gratia/ui/components/Container";
+import Flex from "@gratia/ui/components/Flex";
+import IconInstagram from "@gratia/ui/icons/IconInstagram";
+import IconWhatsapp from "@gratia/ui/icons/IconWhatsapp";
+import IconX from "@gratia/ui/icons/IconX";
+
 import styles from "./TopHeader.module.scss";
 
 const socialMediaIconsColor = COLORS.ICON_PRIMARY;

@@ -1,7 +1,7 @@
 "use client";
 
 import { CartItem } from "@/types/Cart.types";
-import { Flex } from "@gratia/ui/components";
+import Flex from "@gratia/ui/components/Flex";
 import CartItemComponent from "./CartItem";
 
 interface CartListProps {

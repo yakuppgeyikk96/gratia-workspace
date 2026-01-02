@@ -9,7 +9,7 @@ import {
   UpdateCartItemDto,
 } from "@/types/Cart.types";
 import { Product } from "@/types/Product.types";
-import { useToastContext } from "@gratia/ui/components";
+import { useToastContext } from "@gratia/ui/components/Toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const TOAST_DURATION = 3000;

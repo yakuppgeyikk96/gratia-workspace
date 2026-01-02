@@ -5,7 +5,7 @@ import { useCartStore } from "@/store/cartStore";
 
 import { COLORS } from "@/constants";
 import { useCart } from "@/hooks/useCart";
-import { IconBagCheck } from "@gratia/ui/icons";
+import IconBagCheck from "@gratia/ui/icons/IconBagCheck";
 import { memo } from "react";
 import styles from "./QuantitySelectorContainer.module.scss";
 

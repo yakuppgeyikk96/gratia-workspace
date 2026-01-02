@@ -1,6 +1,6 @@
 import { isAuthenticatedUser } from "@/actions/auth";
 import { PaginationInfo, Product } from "@/types";
-import { Container } from "@gratia/ui/components";
+import Container from "@gratia/ui/components/Container";
 import ProductCard from "../ProductCard";
 import PaginationWrapper from "./PaginationWrapper";
 import styles from "./ProductList.module.scss";

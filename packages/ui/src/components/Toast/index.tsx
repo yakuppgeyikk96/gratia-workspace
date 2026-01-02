@@ -6,6 +6,11 @@ import { IconCross } from "../../icons";
 import Flex from "../Flex";
 import styles from "./Toast.module.scss";
 
+import {
+  ToastProvider as ToastContextProvider,
+  useToastContext,
+} from "./ToastContext";
+
 export type ToastVariant = "success" | "error" | "warning" | "info";
 
 interface ToastProps {
@@ -92,5 +97,5 @@ const ToastProvider = ({
 // Export ToastContainer
 export { default as ToastContainer } from "./ToastContainer";
 
-export { Toast, ToastProvider };
+export { Toast, ToastContextProvider, ToastProvider, useToastContext };
 export type { ToastProps };

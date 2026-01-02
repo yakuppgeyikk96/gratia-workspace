@@ -1,4 +1,4 @@
-import { Button } from "@gratia/ui/components";
+import Button from "@gratia/ui/components/Button";
 import Link from "next/link";
 import { ReactNode } from "react";
 import styles from "./HeaderCategoryLinkItem.module.scss";

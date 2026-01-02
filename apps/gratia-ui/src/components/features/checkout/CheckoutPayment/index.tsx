@@ -4,7 +4,7 @@
 import { completeCheckout } from "@/actions";
 import { StripeElementsProvider } from "@/components/providers";
 import { CheckoutSession } from "@/types";
-import { Button } from "@gratia/ui/components";
+import Button from "@gratia/ui/components/Button";
 import { useRef, useState } from "react";
 import styles from "./CheckoutPayment.module.scss";
 import CreditCardForm, { CreditCardFormRef } from "./CreditCardForm";

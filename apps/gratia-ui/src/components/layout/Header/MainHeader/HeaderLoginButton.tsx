@@ -1,8 +1,8 @@
 "use client";
 
-import { ProfileDropdown } from "@/components/common";
-import { Button } from "@gratia/ui/components";
-import { IconPerson } from "@gratia/ui/icons";
+import ProfileDropdown from "@/components/common/ProfileDropdown";
+import Button from "@gratia/ui/components/Button";
+import IconPerson from "@gratia/ui/icons/IconPerson";
 import { useRouter } from "next/navigation";
 
 interface HeaderLoginButtonProps {

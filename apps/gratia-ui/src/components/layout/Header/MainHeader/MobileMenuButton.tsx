@@ -1,6 +1,6 @@
 "use client";
 
-import { IconButton } from "@gratia/ui/components";
+import IconButton from "@gratia/ui/components/IconButton";
 import { useState } from "react";
 
 export default function MobileMenuButton() {

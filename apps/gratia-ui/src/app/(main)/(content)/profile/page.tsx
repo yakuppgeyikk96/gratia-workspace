@@ -1,4 +1,4 @@
-import { Container } from "@gratia/ui/components";
+import Container from "@gratia/ui/components/Container/";
 
 export default function ProfilePage() {
   return (

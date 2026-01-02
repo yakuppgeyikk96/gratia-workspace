@@ -4,9 +4,9 @@ import { createCheckoutSession } from "@/actions";
 import { useCartStore } from "@/store/cartStore";
 import { CreateCheckoutSessionRequest } from "@/types";
 import { CartItem } from "@/types/Cart.types";
-import { useToastContext } from "@gratia/ui/components";
-import Button from "@gratia/ui/components/Button/";
-import Divider from "@gratia/ui/components/Divider/";
+import Button from "@gratia/ui/components/Button";
+import Divider from "@gratia/ui/components/Divider";
+import { useToastContext } from "@gratia/ui/components/Toast";
 
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";

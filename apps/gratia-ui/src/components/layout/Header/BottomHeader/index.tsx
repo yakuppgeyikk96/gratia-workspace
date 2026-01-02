@@ -1,6 +1,7 @@
-import { CategoryDropdown } from "@/components/common";
-import { Container } from "@gratia/ui/components";
+import CategoryDropdown from "@/components/common/CategoryDropdown";
+import Container from "@gratia/ui/components/Container";
 import HeaderCategoryLinks from "../HeaderCategoryLinks";
+
 import styles from "./BottomHeader.module.scss";
 
 export default function BottomHeader() {

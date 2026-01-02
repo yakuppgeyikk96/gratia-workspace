@@ -2,7 +2,7 @@
 
 import React, { cloneElement, isValidElement, useState } from "react";
 import { DRAWER_ANIMATION_DURATION } from "./constants";
-import { DrawerProps } from "./Drawer.types";
+import { DrawerItem, DrawerProps } from "./Drawer.types";
 import DrawerContent from "./DrawerContent";
 import { useDrawerNavigation } from "./useDrawerNavigation";
 
@@ -63,3 +63,5 @@ export default function Drawer({
     </>
   );
 }
+
+export type { DrawerItem, DrawerProps };

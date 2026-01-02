@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { ReactNode } from "react";
 import { IconChevronDown } from "../../icons";
 import styles from "./Dropdown.module.scss";
-import { DropdownProps } from "./Dropdown.types";
+import { DropdownOption, DropdownProps } from "./Dropdown.types";
 
 export default function Dropdown({
   options,
@@ -76,3 +76,5 @@ export default function Dropdown({
     </DropdownMenu.Root>
   );
 }
+
+export type { DropdownOption, DropdownProps };

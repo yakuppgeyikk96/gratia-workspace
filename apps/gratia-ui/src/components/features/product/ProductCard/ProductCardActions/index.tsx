@@ -1,12 +1,13 @@
 "use client";
 
-import { QuantitySelector } from "@/components/common";
+import QuantitySelector from "@/components/common/QuantitySelector";
 import { useCart } from "@/hooks/useCart";
 import { useCartStore } from "@/store/cartStore";
-import { IconButton } from "@gratia/ui/components";
-import { IconShoppingBag } from "@gratia/ui/icons";
+import IconButton from "@gratia/ui/components/IconButton";
+import IconShoppingBag from "@gratia/ui/icons/IconShoppingBag";
 import classNames from "classnames";
-import { ProductCardActionsProps } from "../ProductCard.types";
+import type { ProductCardActionsProps } from "../ProductCard.types";
+
 import styles from "./ProductCardActions.module.scss";
 
 export default function ProductCardActions({

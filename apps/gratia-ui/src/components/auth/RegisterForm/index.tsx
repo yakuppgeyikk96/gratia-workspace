@@ -5,13 +5,11 @@ import {
   registerSchema,
   type RegisterFormData,
 } from "@/schemas/registerSchema";
-import {
-  Button,
-  Checkbox,
-  FormField,
-  Input,
-  useToastContext,
-} from "@gratia/ui/components";
+import Button from "@gratia/ui/components/Button";
+import Checkbox from "@gratia/ui/components/Checkbox";
+import FormField from "@gratia/ui/components/FormField";
+import Input from "@gratia/ui/components/Input";
+import { useToastContext } from "@gratia/ui/components/Toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";

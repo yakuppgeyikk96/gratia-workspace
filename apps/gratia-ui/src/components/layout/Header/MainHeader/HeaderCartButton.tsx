@@ -5,7 +5,7 @@ import Badge from "@gratia/ui/components/Badge/";
 import Button from "@gratia/ui/components/Button/";
 import Flex from "@gratia/ui/components/Flex/";
 import LoadingSpinner from "@gratia/ui/components/LoadingSpinner/";
-import { IconShoppingBag } from "@gratia/ui/icons";
+import IconShoppingBag from "@gratia/ui/icons/IconShoppingBag";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

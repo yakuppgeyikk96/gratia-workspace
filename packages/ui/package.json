@@ -26,8 +26,8 @@
       "default": "./src/icons/index.ts"
     },
     "./icons/*": {
-      "types": "./src/icons/*/index.tsx",
-      "default": "./src/icons/*/index.tsx"
+      "types": "./src/icons/*.tsx",
+      "default": "./src/icons/*.tsx"
     },
     "./styles/*": "./src/styles/*"
   },

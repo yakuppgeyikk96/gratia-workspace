@@ -1,8 +1,8 @@
 "use client";
 
 import { CURRENCIES } from "@/constants";
-import { Dropdown, type DropdownProps } from "@gratia/ui/components";
-import { IconChevronDown } from "@gratia/ui/icons";
+import Dropdown, { type DropdownProps } from "@gratia/ui/components/Dropdown";
+import IconChevronDown from "@gratia/ui/icons/IconChevronDown";
 
 interface CurrencyDropdownProps extends Omit<DropdownProps, "options"> {
   currentCurrency?: string;
