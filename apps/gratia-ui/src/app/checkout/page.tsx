@@ -1,9 +1,28 @@
 import { getCheckoutSessionData } from "@/actions/checkout";
-import CheckoutPayment from "@/components/features/checkout/CheckoutPayment";
-import CheckoutShipping from "@/components/features/checkout/CheckoutShipping";
-import CheckoutShippingMethod from "@/components/features/checkout/CheckoutShippingMethod";
 import { CheckoutStep } from "@/types/Checkout.types";
+import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
+
+const CheckoutPayment = dynamic(
+  () => import("@/components/features/checkout/CheckoutPayment"),
+  {
+    ssr: true,
+  }
+);
+
+const CheckoutShipping = dynamic(
+  () => import("@/components/features/checkout/CheckoutShipping"),
+  {
+    ssr: true,
+  }
+);
+
+const CheckoutShippingMethod = dynamic(
+  () => import("@/components/features/checkout/CheckoutShippingMethod"),
+  {
+    ssr: true,
+  }
+);
 
 interface CheckoutPageProps {
   searchParams: Promise<{

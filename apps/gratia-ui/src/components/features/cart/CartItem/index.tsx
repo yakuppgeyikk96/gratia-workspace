@@ -1,6 +1,6 @@
 "use client";
 
-import { QuantitySelector } from "@/components/common";
+import QuantitySelector from "@/components/common/QuantitySelector";
 import { useCart } from "@/hooks/useCart";
 import { CartItem as CartItemType } from "@/types/Cart.types";
 import LoadingSpinner from "@gratia/ui/components/LoadingSpinner/";

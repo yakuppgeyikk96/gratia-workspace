@@ -1,6 +1,6 @@
 "use client";
 
-import { Countdown } from "@/components/common";
+import Countdown from "@/components/common/Countdown";
 import { formatPrice } from "@/lib/utils/format";
 import { CheckoutSession } from "@/types/Checkout.types";
 import { useRouter } from "next/navigation";
