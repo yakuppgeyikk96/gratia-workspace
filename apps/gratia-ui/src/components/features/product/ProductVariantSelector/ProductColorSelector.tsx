@@ -29,6 +29,7 @@ export default function ProductColorSelector({
             key={variant._id}
             href={`/products/${variant.slug}`}
             className={`${styles.variantCard} ${isActive ? styles.active : ""}`}
+            prefetch={false}
           >
             <div className={styles.variantImageContainer}>
               {firstImage ? (

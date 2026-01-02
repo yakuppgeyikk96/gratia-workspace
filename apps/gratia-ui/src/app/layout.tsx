@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Concert_One, Inter } from "next/font/google";
 
 import CartInitializer from "@/components/features/cart/CartInitializer";
 import { TanstackQueryClientProvider } from "@/components/providers";
@@ -7,17 +6,6 @@ import { isAuthenticated } from "@/lib/utils/auth";
 import { ToastContainer, ToastContextProvider } from "@gratia/ui/components";
 
 import "./globals.scss";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const concertOne = Concert_One({
-  weight: ["400"],
-  subsets: ["latin"],
-  variable: "--font-concert-one",
-});
 
 export const metadata: Metadata = {
   title: "Gratia - Your Shopping Destination",
@@ -33,7 +21,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${concertOne.variable}`}>
+      <body>
         <TanstackQueryClientProvider>
           <ToastContextProvider>
             {children}

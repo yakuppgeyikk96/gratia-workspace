@@ -21,7 +21,7 @@ export default function CartIsEmpty() {
           </p>
         </Flex>
 
-        <Link href="/">
+        <Link href="/" prefetch={false}>
           <Button variant="primary" size="lg">
             Start Shopping
           </Button>

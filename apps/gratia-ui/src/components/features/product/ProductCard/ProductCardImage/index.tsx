@@ -61,6 +61,7 @@ export default function ProductCardImage({
                     className={styles.image}
                     sizes="(max-width: 768px) 50vw, 25vw"
                     priority={index === 0}
+                    fetchPriority={index === 0 ? "high" : "auto"}
                   />
                 </div>
               </div>

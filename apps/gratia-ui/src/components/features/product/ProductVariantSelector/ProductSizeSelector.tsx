@@ -25,6 +25,7 @@ export default function ProductSizeSelector({
             key={variant._id}
             href={`/products/${variant.slug}`}
             className={`${styles.sizeButton} ${isActive ? styles.active : ""}`}
+            prefetch={false}
           >
             {sizeValue}
           </Link>

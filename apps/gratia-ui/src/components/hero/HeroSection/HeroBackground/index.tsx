@@ -63,6 +63,7 @@ export default function HeroBackground({
                 priority={index === 0}
                 className={styles.backgroundImage}
                 sizes="50vw"
+                fetchPriority={index === 0 ? "high" : "auto"}
               />
             </div>
           ))}

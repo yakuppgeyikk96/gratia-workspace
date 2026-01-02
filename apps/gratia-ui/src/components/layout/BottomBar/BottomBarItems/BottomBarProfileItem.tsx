@@ -11,7 +11,7 @@ import {
 } from "@gratia/ui/icons";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
-import styles from "./BottomBar.module.scss";
+import styles from "./BottomBarItems.module.scss";
 
 interface BottomBarProfileItemProps {
   isLoggedIn: boolean;

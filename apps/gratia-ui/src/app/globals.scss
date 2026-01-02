@@ -1,7 +1,5 @@
 @use "@gratia/ui/styles/core/_colors.scss" as *;
 @use "@gratia/ui/styles/core/_variables.scss" as *;
-@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
-@use "@gratia/ui/styles/core/_spacing.scss" as *;
 
 :root {
   --background: #{$bg-color};

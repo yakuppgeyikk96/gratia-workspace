@@ -5,7 +5,7 @@ import { Badge, LoadingSpinner } from "@gratia/ui/components";
 import { IconShoppingBag } from "@gratia/ui/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import styles from "./BottomBar.module.scss";
+import styles from "./BottomBarItems.module.scss";
 
 export default function BottomBarCartItem() {
   const [mounted, setMounted] = useState(false);
@@ -21,7 +21,7 @@ export default function BottomBarCartItem() {
     return <LoadingSpinner />;
   }
   return (
-    <Link href="/cart" className={styles.bottomBarItemContent}>
+    <Link href="/cart" className={styles.bottomBarItemContent} prefetch={false}>
       <div className={styles.bottomBarItemIcon}>
         <IconShoppingBag size={20} />
         <Badge

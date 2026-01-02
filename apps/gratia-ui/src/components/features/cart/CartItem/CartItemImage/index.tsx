@@ -25,6 +25,7 @@ export default function CartItemImage({
             fill
             className={styles.image}
             sizes="(max-width: 768px) 120px, 120px"
+            fetchPriority="high"
           />
         </div>
       ) : (

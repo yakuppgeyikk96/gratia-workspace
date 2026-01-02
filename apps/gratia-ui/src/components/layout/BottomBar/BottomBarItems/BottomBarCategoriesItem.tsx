@@ -7,7 +7,7 @@ import { IconColumnsGap } from "@gratia/ui/icons";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import styles from "./BottomBar.module.scss";
+import styles from "./BottomBarItems.module.scss";
 
 export default function BottomBarCategoriesItem() {
   const router = useRouter();

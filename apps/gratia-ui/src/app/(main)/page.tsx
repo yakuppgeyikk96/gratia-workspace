@@ -1,11 +1,12 @@
-import { FeaturedProductsSection } from "@/components/featured-products";
-import { HeroSection } from "@/components/hero";
+// import { FeaturedProductsSection } from "@/components/featured-products";
+// import { HeroSection } from "@/components/hero";
 
 export default async function Home() {
   return (
     <>
-      <HeroSection />
-      <FeaturedProductsSection />
+      <div>Hello World</div>
+      {/* <HeroSection /> */}
+      {/* <FeaturedProductsSection /> */}
     </>
   );
 }

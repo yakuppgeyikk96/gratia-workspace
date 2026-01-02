@@ -20,7 +20,12 @@ export default function HeaderCategoryLinkItem({
 
   if (href) {
     return (
-      <Link href={href} className={linkClass} onClick={onClick}>
+      <Link
+        href={href}
+        className={linkClass}
+        onClick={onClick}
+        prefetch={false}
+      >
         {children}
       </Link>
     );

@@ -2,11 +2,12 @@
 
 import { BottomBarItem } from "@/types/Navigation.types";
 import { useMemo } from "react";
-import styles from "./BottomBar.module.scss";
 import BottomBarCartItem from "./BottomBarCartItem";
 import BottomBarCategoriesItem from "./BottomBarCategoriesItem";
 import BottomBarHomeItem from "./BottomBarHomeItem";
 import BottomBarProfileItem from "./BottomBarProfileItem";
+
+import styles from "./BottomBarItems.module.scss";
 
 interface BottomBarItemsProps {
   isLoggedIn: boolean;

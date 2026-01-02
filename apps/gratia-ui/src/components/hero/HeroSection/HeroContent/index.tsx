@@ -21,7 +21,7 @@ export default function HeroContent({
     <div className={styles.heroContent}>
       <h1 className={styles.heroTitle}>{title}</h1>
       <p className={styles.heroDescription}>{description}</p>
-      <Link href={ctaHref}>
+      <Link href={ctaHref} prefetch={false}>
         <Button size="lg" variant={ctaVariant}>
           {ctaText}
         </Button>

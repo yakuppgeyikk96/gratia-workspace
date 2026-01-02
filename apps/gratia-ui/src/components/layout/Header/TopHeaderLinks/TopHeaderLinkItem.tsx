@@ -12,7 +12,12 @@ export default function TopHeaderLinkItem({
 }: TopHeaderLinkItemProps) {
   return (
     <li className={styles.topHeaderLinkItem}>
-      <Link href={href} prefetch={false} target="_blank">
+      <Link
+        href={href}
+        prefetch={false}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <span className={styles.topHeaderLinkItemTitle}>{title}</span>
       </Link>
     </li>

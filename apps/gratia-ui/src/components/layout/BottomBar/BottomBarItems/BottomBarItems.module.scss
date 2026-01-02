@@ -5,19 +5,15 @@
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
 .bottomBar {
-  display: none;
-
-  @media screen and (max-width: $breakpoint-sm) {
-    display: block;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: $bg-color;
-    z-index: 1000;
-    padding-bottom: env(safe-area-inset-bottom);
-    border-top: 1px solid $border-light;
-  }
+  display: block;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: $bg-color;
+  z-index: 1000;
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: 1px solid $border-light;
 }
 
 .bottomBarInner {

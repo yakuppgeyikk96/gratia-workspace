@@ -136,7 +136,7 @@ export default function RegisterForm() {
 
         <div className={styles.alreadyHaveAccount}>
           <p>Already have an account?</p>
-          <Link href="/login" className={styles.loginLink}>
+          <Link href="/login" className={styles.loginLink} prefetch={false}>
             Login
           </Link>
         </div>
