@@ -68,6 +68,20 @@ export interface ProductAttributes {
   material?: ProductMaterial;
 }
 
+export interface Brand {
+  _id: string;
+  name: string;
+  slug: string;
+  logo?: string;
+}
+
+export interface Vendor {
+  _id: string;
+  storeName: string;
+  storeSlug: string;
+  logo?: string;
+}
+
 export interface Product {
   _id: string;
   name: string;
@@ -77,6 +91,8 @@ export interface Product {
   categoryId: string | Partial<ProductCategory>;
   categoryPath?: string;
   collectionSlugs?: string[];
+  brandId?: string | Partial<Brand>;
+  vendorId?: string | Partial<Vendor>;
   price: number;
   discountedPrice?: number;
   stock: number;

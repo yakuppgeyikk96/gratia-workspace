@@ -15,6 +15,7 @@ export interface ProductCardImageProps {
 export interface ProductCardInfoProps {
   name: string;
   description?: string;
+  brandName?: string;
 }
 
 export interface ProductCardActionsProps {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/hooks/useCart";
+import { Brand } from "@/types";
 import Link from "next/link";
 import styles from "./ProductCard.module.scss";
 import { ProductCardProps } from "./ProductCard.types";
@@ -23,6 +24,12 @@ export default function ProductCard({
     handleAddToCart(product);
   };
 
+  // Extract brand name from brandId if it's populated
+  const brandName =
+    product.brandId && typeof product.brandId === "object"
+      ? (product.brandId as Partial<Brand>).name
+      : undefined;
+
   return (
     <article className={`${styles.productCard} ${className}`}>
       <ProductCardImage
@@ -39,6 +46,7 @@ export default function ProductCard({
         <ProductCardInfo
           name={product.name ?? ""}
           description={product.description}
+          brandName={brandName}
         />
       </Link>
 

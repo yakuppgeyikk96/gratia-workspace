@@ -8,6 +8,15 @@
   @include gap(2);
 }
 
+.brandName {
+  font-size: $text-xs;
+  font-weight: $font-semibold;
+  color: $text-muted-color;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
 .productName {
   font-size: $text-base;
   font-weight: $font-semibold;

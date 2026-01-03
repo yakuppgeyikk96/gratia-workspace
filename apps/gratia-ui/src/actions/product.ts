@@ -13,6 +13,9 @@ export async function getProducts(
   const queryParams = Object.entries(options).map(
     ([key, value]) => `${key}=${value}`
   );
+
+  queryParams.push("details=true");
+
   const queryString = queryParams.join("&");
   return await apiClient.get(`/products?${queryString}`);
 }
