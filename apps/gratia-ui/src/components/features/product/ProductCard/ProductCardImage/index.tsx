@@ -16,14 +16,26 @@ export default function ProductCardImage({
 }: ProductCardImageProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([0]));
 
   const displayImages = useMemo(() => images.slice(0, 4), [images]);
   const hasImages = displayImages.length > 0;
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
+    const newIndex = emblaApi.selectedScrollSnap();
+    setSelectedIndex(newIndex);
+
+    // Load current and next image when sliding
+    setLoadedImages((prev) => {
+      const newSet = new Set(prev);
+      newSet.add(newIndex);
+      if (newIndex + 1 < displayImages.length) {
+        newSet.add(newIndex + 1);
+      }
+      return newSet;
+    });
+  }, [emblaApi, displayImages.length]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -51,22 +63,30 @@ export default function ProductCardImage({
       {hasImages ? (
         <div className={styles.emblaViewport} ref={emblaRef}>
           <div className={styles.emblaContainer}>
-            {displayImages.map((image, index) => (
-              <div key={index} className={styles.emblaSlide}>
-                <div className={styles.imageWrapper}>
-                  <Image
-                    src={image}
-                    alt={`${productName} - Image ${index + 1}`}
-                    fill
-                    className={styles.image}
-                    sizes="(max-width: 640px) 45vw, (max-width: 1024px) 33vw, 280px"
-                    quality={70}
-                    priority={index === 0}
-                    fetchPriority={index === 0 ? "high" : "auto"}
-                  />
+            {displayImages.map((image, index) => {
+              const shouldLoad = loadedImages.has(index);
+
+              return (
+                <div key={index} className={styles.emblaSlide}>
+                  <div className={styles.imageWrapper}>
+                    {shouldLoad ? (
+                      <Image
+                        src={image}
+                        alt={`${productName} - Image ${index + 1}`}
+                        fill
+                        className={styles.image}
+                        sizes="(max-width: 640px) 45vw, (max-width: 1024px) 33vw, 280px"
+                        quality={70}
+                        priority={index === 0}
+                        loading={index === 0 ? undefined : "lazy"}
+                      />
+                    ) : (
+                      <div className={styles.imagePlaceholder} />
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       ) : (
