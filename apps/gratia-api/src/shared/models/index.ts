@@ -1,3 +1,4 @@
+export * from "./brand.model";
 export * from "./cart.model";
 export * from "./category.model";
 export * from "./city.model";
@@ -8,3 +9,4 @@ export * from "./product.model";
 export * from "./shipping-method.model";
 export * from "./state.model";
 export * from "./user.model";
+export * from "./vendor.model";

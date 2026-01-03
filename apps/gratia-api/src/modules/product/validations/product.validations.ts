@@ -86,6 +86,10 @@ export const createProductSchema = z.object({
 
   sku: z.string().min(1, "Product SKU is required").trim(),
 
+  vendorId: z.string().optional(),
+
+  brandId: z.string().optional(),
+
   categoryId: z.string().min(1, "Category is required"),
 
   collectionSlugs: z

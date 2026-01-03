@@ -5,6 +5,8 @@ interface CreateProductDto {
   slug: string;
   description?: string;
   sku: string;
+  vendorId?: string;
+  brandId?: string;
   categoryId: string;
   collectionSlugs?: string[];
   price: number;

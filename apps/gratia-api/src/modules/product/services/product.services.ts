@@ -1,7 +1,9 @@
 import { AppError, ErrorCode } from "../../../shared/errors/base.errors";
 import { ProductDoc } from "../../../shared/models/product.model";
+import { findBrandById } from "../../brand/repositories/brand.repository";
 import { findCategoryById } from "../../category/repositories/category.repository";
 import { findCollectionBySlug } from "../../collection/repositories/collection.repository";
+import { findVendorById } from "../../vendor/repositories/vendor.repository";
 import { PRODUCT_MESSAGES } from "../constants/product.constants";
 import {
   createProduct,
@@ -44,6 +46,26 @@ export const createProductService = async (
       PRODUCT_MESSAGES.PRODUCT_SKU_ALREADY_EXISTS,
       ErrorCode.DUPLICATE_ENTRY
     );
+  }
+
+  /**
+   * Check if the vendor exists (if provided)
+   */
+  if (data.vendorId) {
+    const vendor = await findVendorById(data.vendorId);
+    if (!vendor) {
+      throw new AppError("Vendor not found", ErrorCode.NOT_FOUND);
+    }
+  }
+
+  /**
+   * Check if the brand exists (if provided)
+   */
+  if (data.brandId) {
+    const brand = await findBrandById(data.brandId);
+    if (!brand) {
+      throw new AppError("Brand not found", ErrorCode.NOT_FOUND);
+    }
   }
 
   /**

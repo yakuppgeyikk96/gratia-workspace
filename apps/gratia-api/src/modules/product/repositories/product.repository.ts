@@ -118,7 +118,10 @@ export const findProducts = async (
   let queryBuilder = Product.find(query);
 
   if (withDetails) {
-    queryBuilder = queryBuilder.populate("categoryId", "name slug description");
+    queryBuilder = queryBuilder
+      .populate("categoryId", "name slug description")
+      .populate("vendorId", "storeName storeSlug logo stats")
+      .populate("brandId", "name slug logo");
   }
 
   const [products, total] = await Promise.all([
@@ -190,10 +193,10 @@ export const findProductById = async (
 export const findProductByIdWithDetails = async (
   id: string
 ): Promise<ProductDoc | null> => {
-  return await Product.findById(id).populate(
-    "categoryId",
-    "name slug description"
-  );
+  return await Product.findById(id)
+    .populate("categoryId", "name slug description")
+    .populate("vendorId", "storeName storeSlug logo stats")
+    .populate("brandId", "name slug logo");
 };
 
 export const findProductBySku = async (
@@ -208,7 +211,10 @@ export const findProductsByGroupId = async (
   return await Product.find({
     productGroupId,
     isActive: true,
-  }).sort({ "attributes.color": 1, "attributes.size": 1 });
+  })
+    .populate("vendorId", "storeName storeSlug logo stats")
+    .populate("brandId", "name slug logo")
+    .sort({ "attributes.color": 1, "attributes.size": 1 });
 };
 
 export const findFeaturedProducts = async (
@@ -218,6 +224,8 @@ export const findFeaturedProducts = async (
     isActive: true,
     isFeatured: true,
   })
+    .populate("vendorId", "storeName storeSlug logo stats")
+    .populate("brandId", "name slug logo")
     .sort({ featuredOrder: 1, createdAt: -1 })
     .limit(limit)
     .exec();

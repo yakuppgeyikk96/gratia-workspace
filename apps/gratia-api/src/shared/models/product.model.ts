@@ -1,5 +1,7 @@
 import mongoose, { ObjectId, Schema } from "mongoose";
+import { BrandDoc } from "./brand.model";
 import { CategoryDoc } from "./category.model";
+import { VendorDoc } from "./vendor.model";
 
 // Standardized product attribute types
 export type ProductColor =
@@ -71,6 +73,8 @@ export interface ProductDoc {
   slug: string;
   description?: string;
   sku: string;
+  vendorId?: ObjectId | Partial<VendorDoc>;
+  brandId?: ObjectId | Partial<BrandDoc>;
   categoryId: ObjectId | Partial<CategoryDoc>;
   categoryPath?: string;
   collectionSlugs?: string[];
@@ -114,6 +118,14 @@ const ProductSchema: Schema = new Schema(
       required: [true, "Product SKU is required"],
       unique: true,
       trim: true,
+    },
+    vendorId: {
+      type: Schema.Types.ObjectId,
+      ref: "Vendor",
+    },
+    brandId: {
+      type: Schema.Types.ObjectId,
+      ref: "Brand",
     },
     categoryId: {
       type: Schema.Types.ObjectId,
@@ -258,6 +270,8 @@ ProductSchema.pre("save", function (next) {
 // Indexes
 // slug ve sku için duplicate index'ler kaldırıldı (unique: true zaten index oluşturur)
 ProductSchema.index({ productGroupId: 1 });
+ProductSchema.index({ vendorId: 1 });
+ProductSchema.index({ brandId: 1 });
 ProductSchema.index({ categoryId: 1 });
 ProductSchema.index({ categoryPath: 1 });
 ProductSchema.index({ collectionSlugs: 1 });
