@@ -1,8 +1,14 @@
+import Brand from "../../../shared/models/brand.model";
 import Category, { CategoryDoc } from "../../../shared/models/category.model";
 import Collection from "../../../shared/models/collection.model";
 import Product from "../../../shared/models/product.model";
+import User from "../../../shared/models/user.model";
+import Vendor from "../../../shared/models/vendor.model";
 
 interface SeedResult {
+  users: number;
+  vendors: number;
+  brands: number;
   collections: number;
   categories: number;
   products: number;
@@ -10,11 +16,109 @@ interface SeedResult {
 
 export const seedDatabaseService = async (): Promise<SeedResult> => {
   /**
-   * Delete all collections, categories and products
+   * Delete all existing data
    */
+  await Product.deleteMany({});
   await Collection.deleteMany({});
   await Category.deleteMany({});
-  await Product.deleteMany({});
+  await Vendor.deleteMany({});
+  await Brand.deleteMany({});
+  await User.deleteMany({});
+
+  /**
+   * Create users for vendors
+   */
+  const vendorUsers = await User.insertMany([
+    {
+      firstName: "Tech",
+      lastName: "Store",
+      email: "vendor1@gratia.com",
+      password: "$2a$10$dummyhash1", // Dummy hash
+      phone: "+905551234567",
+      isActive: true,
+      emailVerified: true,
+    },
+    {
+      firstName: "Fashion",
+      lastName: "Hub",
+      email: "vendor2@gratia.com",
+      password: "$2a$10$dummyhash2",
+      phone: "+905559876543",
+      isActive: true,
+      emailVerified: true,
+    },
+    {
+      firstName: "Sports",
+      lastName: "World",
+      email: "vendor3@gratia.com",
+      password: "$2a$10$dummyhash3",
+      phone: "+905551122334",
+      isActive: true,
+      emailVerified: true,
+    },
+  ]);
+
+  /**
+   * Create vendors
+   */
+  const vendors = await Vendor.insertMany([
+    {
+      userId: vendorUsers[0]!._id,
+      storeName: "TechStore",
+      storeSlug: "tech-store",
+      storeDescription: "Your one-stop shop for all tech products",
+      email: "vendor1@gratia.com",
+      phone: "+905551234567",
+      stats: {
+        totalProducts: 0,
+        totalOrders: 0,
+        rating: 4.8,
+        totalReviews: 150,
+      },
+      isActive: true,
+    },
+    {
+      userId: vendorUsers[1]!._id,
+      storeName: "FashionHub",
+      storeSlug: "fashion-hub",
+      storeDescription: "Latest fashion trends and styles",
+      email: "vendor2@gratia.com",
+      phone: "+905559876543",
+      stats: {
+        totalProducts: 0,
+        totalOrders: 0,
+        rating: 4.5,
+        totalReviews: 89,
+      },
+      isActive: true,
+    },
+    {
+      userId: vendorUsers[2]!._id,
+      storeName: "SportsWorld",
+      storeSlug: "sports-world",
+      storeDescription: "Premium sports and outdoor equipment",
+      email: "vendor3@gratia.com",
+      phone: "+905551122334",
+      stats: {
+        totalProducts: 0,
+        totalOrders: 0,
+        rating: 4.7,
+        totalReviews: 120,
+      },
+      isActive: true,
+    },
+  ]);
+
+  /**
+   * Create brands
+   */
+  const brands = await Brand.insertMany([
+    { name: "Nike", slug: "nike", description: "Just Do It", isActive: true },
+    { name: "Adidas", slug: "adidas", description: "Impossible is Nothing", isActive: true },
+    { name: "Puma", slug: "puma", description: "Forever Faster", isActive: true },
+    { name: "Zara", slug: "zara", description: "Fashion for all", isActive: true },
+    { name: "H&M", slug: "hm", description: "Style and quality", isActive: true },
+  ]);
 
   /**
    * Create collections
@@ -55,6 +159,22 @@ export const seedDatabaseService = async (): Promise<SeedResult> => {
     const count = Math.floor(Math.random() * 2) + 1;
     const shuffled = [...collectionSlugs].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
+  };
+
+  /**
+   * Get random vendor
+   */
+  const getRandomVendor = () => {
+    const randomIndex = Math.floor(Math.random() * vendors.length);
+    return vendors[randomIndex]!;
+  };
+
+  /**
+   * Get random brand
+   */
+  const getRandomBrand = () => {
+    const randomIndex = Math.floor(Math.random() * brands.length);
+    return brands[randomIndex]!;
   };
 
   /**
@@ -245,6 +365,8 @@ export const seedDatabaseService = async (): Promise<SeedResult> => {
                 categoryId: (level2Doc as any)._id,
                 categoryPath,
                 collectionSlugs: getRandomCollections(),
+                vendorId: getRandomVendor()._id,
+                brandId: getRandomBrand()._id,
                 price: basePrice,
                 discountedPrice: discountedPrice,
                 stock: Math.floor(Math.random() * 50) + 10,
@@ -282,6 +404,9 @@ export const seedDatabaseService = async (): Promise<SeedResult> => {
   await Product.insertMany(products);
 
   return {
+    users: vendorUsers.length,
+    vendors: vendors.length,
+    brands: brands.length,
     collections: collections.length,
     categories: await Category.countDocuments(),
     products: products.length,
