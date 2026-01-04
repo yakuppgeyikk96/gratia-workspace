@@ -14,14 +14,15 @@ export default async function VerifyEmailPage({
 }: VerifyEmailPageProps) {
   const { key } = await searchParams;
 
-  // Check if user is authenticated
-  const isAuthenticated = await isAuthenticatedUser();
-
-  if (!isAuthenticated) {
-    redirect("/login");
+  // If there's no verification key, user must be authenticated
+  if (!key) {
+    const isAuthenticated = await isAuthenticatedUser();
+    if (!isAuthenticated) {
+      redirect("/login");
+    }
   }
 
-  // Check if user is already verified
+  // Check if user is already verified (only for authenticated users)
   const cookieStore = await cookies();
   const userCookie = cookieStore.get("gratia-user")?.value;
 
