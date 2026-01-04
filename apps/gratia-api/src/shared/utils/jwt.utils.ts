@@ -1,33 +1,26 @@
-import { JWTPayload, SignJWT, jwtVerify } from "jose";
+import jwt from "jsonwebtoken";
 import { JwtErrorCode } from "../errors/jwt.errors";
 
-export interface JwtPayload extends JWTPayload {
+export interface JwtPayload {
   userId: string;
   email: string;
   firstName: string;
   lastName: string;
 }
 
-const jwtSecretParam = process.env.JWT_SECRET;
-const jwtExpiresInParam = process.env.JWT_EXPIRES_IN || "1h";
+const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
-if (!jwtSecretParam) {
+if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is not set");
 }
 
-const jwtSecret = new TextEncoder().encode(jwtSecretParam);
-
-export const generateJwtToken = async (
-  payload: JwtPayload
-): Promise<string> => {
+export const generateJwtToken = (payload: JwtPayload): string => {
   try {
-    const token = await new SignJWT(payload)
-      .setProtectedHeader({ alg: "HS256" })
-      .setIssuedAt()
-      .setExpirationTime(jwtExpiresInParam)
-      .sign(jwtSecret);
-
-    return token;
+    // @ts-ignore - TypeScript has issues with jsonwebtoken types
+    return jwt.sign(payload, JWT_SECRET, {
+      expiresIn: JWT_EXPIRES_IN,
+    });
   } catch (error) {
     throw new Error(JwtErrorCode.JWT_GENERATION_FAILED);
   }
@@ -35,8 +28,8 @@ export const generateJwtToken = async (
 
 export const verifyJwtToken = async (token: string): Promise<JwtPayload> => {
   try {
-    const { payload } = await jwtVerify(token, jwtSecret);
-    return payload as JwtPayload;
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    return payload;
   } catch (error) {
     throw new Error(JwtErrorCode.JWT_VERIFICATION_FAILED);
   }
