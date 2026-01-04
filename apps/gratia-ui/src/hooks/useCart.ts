@@ -45,8 +45,10 @@ export function useCart(isLoggedIn: boolean) {
       }
     },
     enabled: isLoggedIn,
-    staleTime: 0,
-    gcTime: 0,
+    // Cart data stays fresh for 30 seconds
+    staleTime: 30 * 1000,
+    // Cache cart data for 5 minutes after component unmounts
+    gcTime: 5 * 60 * 1000,
   });
 
   const addToCartMutation = useMutation({

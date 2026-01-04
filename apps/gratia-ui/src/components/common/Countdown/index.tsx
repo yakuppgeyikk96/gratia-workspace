@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./Countdown.module.scss";
 
 interface CountdownProps {
@@ -15,21 +15,34 @@ export default function Countdown({
   className = "",
 }: CountdownProps) {
   const [seconds, setSeconds] = useState(initialSeconds);
+  const onExpireRef = useRef(onExpire);
 
+  // Update ref when onExpire changes
+  useEffect(() => {
+    onExpireRef.current = onExpire;
+  }, [onExpire]);
+
+  // Reset countdown when initialSeconds changes
   useEffect(() => {
     setSeconds(initialSeconds);
   }, [initialSeconds]);
 
+  // Stable callback that uses ref
+  const handleExpire = useCallback(() => {
+    onExpireRef.current?.();
+  }, []);
+
+  // Single timer effect - doesn't re-run every second
   useEffect(() => {
     if (seconds <= 0) {
-      onExpire?.();
+      handleExpire();
       return;
     }
 
     const timer = setInterval(() => {
       setSeconds((prev) => {
         if (prev <= 1) {
-          onExpire?.();
+          handleExpire();
           return 0;
         }
         return prev - 1;
@@ -37,7 +50,8 @@ export default function Countdown({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [seconds, onExpire]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialSeconds, handleExpire]); // Only re-run when initialSeconds changes, not on every second
 
   const formatTime = (totalSeconds: number): string => {
     const minutes = Math.floor(totalSeconds / 60);
