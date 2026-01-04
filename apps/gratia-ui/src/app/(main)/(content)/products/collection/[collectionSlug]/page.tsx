@@ -1,9 +1,17 @@
+import { getAllCollectionSlugs } from "@/actions";
 import { getProducts } from "@/actions/product";
 import ProductList from "@/components/features/product/ProductList";
 
 interface CollectionProductsPageProps {
   params: Promise<{ collectionSlug: string }>;
   searchParams: Promise<{ page?: string }>;
+}
+
+export async function generateStaticParams() {
+  const slugs = await getAllCollectionSlugs();
+  return slugs.map((slug) => ({
+    collectionSlug: slug,
+  }));
 }
 
 export default async function CollectionProductsPage({
@@ -29,3 +37,5 @@ export default async function CollectionProductsPage({
     />
   );
 }
+
+export const revalidate = 60;
