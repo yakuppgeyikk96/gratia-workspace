@@ -7,11 +7,6 @@ export const sendVerificationCodeByEmail = async (
   expiresAt: Date
 ): Promise<EmailResult> => {
   try {
-    console.log("================================================");
-    console.log("Email:", email);
-    console.log("Verification code:", verificationCode);
-    console.log("Expires at:", expiresAt);
-    console.log("================================================");
     const emailResult = await sendMail({
       to: email,
       subject: "Email Verification",

@@ -1,38 +1,59 @@
-import sgMail from "@sendgrid/mail";
+import nodemailer from "nodemailer";
 import { EmailMessage, EmailResult } from "../types";
 
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+const EMAIL_SERVICE = process.env.EMAIL_SERVICE || "gmail";
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
 const EMAIL_FROM = process.env.EMAIL_FROM;
 
-if (!SENDGRID_API_KEY) {
-  throw new Error("SENDGRID_API_KEY is not set");
+if (!EMAIL_USER) {
+  throw new Error("EMAIL_USER is not set");
+}
+
+if (!EMAIL_PASSWORD) {
+  throw new Error("EMAIL_PASSWORD is not set");
 }
 
 if (!EMAIL_FROM) {
   throw new Error("EMAIL_FROM is not set");
 }
 
-export const initializeEmailService = (): void => {
-  sgMail.setApiKey(SENDGRID_API_KEY);
+// Create transporter
+const transporter = nodemailer.createTransport({
+  service: EMAIL_SERVICE,
+  auth: {
+    user: EMAIL_USER,
+    pass: EMAIL_PASSWORD,
+  },
+});
+
+export const initializeEmailService = async (): Promise<void> => {
+  try {
+    await transporter.verify();
+    console.log("Email service is ready to send emails");
+  } catch (error) {
+    console.error("Email service verification failed:", error);
+    throw new Error("Failed to initialize email service");
+  }
 };
 
 export const sendMail = async (message: EmailMessage): Promise<EmailResult> => {
   try {
     console.log("Sending email to:", message.to);
 
-    const result = await sgMail.send({
-      to: message.to,
+    const result = await transporter.sendMail({
       from: EMAIL_FROM,
+      to: message.to,
       subject: message.subject,
       text: message.text,
       html: message.html,
     });
 
-    console.log("Email sent successfully");
+    console.log("Email sent successfully. MessageId:", result.messageId);
 
     return {
       success: true,
-      messageId: result[0].headers["x-message-id"] || "unknown",
+      messageId: result.messageId,
     };
   } catch (error) {
     console.error("Email sending failed:", error);

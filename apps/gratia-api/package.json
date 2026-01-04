@@ -21,13 +21,12 @@
   ],
   "author": "Your Name",
   "license": "ISC",
-  "packageManager": "pnpm@10.18.1",
+  "packageManager": "pnpm@10.27.0+sha512.72d699da16b1179c14ba9e64dc71c9a40988cbdc65c264cb0e489db7de917f20dcf4d64d8723625f2969ba52d4b7e2a1170682d9ac2a5dcaeaab732b7e16f04a",
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
   },
   "dependencies": {
-    "@sendgrid/mail": "^8.1.6",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
@@ -36,6 +35,7 @@
     "jose": "^6.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.2",
+    "nodemailer": "^7.0.12",
     "redis": "^5.10.0",
     "stripe": "^20.1.0",
     "zod": "^4.1.12"
@@ -44,6 +44,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.2",
+    "@types/nodemailer": "^7.0.4",
     "concurrently": "^9.2.1",
     "nodemon": "^3.1.10",
     "picocolors": "^1.1.1",
