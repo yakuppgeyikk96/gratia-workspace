@@ -1,3 +1,4 @@
+import compression from "compression";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
@@ -25,6 +26,23 @@ initializeEmailService();
 // Middleware
 app.use(helmet());
 app.use(cors());
+
+// Compression middleware - reduces response size by ~70-90%
+app.use(
+  compression({
+    level: 6, // Compression level (0-9, 6 is default)
+    threshold: 1024, // Only compress responses larger than 1KB
+    filter: (req, res) => {
+      // Don't compress if the request explicitly disables it
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      // Use default compression filter
+      return compression.filter(req, res);
+    },
+  })
+);
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
