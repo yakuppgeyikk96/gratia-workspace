@@ -1,17 +1,27 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
-const connectionString = process.env.DATABASE_URL;
+// Select connection string based on environment
+const isDevelopment = process.env.NODE_ENV === "development";
+const connectionString = isDevelopment
+  ? process.env.DATABASE_URL_LOCAL
+  : process.env.DATABASE_URL_PRODUCTION;
 
 if (!connectionString) {
-  throw new Error("DATABASE_URL environment variable is not set");
+  throw new Error(
+    `DATABASE_URL_${isDevelopment ? "LOCAL" : "PRODUCTION"} environment variable is not set`
+  );
 }
 
+console.log(
+  `🗄️  Using ${isDevelopment ? "LOCAL" : "PRODUCTION"} PostgreSQL database`
+);
+
 // Create postgres client
-// Note: Supabase pooler already handles connection pooling
-// Keep local pool small to avoid double-pooling overhead
+// Local: Use normal connection pooling (max: 10)
+// Production (Supabase): Single connection (Supabase pooler handles the rest)
 const client = postgres(connectionString, {
-  max: 1, // Single connection (Supabase pooler handles the rest)
+  max: isDevelopment ? 10 : 1,
   idle_timeout: 20,
   connect_timeout: 10,
 });
