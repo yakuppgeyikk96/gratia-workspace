@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import { Types } from "mongoose";
 import { BCRYPT_ROUNDS } from "../../../shared/constants/crypto.constants";
 import User, { UserDoc } from "../../../shared/models/user.model";
-import CreateUserDto from "../types/CreateUserDto";
+import { type CreateUserDto } from "../user.validation";
 
 export const createUser = async (userData: CreateUserDto): Promise<UserDoc> => {
   const hashedPassword = await bcrypt.hash(userData.password, BCRYPT_ROUNDS);

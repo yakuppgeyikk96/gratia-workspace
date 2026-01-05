@@ -1,15 +1,15 @@
 import { Router } from "express";
-import { validateBody } from "../../../shared/middlewares/validation.middleware";
-import { createUserSchema } from "../../user/validations";
+import { validateBody } from "../../shared/middlewares/validation.middleware";
+import { createUserSchema } from "../user/user.validation";
 import {
   loginUserController,
   registerUserController,
   verifyEmailController,
-} from "../controllers/auth.controller";
+} from "./auth.controller";
 import {
   loginUserSchema,
   registerUserSchema,
-} from "../validations/auth.validations";
+} from "./auth.validations";
 
 const router: Router = Router();
 

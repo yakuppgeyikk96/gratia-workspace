@@ -3,40 +3,39 @@ import {
   UserAlreadyExistsError,
   UserCreationFailedError,
   UserNotFoundError,
-} from "../../../modules/user/errors";
+} from "../user/user.errors";
 import {
   createUser,
   findUserByEmail,
-} from "../../../modules/user/repositories";
-import { createUserSchema } from "../../../modules/user/validations";
+} from "../user/user.repository";
+import { createUserSchema, type CreateUserDto } from "../user/user.validation";
 import {
   EmailVerificationFailedError,
   SendingVerificationEmailError,
-} from "../../../modules/verification/errors";
+} from "../verification/errors";
 import {
   createEmailVerification,
   verifyEmailCode,
-} from "../../../modules/verification/repositories";
-import { sendVerificationCodeByEmail as sendVerificationCodeByEmailService } from "../../../modules/verification/services/email-verification.services";
-import { EMAIL_VERIFICATION_EXPIRATION_TIME } from "../../../shared/constants/expiration.constants";
-import { AppError, ErrorCode } from "../../../shared/errors/base.errors";
-import { decrypt, encrypt } from "../../../shared/utils/encryption.utils";
-import { generateJwtToken } from "../../../shared/utils/jwt.utils";
+} from "../verification/repositories";
+import { sendVerificationCodeByEmail as sendVerificationCodeByEmailService } from "../verification/services/email-verification.services";
+import { EMAIL_VERIFICATION_EXPIRATION_TIME } from "../../shared/constants/expiration.constants";
+import { AppError, ErrorCode } from "../../shared/errors/base.errors";
+import { decrypt, encrypt } from "../../shared/utils/encryption.utils";
+import { generateJwtToken } from "../../shared/utils/jwt.utils";
 import {
   generateUniqueToken,
   generateVerificationCode,
-} from "../../../shared/utils/token.utils";
+} from "../../shared/utils/token.utils";
 import {
-  SendVerificationCodeByEmailDto,
-  SendVerificationCodeByEmailResult,
-} from "../types";
-import { LoginUserDto } from "../types/LoginUserDto";
-import { LoginUserResult } from "../types/LoginUserResult";
-import { RegisterUserDto } from "../types/RegisterUserDto";
-import { RegisterUserResult } from "../types/RegisterUserResult";
+  type LoginUserDto,
+  type LoginUserResult,
+  type RegisterUserDto,
+  type RegisterUserResult,
+  type SendVerificationCodeByEmailResult,
+} from "./auth.validations";
 
 export const sendVerificationCodeByEmail = async (
-  data: SendVerificationCodeByEmailDto
+  data: CreateUserDto
 ): Promise<SendVerificationCodeByEmailResult> => {
   const { email } = data;
 
@@ -97,13 +96,21 @@ export const registerUser = async (
   }
 
   const jwtToken = await generateJwtToken({
-    userId: user._id.toString(),
+    userId: user.id.toString(),
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
   });
 
-  return { user, token: jwtToken };
+  return {
+    user: {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    },
+    token: jwtToken
+  };
 };
 
 export const loginUser = async (
@@ -117,6 +124,7 @@ export const loginUser = async (
     throw new UserNotFoundError(email);
   }
 
+  const t2 = Date.now();
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
@@ -124,11 +132,19 @@ export const loginUser = async (
   }
 
   const jwtToken = await generateJwtToken({
-    userId: user._id.toString(),
+    userId: user.id.toString(),
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
   });
 
-  return { user, token: jwtToken };
+  return {
+    user: {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    },
+    token: jwtToken
+  };
 };

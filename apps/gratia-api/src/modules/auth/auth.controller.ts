@@ -1,15 +1,13 @@
 import { Request, Response } from "express";
-import { asyncHandler } from "../../../shared/middlewares";
-import { returnSuccess } from "../../../shared/utils/response.utils";
-import { AUTH_MESSAGES } from "../constants";
+import { asyncHandler } from "../../shared/middlewares";
+import { returnSuccess } from "../../shared/utils/response.utils";
+import { AUTH_MESSAGES } from "./constants/auth.constants";
 import {
   loginUser,
   registerUser,
   sendVerificationCodeByEmail,
-} from "../services/auth.services";
-import { SendVerificationCodeByEmailDto } from "../types";
-import { LoginUserDto } from "../types/LoginUserDto";
-import { RegisterUserDto } from "../types/RegisterUserDto";
+} from "./auth.services";
+import { SendVerificationCodeByEmailDto, LoginUserDto, RegisterUserDto } from "./auth.validations";
 
 export const verifyEmailController = asyncHandler(
   async (req: Request, res: Response) => {

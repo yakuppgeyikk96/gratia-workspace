@@ -8,6 +8,7 @@ import {
   routesConfig,
   validateEnvironment,
 } from "./config";
+import { testPostgresConnection } from "./config/postgres.config";
 import {
   getRedisKeyTTL,
   getRedisValue,
@@ -21,6 +22,7 @@ const app = express();
 
 connectDB();
 connectRedis();
+testPostgresConnection();
 initializeEmailService();
 
 // Middleware
@@ -46,11 +48,11 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/health", (_req, res) => {
+app.get("/api/health", (_req, res) => {
   res.send({ status: "ok" });
 });
 
-app.get("/test-redis", async (_req, res) => {
+app.get("/api/test-redis", async (_req, res) => {
   try {
     await setRedisValue(
       "checkout:test:session-123",
@@ -71,6 +73,15 @@ app.get("/test-redis", async (_req, res) => {
       session,
       ttlSeconds: ttl,
     });
+  } catch (error) {
+    res.json({ success: false, error: (error as Error).message });
+  }
+});
+
+app.get("/api/test-postgres", async (_req, res) => {
+  try {
+    await testPostgresConnection();
+    res.json({ success: true, message: "PostgreSQL connection successful" });
   } catch (error) {
     res.json({ success: false, error: (error as Error).message });
   }
