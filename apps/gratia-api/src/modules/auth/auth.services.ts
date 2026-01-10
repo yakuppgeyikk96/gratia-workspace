@@ -4,20 +4,17 @@ import {
   UserCreationFailedError,
   UserNotFoundError,
 } from "../user/user.errors";
-import {
-  createUser,
-  findUserByEmail,
-} from "../user/user.repository";
+import { createUser, findUserByEmail } from "../user/user.repository";
 import { createUserSchema, type CreateUserDto } from "../user/user.validation";
 import {
   EmailVerificationFailedError,
   SendingVerificationEmailError,
-} from "../verification/errors";
+} from "../verification/email-verification.errors";
 import {
   createEmailVerification,
   verifyEmailCode,
-} from "../verification/repositories";
-import { sendVerificationCodeByEmail as sendVerificationCodeByEmailService } from "../verification/services/email-verification.services";
+  sendVerificationCodeByEmail as sendVerificationCodeByEmailService,
+} from "../verification/email-verification.services";
 import { EMAIL_VERIFICATION_EXPIRATION_TIME } from "../../shared/constants/expiration.constants";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { decrypt, encrypt } from "../../shared/utils/encryption.utils";
@@ -109,7 +106,7 @@ export const registerUser = async (
       firstName: user.firstName,
       lastName: user.lastName,
     },
-    token: jwtToken
+    token: jwtToken,
   };
 };
 
@@ -145,6 +142,6 @@ export const loginUser = async (
       firstName: user.firstName,
       lastName: user.lastName,
     },
-    token: jwtToken
+    token: jwtToken,
   };
 };

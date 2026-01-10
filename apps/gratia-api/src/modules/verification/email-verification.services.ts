@@ -1,5 +1,11 @@
-import { sendMail } from "../../../shared/services";
-import { EmailResult } from "../../../shared/types";
+import { EmailVerification } from "../../db/schema";
+import { sendMail } from "../../shared/services";
+import { EmailResult } from "../../shared/types";
+import CreateVerificationDto from "./types/CreateVerificationDto";
+import {
+  createEmailVerification as createEmailVerificationRepository,
+  verifyEmailCode as verifyEmailCodeRepository,
+} from "./email-verification.repository";
 
 export const sendVerificationCodeByEmail = async (
   email: string,
@@ -41,4 +47,17 @@ export const sendVerificationCodeByEmail = async (
       error: error instanceof Error ? error.message : "Unknown error",
     };
   }
+};
+
+export const createEmailVerification = async (
+  verificationData: CreateVerificationDto
+): Promise<EmailVerification | null> => {
+  return createEmailVerificationRepository(verificationData);
+};
+
+export const verifyEmailCode = async (
+  token: string,
+  code: string
+): Promise<EmailVerification | null> => {
+  return verifyEmailCodeRepository(token, code);
 };
