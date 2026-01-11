@@ -1,4 +1,4 @@
-import { Product } from "@/types";
+import { Product } from "@/types/Product.types";
 import styles from "./FeaturedProductsSkeleton.module.scss";
 
 export default function FeaturedProductsSkeleton() {
@@ -6,7 +6,7 @@ export default function FeaturedProductsSkeleton() {
     (_, index) => ({
       _id: `skeleton-${index}`,
       name: "Loading...",
-      price: 0,
+      price: "0",
       sku: `skeleton-${index}`,
       stock: 1,
       images: [],
@@ -17,7 +17,7 @@ export default function FeaturedProductsSkeleton() {
     <div className={styles.skeletonContainer}>
       <div className={styles.skeletonGrid}>
         {skeletonProducts.map((product) => (
-          <div key={product._id} className={styles.skeletonCard}>
+          <div key={product.id} className={styles.skeletonCard}>
             <div className={styles.skeletonImage} />
             <div className={styles.skeletonText} />
             <div className={styles.skeletonTextShort} />

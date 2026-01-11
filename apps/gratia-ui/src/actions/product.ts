@@ -1,11 +1,11 @@
 import { apiClient } from "@/lib/apiClient";
+import { IApiResponse } from "@/types/Api.types";
 import {
-  IApiResponse,
   Product,
   ProductQueryOptionsDto,
   ProductsResponseDto,
   ProductWithVariantsDto,
-} from "@/types";
+} from "@/types/Product.types";
 
 export async function getProducts(
   options: ProductQueryOptionsDto

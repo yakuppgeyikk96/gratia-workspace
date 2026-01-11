@@ -18,9 +18,14 @@ interface CartItemProps {
 function CartItem({ item, isLoggedIn = false }: CartItemProps) {
   const { handleUpdateQuantity, isUpdating } = useCart(isLoggedIn);
 
-  const totalPrice = item.discountedPrice
-    ? item.discountedPrice * item.quantity
-    : item.price * item.quantity;
+  const discountedPrice = item.discountedPrice
+    ? parseFloat(item.discountedPrice)
+    : 0;
+  const price = parseFloat(item.price);
+
+  const totalPrice = discountedPrice
+    ? discountedPrice * item.quantity
+    : price * item.quantity;
 
   const handleIncrement = useCallback(() => {
     handleUpdateQuantity(item.sku, item.quantity + 1);
@@ -45,8 +50,8 @@ function CartItem({ item, isLoggedIn = false }: CartItemProps) {
         productName={item.productName}
         quantity={item.quantity}
         totalPrice={totalPrice}
-        price={item.price}
-        discountedPrice={item.discountedPrice}
+        price={price}
+        discountedPrice={discountedPrice}
       />
 
       <CartItemRemoveButton

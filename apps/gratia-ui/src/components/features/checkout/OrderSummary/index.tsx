@@ -42,10 +42,15 @@ export default function OrderSummary({
 
       <div className={styles.items}>
         {items.map((item) => {
+          const discountedPrice = item.discountedPrice
+            ? parseFloat(item.discountedPrice)
+            : 0;
+          const price = parseFloat(item.price);
+
           const hasDiscount =
-            item.discountedPrice !== undefined &&
-            item.discountedPrice < item.price;
-          const unitPrice = hasDiscount ? item.discountedPrice! : item.price;
+            discountedPrice !== undefined && discountedPrice < price;
+
+          const unitPrice = hasDiscount ? discountedPrice! : price;
           const totalPrice = unitPrice * item.quantity;
 
           return (
@@ -72,7 +77,7 @@ export default function OrderSummary({
                 <div className={styles.priceInfo}>
                   {hasDiscount && (
                     <span className={styles.originalPrice}>
-                      {formatPrice(item.price)}
+                      {formatPrice(price)}
                     </span>
                   )}
                   <span className={styles.unitPrice}>

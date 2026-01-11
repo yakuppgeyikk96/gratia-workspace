@@ -1,4 +1,4 @@
-import { Product } from "@/types";
+import { Product } from "@/types/Product.types";
 
 export interface ProductCardProps {
   product: Partial<Product>;

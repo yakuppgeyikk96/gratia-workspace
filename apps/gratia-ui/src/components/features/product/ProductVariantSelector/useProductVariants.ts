@@ -52,7 +52,7 @@ export function useProductVariants({
       // Remove duplicates based on _id
       return sameGroupProducts.filter(
         (product, index, self) =>
-          index === self.findIndex((p) => p._id === product._id)
+          index === self.findIndex((p) => p.id === product.id)
       );
     }
   }, [variants, currentProduct, variantType, currentSlug]);

@@ -1,7 +1,7 @@
 "use client";
 
 import ProductCard from "@/components/features/product/ProductCard";
-import type { Product } from "@/types";
+import type { Product } from "@/types/Product.types";
 import IconButton from "@gratia/ui/components/IconButton";
 import IconChevronLeft from "@gratia/ui/icons/IconChevronLeft";
 import IconChevronRight from "@gratia/ui/icons/IconChevronRight";
@@ -58,29 +58,12 @@ export default function FeaturedProductsCarousel({
     };
   }, [emblaApi, onSelect]);
 
-  const isProductValid = (product: Partial<Product>) => {
-    return (
-      product._id &&
-      product.name &&
-      product.price &&
-      product.sku &&
-      product.stock &&
-      product.stock > 0
-    );
-  };
-
-  const validProducts = products.filter(isProductValid);
-
-  if (validProducts.length === 0) {
-    return null;
-  }
-
   return (
     <div className={styles.carouselWrapper}>
       <div className={styles.emblaViewport} ref={emblaRef}>
         <div className={styles.emblaContainer}>
-          {validProducts.map((product) => (
-            <div key={product._id} className={styles.emblaSlide}>
+          {products.map((product) => (
+            <div key={product.id} className={styles.emblaSlide}>
               <ProductCard
                 product={product}
                 isLoggedIn={isLoggedIn}
@@ -91,7 +74,7 @@ export default function FeaturedProductsCarousel({
         </div>
       </div>
 
-      {validProducts.length > 4 && (
+      {products.length > 4 && (
         <>
           <IconButton
             className={`${styles.navButton} ${styles.navButtonPrev} ${

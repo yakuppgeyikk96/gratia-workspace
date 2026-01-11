@@ -22,11 +22,13 @@ export default function ProductColorSelector({
       {variants.map((variant) => {
         const isActive = variant.slug === currentSlug;
         const firstImage = variant.images?.[0];
-        const displayPrice = variant.discountedPrice || variant.price;
+        const displayPrice = variant.discountedPrice
+          ? parseFloat(variant.discountedPrice || "0")
+          : parseFloat(variant.price || "0");
 
         return (
           <Link
-            key={variant._id}
+            key={variant.id}
             href={`/products/${variant.slug}`}
             className={`${styles.variantCard} ${isActive ? styles.active : ""}`}
             prefetch={false}

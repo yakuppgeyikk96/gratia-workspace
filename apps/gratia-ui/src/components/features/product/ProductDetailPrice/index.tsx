@@ -4,8 +4,8 @@ import { formatPrice } from "@/lib/utils/format";
 import styles from "./ProductDetailPrice.module.scss";
 
 interface ProductDetailPriceProps {
-  price: number;
-  discountedPrice?: number;
+  price: string;
+  discountedPrice?: string;
   currency?: string;
 }
 
@@ -14,9 +14,16 @@ export default function ProductDetailPrice({
   discountedPrice,
   currency = "USD",
 }: ProductDetailPriceProps) {
-  const hasDiscount = discountedPrice !== undefined && discountedPrice < price;
-  const displayPrice = hasDiscount ? discountedPrice! : price;
-  const savings = hasDiscount ? price - discountedPrice! : 0;
+  const priceValue = parseFloat(price);
+  const discountedPriceValue = discountedPrice
+    ? parseFloat(discountedPrice)
+    : 0;
+
+  const hasDiscount =
+    discountedPriceValue !== undefined && discountedPriceValue < priceValue;
+  const displayPrice = hasDiscount ? discountedPriceValue! : priceValue;
+
+  const savings = hasDiscount ? priceValue - discountedPriceValue! : 0;
 
   return (
     <div className={styles.priceContainer}>
@@ -27,7 +34,7 @@ export default function ProductDetailPrice({
 
         {hasDiscount && (
           <span className={styles.originalPrice}>
-            {formatPrice(price, currency)}
+            {formatPrice(priceValue, currency)}
           </span>
         )}
 
