@@ -1,13 +1,17 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../../shared/middlewares";
 import { returnSuccess } from "../../shared/utils/response.utils";
-import { AUTH_MESSAGES } from "./constants/auth.constants";
+import { AUTH_MESSAGES } from "./auth.constants";
 import {
   loginUser,
   registerUser,
   sendVerificationCodeByEmail,
 } from "./auth.services";
-import { SendVerificationCodeByEmailDto, LoginUserDto, RegisterUserDto } from "./auth.validations";
+import {
+  LoginUserDto,
+  RegisterUserDto,
+  SendVerificationCodeByEmailDto,
+} from "./auth.validations";
 
 export const verifyEmailController = asyncHandler(
   async (req: Request, res: Response) => {

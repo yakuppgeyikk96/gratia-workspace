@@ -107,8 +107,10 @@ export const useCartStore = create<CartStore>()(
       getTotalPrice: () => {
         return (
           get().items?.reduce((total, item) => {
-            const price = item.discountedPrice || item.price;
-            return total + price * item.quantity;
+            const itemPrice = item.discountedPrice
+              ? parseFloat(item.discountedPrice)
+              : parseFloat(item.price);
+            return total + itemPrice * item.quantity;
           }, 0) ?? 0
         );
       },
@@ -121,7 +123,7 @@ export const useCartStore = create<CartStore>()(
       getSubtotal: () => {
         return (
           get().items?.reduce(
-            (sum, item) => sum + item.price * item.quantity,
+            (sum, item) => sum + parseFloat(item.price) * item.quantity,
             0
           ) ?? 0
         );

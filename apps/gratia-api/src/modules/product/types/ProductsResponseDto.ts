@@ -1,4 +1,4 @@
-import { ProductDoc } from "../../../shared/models/product.model";
+import { Product } from "../../../db/schema/product.schema";
 
 export interface FilterOptions {
   colors: string[];
@@ -18,7 +18,7 @@ export interface PaginationInfo {
 }
 
 interface ProductsResponseDto {
-  products: Partial<ProductDoc>[];
+  products: Product[];
   filters: FilterOptions;
   pagination: PaginationInfo;
   sortOptions: string[];

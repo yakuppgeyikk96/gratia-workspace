@@ -37,10 +37,8 @@ export default function ProductCardActions({
     <div className={styles.actionsContainer}>
       {/* Price Section */}
       <div className={styles.priceSection}>
-        <span className={styles.currentPrice}>${displayPrice.toFixed(2)}</span>
-        {hasDiscount && (
-          <span className={styles.originalPrice}>${price.toFixed(2)}</span>
-        )}
+        <span className={styles.currentPrice}>${displayPrice}</span>
+        {hasDiscount && <span className={styles.originalPrice}>${price}</span>}
       </div>
 
       <div

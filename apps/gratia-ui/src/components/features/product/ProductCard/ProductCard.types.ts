@@ -19,8 +19,8 @@ export interface ProductCardInfoProps {
 }
 
 export interface ProductCardActionsProps {
-  price: number;
-  discountedPrice?: number;
+  price: string;
+  discountedPrice?: string;
   productSku: string;
   isLoggedIn: boolean;
   onAddToCart?: () => void;

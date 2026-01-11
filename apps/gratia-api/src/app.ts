@@ -2,13 +2,9 @@ import compression from "compression";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
-import {
-  connectDB,
-  connectRedis,
-  routesConfig,
-  validateEnvironment,
-} from "./config";
+import { connectRedis, routesConfig, validateEnvironment } from "./config";
 import { testPostgresConnection } from "./config/postgres.config";
+import { requestLogger } from "./shared/middlewares/request-logger.middleware";
 import {
   getRedisKeyTTL,
   getRedisValue,
@@ -20,7 +16,6 @@ validateEnvironment();
 
 const app = express();
 
-connectDB();
 connectRedis();
 testPostgresConnection();
 initializeEmailService();
@@ -28,6 +23,8 @@ initializeEmailService();
 // Middleware
 app.use(helmet());
 app.use(cors());
+
+app.use(requestLogger);
 
 // Compression middleware - reduces response size by ~70-90%
 app.use(

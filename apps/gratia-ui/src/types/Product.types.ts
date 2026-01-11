@@ -68,33 +68,43 @@ export interface ProductAttributes {
   material?: ProductMaterial;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+}
+
 export interface Brand {
-  _id: string;
+  id: number;
   name: string;
   slug: string;
   logo?: string;
 }
 
 export interface Vendor {
-  _id: string;
+  id: number;
   storeName: string;
   storeSlug: string;
   logo?: string;
 }
 
 export interface Product {
-  _id: string;
+  id: number;
   name: string;
   slug: string;
   description?: string;
   sku: string;
-  categoryId: string | Partial<ProductCategory>;
+  categoryId: number;
+  category?: Category | null;
   categoryPath?: string;
   collectionSlugs?: string[];
-  brandId?: string | Partial<Brand>;
-  vendorId?: string | Partial<Vendor>;
-  price: number;
-  discountedPrice?: number;
+  brandId?: number | null;
+  brand?: Brand | null;
+  vendorId?: number | null;
+  vendor?: Vendor | null;
+  price: string;
+  discountedPrice?: string;
   stock: number;
   attributes: ProductAttributes;
   images: string[];

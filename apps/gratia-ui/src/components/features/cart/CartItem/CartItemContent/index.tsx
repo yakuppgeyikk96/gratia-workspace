@@ -24,15 +24,13 @@ export default function CartItemContent({
         <h3 className={styles.productName}>{productName}</h3>
         <div className={styles.priceInfo}>
           <span className={styles.unitPrice}>
-            ${unitPrice.toFixed(2)}
+            ${unitPrice}
             {quantity > 1 && (
               <span className={styles.quantity}> × {quantity}</span>
             )}
           </span>
           {hasDiscount && (
-            <span className={styles.originalUnitPrice}>
-              ${price.toFixed(2)}
-            </span>
+            <span className={styles.originalUnitPrice}>${price}</span>
           )}
           <span className={styles.totalPrice}>${totalPrice.toFixed(2)}</span>
         </div>

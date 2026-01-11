@@ -14,9 +14,13 @@ const API_BASE_ROUTE = "/cart";
 export async function getCart(): Promise<CartResponse> {
   const authHeader: Record<string, string> = await getAuthHeader();
 
+  console.log(authHeader);
+
   const response: CartResponse = await apiClient.get(API_BASE_ROUTE, {
     headers: { ...authHeader },
   });
+
+  console.log(response);
 
   return response;
 }

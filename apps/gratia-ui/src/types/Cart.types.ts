@@ -2,23 +2,27 @@ import { IApiResponse } from "./Api.types";
 import { ProductAttributes } from "./Product.types";
 
 export interface CartItem {
-  productId: string;
+  id: number;
+  productId: number;
   sku: string;
   quantity: number;
-  price: number;
-  discountedPrice?: number;
+  price: string;
+  discountedPrice?: string;
   productName: string;
   productImages: string[];
   attributes: ProductAttributes;
   isVariant: boolean;
+  cartId: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Cart {
-  _id: string;
-  userId: string;
+  id: number;
+  userId: number;
   items: CartItem[];
   totalItems: number;
-  totalPrice: number;
+  totalPrice: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -31,7 +35,7 @@ export interface UpdateCartItemDto {
 }
 
 export interface AddToCartDto {
-  productId: string;
+  productId: number;
   sku: string;
   quantity: number;
 }

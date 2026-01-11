@@ -1,4 +1,4 @@
-import { ProductAttributes } from "../../../shared/models/product.model";
+import type { ProductAttributes } from "../../../db/schema/product.schema";
 
 interface CreateProductDto {
   name: string;

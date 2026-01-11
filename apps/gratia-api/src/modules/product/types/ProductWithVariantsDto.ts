@@ -1,8 +1,8 @@
-import { ProductDoc } from "../../../shared/models/product.model";
+import { Product } from "../../../db/schema/product.schema";
 
 export interface ProductWithVariantsDto {
-  product: ProductDoc;
-  variants: ProductDoc[];
+  product: Product;
+  variants: Product[];
   availableOptions: {
     colors: string[];
     sizes: string[];

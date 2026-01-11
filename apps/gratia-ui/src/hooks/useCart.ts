@@ -35,6 +35,7 @@ export function useCart(isLoggedIn: boolean) {
 
       try {
         const response = await getCart();
+        console.log("response", response);
         if (response.success && response.data) {
           setItems(response.data.items);
         }
@@ -45,9 +46,7 @@ export function useCart(isLoggedIn: boolean) {
       }
     },
     enabled: isLoggedIn,
-    // Cart data stays fresh for 30 seconds
     staleTime: 30 * 1000,
-    // Cache cart data for 5 minutes after component unmounts
     gcTime: 5 * 60 * 1000,
   });
 
@@ -143,20 +142,24 @@ export function useCart(isLoggedIn: boolean) {
 
   const handleAddToCart = (product: Partial<Product>) => {
     const itemToAdd: CartItem = {
-      productId: product._id!,
+      id: 0,
+      cartId: 0,
+      createdAt: product.createdAt?.toISOString() ?? "",
+      updatedAt: product.updatedAt?.toISOString() ?? "",
+      productId: product.id!,
       sku: product.sku!,
       quantity: 1,
-      price: product.price!,
-      discountedPrice: product.discountedPrice,
+      price: product.price?.toString() ?? "",
+      discountedPrice: product.discountedPrice?.toString(),
       productName: product.name ?? "",
       productImages: product.images ?? [],
       attributes: product.attributes ?? {},
       isVariant: false,
-    };
+    } as CartItem;
 
     if (isLoggedIn) {
       addToCartMutation.mutate({
-        productId: product._id!,
+        productId: product.id!,
         sku: product.sku!,
         quantity: 1,
       });
