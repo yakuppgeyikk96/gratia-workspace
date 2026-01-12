@@ -86,13 +86,6 @@ export const mapCheckoutSessionToOrder = (
     convertSnapshotItemToOrderItem
   );
 
-  // Parse shippingMethodId from string (Redis) to number
-  let shippingMethodIdNumber: number | null = null;
-  if (session.shippingMethodId) {
-    const parsed = parseInt(session.shippingMethodId, 10);
-    shippingMethodIdNumber = isNaN(parsed) ? null : parsed;
-  }
-
   return {
     orderNumber,
     userId: userId || null,
@@ -100,7 +93,7 @@ export const mapCheckoutSessionToOrder = (
     items: orderItems,
     shippingAddress: session.shippingAddress!,
     billingAddress: session.billingAddress!,
-    shippingMethodId: shippingMethodIdNumber,
+    shippingMethodId: session.shippingMethodId || null,
     paymentMethodType:
       (session.paymentMethodType as PaymentMethodType) ||
       PaymentMethodType.CREDIT_CARD,

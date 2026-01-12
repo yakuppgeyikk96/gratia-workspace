@@ -8,13 +8,6 @@ import {
   findShippingMethodByIdAndValidate,
 } from "./shipping.repository";
 
-/**
- * Gets available shipping methods for checkout session
- * Filters by country and applies free shipping rules based on cart total
- * @param shippingAddress - Shipping address
- * @param cartSnapshot - Cart snapshot with subtotal
- * @returns Array of available shipping methods with calculated prices
- */
 export const getAvailableShippingMethodsService = async (
   shippingAddress: Address,
   cartSnapshot: CartSnapshot
@@ -29,13 +22,12 @@ export const getAvailableShippingMethodsService = async (
     const minOrderAmount = method.minOrderAmount
       ? parseFloat(method.minOrderAmount)
       : null;
-    const price = parseFloat(method.price);
 
     // If method has minOrderAmount and cart total meets requirement, make it free
     if (minOrderAmount && cartSnapshot.subtotal >= minOrderAmount) {
       return {
         ...method,
-        price: "0",
+        price: method.price,
         isFree: true,
       };
     }
@@ -46,24 +38,10 @@ export const getAvailableShippingMethodsService = async (
   return availableMethods;
 };
 
-/**
- * Validates shipping method and returns it
- * @param shippingMethodId - Shipping method ID (string from API, will be parsed)
- * @returns Validated shipping method
- */
 export const validateShippingMethodService = async (
-  shippingMethodId: string
+  shippingMethodId: number
 ): Promise<ShippingMethod> => {
-  // Parse ID from string to number
-  const id = parseInt(shippingMethodId, 10);
-  if (isNaN(id)) {
-    throw new AppError(
-      SHIPPING_MESSAGES.SHIPPING_METHOD_NOT_FOUND,
-      ErrorCode.NOT_FOUND
-    );
-  }
-
-  const method = await findShippingMethodByIdAndValidate(id);
+  const method = await findShippingMethodByIdAndValidate(shippingMethodId);
 
   if (!method) {
     throw new AppError(
@@ -75,13 +53,6 @@ export const validateShippingMethodService = async (
   return method;
 };
 
-/**
- * Calculates shipping cost for a method based on cart total
- * Applies free shipping if cart total meets minOrderAmount
- * @param method - Shipping method
- * @param cartSubtotal - Cart subtotal
- * @returns Calculated shipping cost
- */
 export const calculateShippingCost = (
   method: ShippingMethod,
   cartSubtotal: number

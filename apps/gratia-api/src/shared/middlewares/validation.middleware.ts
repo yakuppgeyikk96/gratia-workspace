@@ -6,7 +6,8 @@ export const validateBody = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
       const validatedData = schema.parse(req.body);
-      req.body = validatedData;
+      Object.keys(req.body).forEach((key) => delete (req.body as any)[key]);
+      Object.assign(req.body, validatedData);
       next();
     } catch (error) {
       if (error instanceof ZodError) {

@@ -364,6 +364,23 @@ export const findProductBySku = async (
   return product || null;
 };
 
+/**
+ * Find multiple products by SKUs in a single query
+ * Avoids N+1 query problem when validating cart items
+ */
+export const findProductsBySkus = async (
+  skus: string[]
+): Promise<Product[]> => {
+  if (skus.length === 0) {
+    return [];
+  }
+
+  return await db
+    .select()
+    .from(products)
+    .where(sql`${products.sku} = ANY(${sql.raw(`ARRAY[${skus.map((s) => `'${s}'`).join(",")}]`)})`);
+};
+
 export const findProductsByGroupId = async (
   productGroupId: string
 ): Promise<Product[]> => {

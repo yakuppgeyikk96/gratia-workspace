@@ -40,8 +40,14 @@ export const findUserByEmail = async (email: string): Promise<User | null> => {
 export const findUserIdByEmail = async (
   email: string
 ): Promise<number | undefined> => {
-  const user = await findUserByEmail(email);
-  return user?.id;
+  // Optimized query: Only select id field instead of fetching full user object
+  const [result] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.email, email.toLowerCase()))
+    .limit(1);
+
+  return result?.id;
 };
 
 export const findUserById = async (id: number): Promise<User | null> => {

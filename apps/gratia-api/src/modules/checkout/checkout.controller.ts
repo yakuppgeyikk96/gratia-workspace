@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { asyncHandler } from "../../shared/middlewares";
 import { AuthRequest, StatusCode } from "../../shared/types";
 import { returnSuccess } from "../../shared/utils/response.utils";
@@ -8,11 +7,11 @@ import {
   getCitiesByStateCodeService,
   getStatesByCountryCodeService,
 } from "../location/location.service";
-import { getAvailableShippingMethodsService } from "../shipping/shipping.service";
 import {
   completeCheckoutService,
   createCheckoutSessionService,
   getCheckoutSessionService,
+  getShippingMethodsForSessionService,
   selectShippingMethodService,
   updateShippingAddressService,
 } from "./checkout-session.service";
@@ -22,7 +21,6 @@ import type {
   SelectShippingMethodDto,
   UpdateShippingAddressDto,
 } from "./checkout-session.types";
-import { CHECKOUT_MESSAGES } from "./checkout.constants";
 
 /**
  * Create a new checkout session
@@ -146,34 +144,8 @@ export const getShippingMethodsController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
     const { token } = req.params;
 
-    // Get session to access shipping address and cart snapshot
-    const session = await getCheckoutSessionService(token!);
-
-    // Validate shipping address exists
-    if (!session.shippingAddress) {
-      throw new AppError(
-        CHECKOUT_MESSAGES.SHIPPING_ADDRESS_REQUIRED,
-        ErrorCode.BAD_REQUEST
-      );
-    }
-
-    // Get available shipping methods
-    const methods = await getAvailableShippingMethodsService(
-      session.shippingAddress,
-      session.cartSnapshot
-    );
-
-    // Transform to frontend format
-    const shippingMethods = methods.map((method) => ({
-      _id: method.id.toString(),
-      name: method.name,
-      carrier: method.carrier,
-      description: method.description || undefined,
-      estimatedDays: method.estimatedDays,
-      price: parseFloat(method.price),
-      isFree: method.isFree,
-      imageUrl: method.imageUrl || undefined,
-    }));
+    // Delegate all logic to service layer
+    const shippingMethods = await getShippingMethodsForSessionService(token!);
 
     returnSuccess(
       res,
