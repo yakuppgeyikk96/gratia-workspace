@@ -17,8 +17,7 @@ export default function ProductCardActions({
   isLoggedIn,
   onAddToCart,
 }: ProductCardActionsProps) {
-  const hasDiscount = discountedPrice !== undefined && discountedPrice < price;
-  const displayPrice = hasDiscount ? discountedPrice : price;
+  const hasDiscount = !!discountedPrice && discountedPrice < price;
 
   const itemCount = useCartStore((state) => state.getItemCount(productSku));
   const { handleUpdateQuantity } = useCart(isLoggedIn);
@@ -37,8 +36,10 @@ export default function ProductCardActions({
     <div className={styles.actionsContainer}>
       {/* Price Section */}
       <div className={styles.priceSection}>
-        <span className={styles.currentPrice}>${displayPrice}</span>
-        {hasDiscount && <span className={styles.originalPrice}>${price}</span>}
+        <span className={styles.currentPrice}>${price}</span>
+        {hasDiscount && (
+          <span className={styles.originalPrice}>${discountedPrice}</span>
+        )}
       </div>
 
       <div

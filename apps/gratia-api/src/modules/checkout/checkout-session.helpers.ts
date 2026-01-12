@@ -3,7 +3,8 @@ import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { getRedisKeyTTL, getRedisValue } from "../../shared/services";
 import { buildCartItem } from "../cart/cart.helper";
 import { CartWithItems } from "../cart/cart.types";
-import { findProductBySku } from "../product/product.repository";
+import { findProductsBySkus } from "../product/product.repository";
+import type { Product } from "../../db/schema/product.schema";
 import {
   CartSnapshot,
   CartSnapshotItem,
@@ -154,10 +155,16 @@ export const validateAndBuildGuestCartSnapshot = async (
 ): Promise<CartSnapshot> => {
   const validatedItems: CartSnapshotItem[] = [];
 
+  // Extract all SKUs and fetch products in a single query (avoid N+1)
+  const skus = items.map((item) => item.sku);
+  const products = await findProductsBySkus(skus);
+
+  // Create a map for O(1) lookup
+  const productMap = new Map<string, Product>(products.map((p) => [p.sku, p]));
+
   // Validate all items
   for (const item of items) {
-    // Find product by SKU
-    const product = await findProductBySku(item.sku);
+    const product = productMap.get(item.sku);
 
     if (!product) {
       throw new AppError(

@@ -63,7 +63,7 @@ export interface CheckoutSession {
   status: CheckoutStatus;
   shippingAddress: Address | null;
   billingAddress: Address | null;
-  shippingMethodId: string | null; // Stored as string in Redis, will be parsed to number when creating order
+  shippingMethodId: number | null;
   paymentMethodType: PaymentMethodType | null;
   cartSnapshot: CartSnapshot;
   pricing: CheckoutPricing;
@@ -108,6 +108,21 @@ export interface CreateCheckoutSessionResponse {
 export interface CreateOrderResponse {
   orderId: string;
   orderNumber: string;
+}
+
+/**
+ * DTO for shipping method response (frontend format)
+ * Simplified version without database-specific fields
+ */
+export interface ShippingMethodDto {
+  id: number;
+  name: string;
+  carrier: string;
+  description?: string;
+  estimatedDays: string;
+  price: number;
+  isFree: boolean;
+  imageUrl?: string;
 }
 
 export interface CheckoutSessionWithMeta {

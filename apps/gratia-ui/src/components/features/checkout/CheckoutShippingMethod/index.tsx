@@ -20,7 +20,7 @@ export default function CheckoutShippingMethod({
 }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isSelecting, setIsSelecting] = useState<string | null>(null);
+  const [isSelecting, setIsSelecting] = useState<number | null>(null);
 
   const { data, isLoading: isLoadingMethods } = useQuery({
     queryKey: ["available-shipping-methods"],
@@ -30,7 +30,7 @@ export default function CheckoutShippingMethod({
   const shippingMethods = data?.data || [];
   const selectedMethodId = session.shippingMethodId;
 
-  const handleMethodSelect = async (methodId: string) => {
+  const handleMethodSelect = async (methodId: number) => {
     if (selectedMethodId === methodId) return;
 
     setIsSelecting(methodId);
@@ -87,15 +87,15 @@ export default function CheckoutShippingMethod({
 
       <div className={styles.methodsList}>
         {shippingMethods.map((method) => {
-          const isSelected = selectedMethodId === method._id;
-          const isSelectingMethod = isSelecting === method._id;
+          const isSelected = selectedMethodId === method.id;
+          const isSelectingMethod = isSelecting === method.id;
 
           return (
             <ShippingMethodCard
-              key={method._id}
+              key={method.id}
               method={method}
               isSelected={isSelected}
-              onClick={() => handleMethodSelect(method._id)}
+              onClick={() => handleMethodSelect(method.id)}
               disabled={isSelectingMethod}
             />
           );

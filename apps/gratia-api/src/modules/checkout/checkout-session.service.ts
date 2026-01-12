@@ -10,6 +10,7 @@ import { generateOrderNumber } from "../order/order.helpers";
 import { createOrderFromSession } from "../order/order.service";
 import {
   calculateShippingCost,
+  getAvailableShippingMethodsService,
   validateShippingMethodService,
 } from "../shipping/shipping.service";
 import {
@@ -28,6 +29,7 @@ import {
   CheckoutStep,
   CreateCheckoutSessionResponse,
   PaymentMethodType,
+  type ShippingMethodDto,
 } from "./checkout-session.types";
 import { CHECKOUT_CONFIG, CHECKOUT_MESSAGES } from "./checkout.constants";
 
@@ -109,8 +111,11 @@ export const updateCheckoutSessionService = async (
     CHECKOUT_CONFIG.SESSION_TTL_SECONDS
   );
 
-  // Return with fresh TTL
-  return await getSessionWithTTL(sessionToken);
+  // Return session with fresh TTL (avoid extra Redis read)
+  return {
+    ...updatedSession,
+    ttl: CHECKOUT_CONFIG.SESSION_TTL_SECONDS,
+  };
 };
 
 /**
@@ -154,6 +159,55 @@ export const updateShippingAddressService = async (
  * @param shippingCost - Shipping cost
  * @returns Updated session
  */
+/**
+ * Gets available shipping methods for checkout session
+ * Includes validation and transformation to frontend format
+ * @param sessionToken - Session token
+ * @returns Array of shipping methods in DTO format
+ */
+export const getShippingMethodsForSessionService = async (
+  sessionToken: string
+): Promise<ShippingMethodDto[]> => {
+  // Get session to access shipping address and cart snapshot
+  const session = await getSessionWithTTL(sessionToken);
+
+  // Validate shipping address exists
+  if (!session.shippingAddress) {
+    throw new AppError(
+      CHECKOUT_MESSAGES.SHIPPING_ADDRESS_REQUIRED,
+      ErrorCode.BAD_REQUEST
+    );
+  }
+
+  // Get available shipping methods (with free shipping rules applied)
+  const methods = await getAvailableShippingMethodsService(
+    session.shippingAddress,
+    session.cartSnapshot
+  );
+
+  // Transform to frontend DTO format (remove database-specific fields)
+  return methods.map((method): ShippingMethodDto => {
+    const dto: ShippingMethodDto = {
+      id: method.id,
+      name: method.name,
+      carrier: method.carrier,
+      estimatedDays: method.estimatedDays,
+      price: parseFloat(method.price),
+      isFree: method.isFree,
+    };
+
+    // Add optional fields only if they exist
+    if (method.description) {
+      dto.description = method.description;
+    }
+    if (method.imageUrl) {
+      dto.imageUrl = method.imageUrl;
+    }
+
+    return dto;
+  });
+};
+
 export const selectShippingMethodService = async (
   sessionToken: string,
   shippingMethodId: number
@@ -169,8 +223,7 @@ export const selectShippingMethodService = async (
   }
 
   // Convert number to string for Redis storage and validate
-  const shippingMethodIdString = shippingMethodId.toString();
-  const method = await validateShippingMethodService(shippingMethodIdString);
+  const method = await validateShippingMethodService(shippingMethodId);
 
   // Calculate shipping cost (applies free shipping rules)
   const shippingCost = calculateShippingCost(
@@ -185,7 +238,7 @@ export const selectShippingMethodService = async (
   );
 
   const updates: Partial<CheckoutSession> = {
-    shippingMethodId: shippingMethodIdString,
+    shippingMethodId,
     pricing: updatedPricing,
     currentStep: CheckoutStep.PAYMENT,
   };

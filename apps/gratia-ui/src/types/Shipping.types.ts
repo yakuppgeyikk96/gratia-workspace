@@ -1,7 +1,7 @@
 import { IApiResponse } from "./Api.types";
 
 export interface ShippingMethod {
-  _id: string;
+  id: number;
   name: string;
   carrier: string;
   description?: string;

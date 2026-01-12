@@ -20,7 +20,6 @@ export default function CartPageContainer(props: CartPageContainerProps) {
 
   const cartItems = useCartStore((state) => state.items);
 
-  console.log("cartItems", cartItems);
 
   if (!cartItems) {
     return <LoadingSpinner />;

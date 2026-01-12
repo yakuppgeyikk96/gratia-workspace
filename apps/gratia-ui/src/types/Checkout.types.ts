@@ -49,7 +49,7 @@ export interface CheckoutSession {
   status: CheckoutStatus;
   shippingAddress: Address | null;
   billingAddress: Address | null;
-  shippingMethodId: string | null;
+  shippingMethodId: number | null;
   paymentMethodType: PaymentMethodType | null;
   cartSnapshot: CartSnapshot;
   pricing: CheckoutPricing;
@@ -81,7 +81,7 @@ export interface UpdateShippingAddressRequest {
 }
 
 export interface SelectShippingMethodRequest {
-  shippingMethodId: string;
+  shippingMethodId: number;
 }
 
 export interface CompleteCheckoutRequest {
