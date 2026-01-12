@@ -1,10 +1,6 @@
-import { Product, ProductAttributes } from "../../db/schema/product.schema";
+import { Product } from "../../db/schema/product.schema";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
-import { findBrandById } from "../brand/brand.repository";
-import { findCategoryById } from "../category/category.repository";
-import { findCollectionBySlug } from "../collection/collection.repository";
-import { findVendorById } from "../vendor/vendor.repository";
-import { PRODUCT_MESSAGES } from "./product.constants";
+import { PRODUCT_LIMITS, PRODUCT_MESSAGES } from "./product.constants";
 import {
   buildCategoryPath,
   createProduct,
@@ -12,7 +8,6 @@ import {
   findFeaturedProducts,
   findProductById,
   findProductByIdWithDetails,
-  findProductBySku,
   findProductBySlug,
   findProducts,
   findProductsByGroupId,
@@ -21,103 +16,49 @@ import type { CreateProductDto } from "./product.validations";
 import type ProductQueryOptionsDto from "./types/ProductQueryOptionsDto";
 import type ProductsResponseDto from "./types/ProductsResponseDto";
 import type ProductWithVariantsDto from "./types/ProductWithVariantsDto";
+import { buildProductInsertData } from "./utils/product-builder.utils";
+import {
+  generateProductGroupId,
+  validateBrandExists,
+  validateCategoryExists,
+  validateCollectionsExist,
+  validateUniqueSku,
+  validateUniqueSlug,
+  validateVendorExists,
+} from "./utils/product-validation.utils";
 
 export const createProductService = async (
   data: CreateProductDto
 ): Promise<Product> => {
-  // Check if product slug already exists
-  const existingProduct = await findProductBySlug(data.slug);
-  if (existingProduct) {
-    throw new AppError(
-      PRODUCT_MESSAGES.PRODUCT_SLUG_ALREADY_EXISTS,
-      ErrorCode.DUPLICATE_ENTRY
-    );
-  }
+  // Run mandatory validations in parallel
+  await Promise.all([
+    validateUniqueSlug(data.slug),
+    validateUniqueSku(data.sku),
+    validateCategoryExists(data.categoryId),
+  ]);
 
-  // Check if product SKU already exists
-  const existingSku = await findProductBySku(data.sku);
-  if (existingSku) {
-    throw new AppError(
-      PRODUCT_MESSAGES.PRODUCT_SKU_ALREADY_EXISTS,
-      ErrorCode.DUPLICATE_ENTRY
-    );
-  }
+  // Run optional relationship validations in parallel
+  const [brandIdNumber, vendorIdNumber] = await Promise.all([
+    validateBrandExists(data.brandId),
+    validateVendorExists(data.vendorId),
+  ]);
 
-  // Validate categoryId
-  const category = await findCategoryById(data.categoryId);
-  if (!category) {
-    throw new AppError(
-      PRODUCT_MESSAGES.CATEGORY_NOT_FOUND,
-      ErrorCode.NOT_FOUND
-    );
-  }
+  // Run collection validation
+  await validateCollectionsExist(data.collectionSlugs || []);
 
-  // Validate brandId (if provided)
-  let brandIdNumber: number | null = null;
-  if (data.brandId) {
-    const brand = await findBrandById(data.brandId);
-    if (!brand) {
-      throw new AppError("Brand not found", ErrorCode.NOT_FOUND);
-    }
-    brandIdNumber = data.brandId;
-  }
-
-  // Validate vendorId (if provided)
-  let vendorIdNumber: number | null = null;
-  if (data.vendorId) {
-    const vendor = await findVendorById(data.vendorId);
-    if (!vendor) {
-      throw new AppError("Vendor not found", ErrorCode.NOT_FOUND);
-    }
-    vendorIdNumber = data.vendorId;
-  }
-
-  // Validate collections (if provided) - TODO: Replace with collection repository when migrated
-  if (data.collectionSlugs && data.collectionSlugs.length > 0) {
-    for (const collectionSlug of data.collectionSlugs) {
-      const collection = await findCollectionBySlug(collectionSlug);
-      if (!collection) {
-        throw new AppError(
-          `Collection with slug '${collectionSlug}' not found`,
-          ErrorCode.NOT_FOUND
-        );
-      }
-    }
-  }
-
-  // Build category path
+  // Generate metadata
   const categoryPath = await buildCategoryPath(data.categoryId);
+  const productGroupId = generateProductGroupId(data.productGroupId);
 
-  // Generate productGroupId if not provided
-  const productGroupId =
-    data.productGroupId ||
-    `pg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-  // Create the product
-  const product = await createProduct({
-    name: data.name,
-    slug: data.slug,
-    description: data.description || null,
-    sku: data.sku,
-    categoryId: data.categoryId,
+  // Build product data using builder
+  const productData = buildProductInsertData(data, {
+    categoryPath,
+    productGroupId,
     brandId: brandIdNumber,
     vendorId: vendorIdNumber,
-    categoryPath,
-    collectionSlugs: data.collectionSlugs || [],
-    price: data.price,
-    discountedPrice: data.discountedPrice || null,
-    stock: data.stock,
-    attributes: (data.attributes || {}) as ProductAttributes & {
-      color?: string;
-      size?: string;
-      material?: string;
-    },
-    images: data.images || [],
-    productGroupId,
-    metaTitle: data.metaTitle || null,
-    metaDescription: data.metaDescription || null,
-    isActive: data.isActive ?? true,
   });
+
+  const product = await createProduct(productData);
 
   if (!product) {
     throw new AppError(
@@ -221,7 +162,13 @@ export const getProductWithVariantsService = async (
 };
 
 export const getFeaturedProductsService = async (
-  limit: number = 10
+  limit: number = PRODUCT_LIMITS.FEATURED_DEFAULT
 ): Promise<Product[]> => {
-  return await findFeaturedProducts(limit);
+  // Clamp limit between min and max values
+  const clampedLimit = Math.min(
+    Math.max(limit, PRODUCT_LIMITS.FEATURED_MIN),
+    PRODUCT_LIMITS.FEATURED_MAX
+  );
+
+  return await findFeaturedProducts(clampedLimit);
 };

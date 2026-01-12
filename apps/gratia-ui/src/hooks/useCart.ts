@@ -35,7 +35,6 @@ export function useCart(isLoggedIn: boolean) {
 
       try {
         const response = await getCart();
-        console.log("response", response);
         if (response.success && response.data) {
           setItems(response.data.items);
         }

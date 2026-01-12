@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { asyncHandler } from "../../shared/middlewares";
 import { StatusCode } from "../../shared/types";
 import { returnSuccess } from "../../shared/utils/response.utils";
@@ -12,7 +11,7 @@ import {
   getProductWithVariantsService,
 } from "./product.service";
 import type { CreateProductDto } from "./product.validations";
-import type { SortOptions } from "./types/ProductQueryOptionsDto";
+import { parseProductFilters } from "./utils/filter.utils";
 
 export const createProductController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -31,65 +30,22 @@ export const createProductController = asyncHandler(
 
 export const getProductsController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { categorySlug, collectionSlug, sort, page, limit } = req.query;
-    const withDetails = req.query.details === "true";
+    // After validation middleware, query params are already validated and typed
+    const { categorySlug, collectionSlug, sort, page, limit, details } =
+      req.query as any;
 
-    const filters: any = {};
+    const filters = parseProductFilters(req.query as Record<string, unknown>);
 
-    /**
-     * If the color filter is present, add it to the filters object
-     */
-    if (req.query["filters[color]"]) {
-      filters.colors = Array.isArray(req.query["filters[color]"])
-        ? req.query["filters[color]"]
-        : [req.query["filters[color]"]];
-    }
-
-    /**
-     * If the size filter is present, add it to the filters object
-     */
-    if (req.query["filters[size]"]) {
-      filters.sizes = Array.isArray(req.query["filters[size]"])
-        ? req.query["filters[size]"]
-        : [req.query["filters[size]"]];
-    }
-
-    /**
-     * If the material filter is present, add it to the filters object
-     */
-    if (req.query["filters[material]"]) {
-      filters.materials = Array.isArray(req.query["filters[material]"])
-        ? req.query["filters[material]"]
-        : [req.query["filters[material]"]];
-    }
-
-    /**
-     * If the min price filter is present, add it to the filters object
-     */
-    if (req.query["filters[minPrice]"]) {
-      filters.minPrice = Number(req.query["filters[minPrice]"]);
-    }
-
-    /**
-     * If the max price filter is present, add it to the filters object
-     */
-    if (req.query["filters[maxPrice]"]) {
-      filters.maxPrice = Number(req.query["filters[maxPrice]"]);
-    }
-
-    /**
-     * Get the products
-     */
     const result = await getProductsService(
       {
-        categorySlug: categorySlug as string,
-        collectionSlug: collectionSlug as string,
-        filters: Object.keys(filters).length > 0 ? filters : undefined,
-        sort: (sort as unknown as SortOptions) || "newest",
-        page: Number(page) || 1,
-        limit: Number(limit) || 20,
+        categorySlug,
+        collectionSlug,
+        ...(filters && { filters }),
+        sort,
+        page,
+        limit,
       },
-      withDetails
+      details
     );
 
     returnSuccess(res, result, PRODUCT_MESSAGES.PRODUCTS_FOUND);
@@ -98,17 +54,11 @@ export const getProductsController = asyncHandler(
 
 export const getProductByIdController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const withDetails = req.query.details === "true";
+    // After validation middleware, params and query are already validated
+    const { id } = req.params as any;
+    const { details } = req.query as any;
 
-    if (!id) {
-      throw new AppError(
-        PRODUCT_MESSAGES.PRODUCT_ID_REQUIRED,
-        ErrorCode.BAD_REQUEST
-      );
-    }
-
-    const result = await getProductByIdService(id, withDetails);
+    const result = await getProductByIdService(id, details);
 
     returnSuccess(
       res,
@@ -121,14 +71,8 @@ export const getProductByIdController = asyncHandler(
 
 export const getProductWithVariantsController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { slug } = req.params;
-
-    if (!slug) {
-      throw new AppError(
-        PRODUCT_MESSAGES.PRODUCT_SLUG_REQUIRED,
-        ErrorCode.BAD_REQUEST
-      );
-    }
+    // After validation middleware, params are already validated
+    const { slug } = req.params as any;
 
     const result = await getProductWithVariantsService(slug);
 
@@ -143,11 +87,10 @@ export const getProductWithVariantsController = asyncHandler(
 
 export const getFeaturedProductsController = asyncHandler(
   async (req: Request, res: Response) => {
-    const limit = Number(req.query.limit) || 10;
+    // After validation middleware, limit is already validated and has default value
+    const { limit } = req.query as any;
 
-    const clampedLimit = Math.min(Math.max(limit, 8), 12);
-
-    const products = await getFeaturedProductsService(clampedLimit);
+    const products = await getFeaturedProductsService(limit);
 
     returnSuccess(res, products, PRODUCT_MESSAGES.PRODUCTS_FOUND);
   }

@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { validateBody } from "../../shared/middlewares/validation.middleware";
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+} from "../../shared/middlewares/validation.middleware";
 import {
   createProductController,
   getFeaturedProductsController,
@@ -7,7 +11,14 @@ import {
   getProductsController,
   getProductWithVariantsController,
 } from "./product.controller";
-import { createProductSchema } from "./product.validations";
+import {
+  createProductSchema,
+  getFeaturedProductsQuerySchema,
+  getProductByIdParamsSchema,
+  getProductByIdQuerySchema,
+  getProductsQuerySchema,
+  getProductWithVariantsParamsSchema,
+} from "./product.validations";
 
 const router: Router = Router();
 
@@ -15,15 +26,32 @@ const router: Router = Router();
 router.post("/", validateBody(createProductSchema), createProductController);
 
 // GET /api/products/featured - Get featured products
-router.get("/featured", getFeaturedProductsController);
+router.get(
+  "/featured",
+  validateQuery(getFeaturedProductsQuerySchema),
+  getFeaturedProductsController
+);
 
 // GET /api/products - Get products
-router.get("/", getProductsController);
+router.get(
+  "/",
+  validateQuery(getProductsQuerySchema),
+  getProductsController
+);
 
 // GET /api/products/:slug/with-variants - Get product with variants
-router.get("/:slug/with-variants", getProductWithVariantsController);
+router.get(
+  "/:slug/with-variants",
+  validateParams(getProductWithVariantsParamsSchema),
+  getProductWithVariantsController
+);
 
 // GET /api/products/:id - Get product by ID
-router.get("/:id", getProductByIdController);
+router.get(
+  "/:id",
+  validateParams(getProductByIdParamsSchema),
+  validateQuery(getProductByIdQuerySchema),
+  getProductByIdController
+);
 
 export default router;

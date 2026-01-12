@@ -20,7 +20,6 @@ import {
   products,
 } from "../../db/schema/product.schema";
 import { vendors } from "../../db/schema/vendor.schema";
-import { findCategoryById } from "../category/category.repository";
 import type ProductQueryOptionsDto from "./types/ProductQueryOptionsDto";
 import type {
   ProductFiltersDto,
@@ -120,23 +119,35 @@ const buildWhereConditions = (options: ProductQueryOptionsDto) => {
   return and(...conditions);
 };
 
+/**
+ * Pull full category path (slug based) for a given categoryId
+ * Avoids N+1 query problem by fetching all categories at once
+ */
 export const buildCategoryPath = async (
   categoryId: number
 ): Promise<string> => {
+  // Fetch all categories at once
+  const allCategories = await db
+    .select({
+      id: categories.id,
+      slug: categories.slug,
+      parentId: categories.parentId,
+    })
+    .from(categories);
+
+  // Create a map for O(1) access
+  const categoryMap = new Map(allCategories.map((cat) => [cat.id, cat]));
+
+  // Traverse the tree upwards to build the path
   const slugs: string[] = [];
   let currentCategoryId: number | null = categoryId;
 
   while (currentCategoryId) {
-    const category = await findCategoryById(currentCategoryId);
+    const category = categoryMap.get(currentCategoryId);
     if (!category) break;
 
     slugs.unshift(category.slug);
-
-    if (category.parentId) {
-      currentCategoryId = category.parentId;
-    } else {
-      currentCategoryId = null;
-    }
+    currentCategoryId = category.parentId;
   }
 
   return slugs.join("#");
@@ -145,46 +156,32 @@ export const buildCategoryPath = async (
 export const createProduct = async (productData: {
   name: string;
   slug: string;
-  description?: string | null;
+  description: string | null;
   sku: string;
   categoryId: number;
-  brandId?: number | null;
-  vendorId?: number | null;
+  brandId: number | null;
+  vendorId: number | null;
   categoryPath: string;
   collectionSlugs: string[];
   price: number;
-  discountedPrice?: number | null;
+  discountedPrice: number | null;
   stock: number;
   attributes: ProductAttributes;
   images: string[];
   productGroupId: string;
-  metaTitle?: string | null;
-  metaDescription?: string | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
   isActive: boolean;
 }): Promise<Product | null> => {
   const [product] = await db
     .insert(products)
     .values({
-      name: productData.name,
+      ...productData,
       slug: productData.slug.toLowerCase(),
-      description: productData.description || null,
-      sku: productData.sku,
-      categoryId: productData.categoryId,
-      brandId: productData.brandId || null,
-      vendorId: productData.vendorId || null,
-      categoryPath: productData.categoryPath,
-      collectionSlugs: productData.collectionSlugs || [],
       price: productData.price.toString(),
       discountedPrice: productData.discountedPrice
         ? productData.discountedPrice.toString()
         : null,
-      stock: productData.stock,
-      attributes: productData.attributes || {},
-      images: productData.images || [],
-      productGroupId: productData.productGroupId,
-      metaTitle: productData.metaTitle || null,
-      metaDescription: productData.metaDescription || null,
-      isActive: productData.isActive,
     })
     .returning();
 

@@ -26,7 +26,8 @@ export const validateQuery = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
       const validatedData = schema.parse(req.query) as any;
-      req.query = validatedData;
+      Object.keys(req.query).forEach((key) => delete (req.query as any)[key]);
+      Object.assign(req.query, validatedData);
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -46,7 +47,8 @@ export const validateParams = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
       const validatedData = schema.parse(req.params) as any;
-      req.params = validatedData;
+      Object.keys(req.params).forEach((key) => delete req.params[key]);
+      Object.assign(req.params, validatedData);
       next();
     } catch (error) {
       if (error instanceof ZodError) {

@@ -133,5 +133,60 @@ export const createProductSchema = z.object({
 
 export const updateProductSchema = createProductSchema.partial();
 
+// Query validation schema for getProducts endpoint
+export const getProductsQuerySchema = z.object({
+  categorySlug: z.string().optional(),
+  collectionSlug: z.string().optional(),
+  sort: z.enum(["newest", "price-low", "price-high", "name"]).default("newest"),
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(20),
+  details: z
+    .string()
+    .optional()
+    .transform((val) => val === "true"),
+  "filters[color]": z.union([z.string(), z.array(z.string())]).optional(),
+  "filters[size]": z.union([z.string(), z.array(z.string())]).optional(),
+  "filters[material]": z.union([z.string(), z.array(z.string())]).optional(),
+  "filters[minPrice]": z.coerce.number().min(0).optional(),
+  "filters[maxPrice]": z.coerce.number().min(0).optional(),
+});
+
+// Params validation schema for getProductById endpoint
+export const getProductByIdParamsSchema = z.object({
+  id: z.string().min(1, "Product ID is required"),
+});
+
+// Query validation schema for getProductById endpoint
+export const getProductByIdQuerySchema = z.object({
+  details: z
+    .string()
+    .optional()
+    .transform((val) => val === "true"),
+});
+
+// Params validation schema for getProductWithVariants endpoint
+export const getProductWithVariantsParamsSchema = z.object({
+  slug: z
+    .string()
+    .min(1, "Product slug is required")
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid product slug format"),
+});
+
+// Query validation schema for getFeaturedProducts endpoint
+export const getFeaturedProductsQuerySchema = z.object({
+  limit: z.coerce.number().int().positive().default(10),
+});
+
 export type CreateProductDto = z.infer<typeof createProductSchema>;
 export type UpdateProductDto = z.infer<typeof updateProductSchema>;
+export type GetProductsQueryDto = z.infer<typeof getProductsQuerySchema>;
+export type GetProductByIdParamsDto = z.infer<
+  typeof getProductByIdParamsSchema
+>;
+export type GetProductByIdQueryDto = z.infer<typeof getProductByIdQuerySchema>;
+export type GetProductWithVariantsParamsDto = z.infer<
+  typeof getProductWithVariantsParamsSchema
+>;
+export type GetFeaturedProductsQueryDto = z.infer<
+  typeof getFeaturedProductsQuerySchema
+>;

@@ -11,9 +11,19 @@ export const PRODUCT_MESSAGES = {
   PRODUCT_UPDATED: "Product updated successfully",
   PRODUCT_DELETED: "Product deleted successfully",
   CATEGORY_NOT_FOUND: "Category not found",
+  BRAND_NOT_FOUND: "Brand not found",
+  VENDOR_NOT_FOUND: "Vendor not found",
   COLLECTION_NOT_FOUND: "Collection not found",
   CATEGORY_ID_REQUIRED: "Category ID is required",
   COLLECTION_ID_REQUIRED: "Collection ID is required",
   CATEGORY_SLUG_REQUIRED: "Category slug is required",
   CATEGORY_OR_COLLECTION_REQUIRED: "Category or collection is required",
+} as const;
+
+export const PRODUCT_LIMITS = {
+  FEATURED_MIN: 8,
+  FEATURED_MAX: 12,
+  FEATURED_DEFAULT: 10,
+  PRODUCTS_DEFAULT: 20,
+  PRODUCTS_MAX: 100,
 } as const;
