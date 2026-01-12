@@ -22,12 +22,6 @@ export interface ProductInsertData {
   isActive: boolean;
 }
 
-/**
- * Creates a ProductInsertData object from the given CreateProductDto and metadata.
- *
- * This function centralizes the construction of product data for insertion,
- * ensuring consistent handling of optional fields and default values.
- */
 export const buildProductInsertData = (
   dto: CreateProductDto,
   metadata: {

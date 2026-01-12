@@ -6,10 +6,6 @@ import { findVendorById } from "../../vendor/vendor.repository";
 import { PRODUCT_MESSAGES } from "../product.constants";
 import { findProductBySku, findProductBySlug } from "../product.repository";
 
-/**
- * Validates that the product slug is unique
- * @throws AppError if slug already exists
- */
 export const validateUniqueSlug = async (slug: string): Promise<void> => {
   const existingProduct = await findProductBySlug(slug);
   if (existingProduct) {
@@ -20,10 +16,6 @@ export const validateUniqueSlug = async (slug: string): Promise<void> => {
   }
 };
 
-/**
- * Validates that the product SKU is unique
- * @throws AppError if SKU already exists
- */
 export const validateUniqueSku = async (sku: string): Promise<void> => {
   const existingSku = await findProductBySku(sku);
   if (existingSku) {
@@ -34,10 +26,6 @@ export const validateUniqueSku = async (sku: string): Promise<void> => {
   }
 };
 
-/**
- * Validates that the category exists
- * @throws AppError if category not found
- */
 export const validateCategoryExists = async (
   categoryId: number
 ): Promise<void> => {
@@ -50,11 +38,6 @@ export const validateCategoryExists = async (
   }
 };
 
-/**
- * Validates that the brand exists (if provided)
- * @returns The brand ID or null
- * @throws AppError if brand ID is provided but not found
- */
 export const validateBrandExists = async (
   brandId?: number
 ): Promise<number | null> => {
@@ -68,11 +51,6 @@ export const validateBrandExists = async (
   return brandId;
 };
 
-/**
- * Validates that the vendor exists (if provided)
- * @returns The vendor ID or null
- * @throws AppError if vendor ID is provided but not found
- */
 export const validateVendorExists = async (
   vendorId?: number
 ): Promise<number | null> => {
@@ -86,16 +64,11 @@ export const validateVendorExists = async (
   return vendorId;
 };
 
-/**
- * Validates that all collection slugs exist
- * @throws AppError if any collection is not found
- */
 export const validateCollectionsExist = async (
   collectionSlugs: string[]
 ): Promise<void> => {
   if (!collectionSlugs || collectionSlugs.length === 0) return;
 
-  // Validate all collections in parallel
   await Promise.all(
     collectionSlugs.map(async (collectionSlug) => {
       const collection = await findCollectionBySlug(collectionSlug);
@@ -109,9 +82,6 @@ export const validateCollectionsExist = async (
   );
 };
 
-/**
- * Generates a unique product group ID
- */
 export const generateProductGroupId = (providedId?: string): string => {
   if (providedId) return providedId;
 

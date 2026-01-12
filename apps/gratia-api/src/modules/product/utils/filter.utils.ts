@@ -1,26 +1,16 @@
 import type { ProductFiltersDto } from "../types/ProductQueryOptionsDto";
 
-/**
- * Array-based filtreleri parse eder
- * Tek değerleri array'e çevirir (tutarlılık için)
- */
 const parseArrayFilter = (value: unknown): string[] | undefined => {
   if (!value) return undefined;
   return Array.isArray(value) ? value : [value as string];
 };
 
-/**
- * Numeric filtreleri parse eder
- */
 const parseNumberFilter = (value: unknown): number | undefined => {
   if (!value) return undefined;
   const parsed = Number(value);
   return isNaN(parsed) ? undefined : parsed;
 };
 
-/**
- * Tüm product filterlarını Express query'den extract ve parse eder
- */
 export const parseProductFilters = (
   query: Record<string, unknown>
 ): ProductFiltersDto | undefined => {
