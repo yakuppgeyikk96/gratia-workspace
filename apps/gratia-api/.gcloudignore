@@ -1,6 +1,3 @@
-# This file specifies files that are *not* uploaded to Google Cloud
-# using gcloud. It follows the same syntax as .gitignore.
-
 .gcloudignore
 .git
 .gitignore
@@ -15,3 +12,11 @@ coverage
 .DS_Store
 *.log
 README.md
+drizzle
+test
+tests
+__tests__
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts

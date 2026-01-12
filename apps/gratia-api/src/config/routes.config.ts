@@ -8,6 +8,7 @@ import collectionRoutes from "../modules/collection/collection.routes";
 import locationRoutes from "../modules/location/location.routes";
 import navigationRoutes from "../modules/navigation/navigation.routes";
 import productRoutes from "../modules/product/product.routes";
+import seedRoutes from "../modules/seed/seed.routes";
 import vendorRoutes from "../modules/vendor/vendor.routes";
 import { authMiddleware } from "../shared/middlewares";
 
@@ -27,6 +28,9 @@ export const routesConfig = (app: Express) => {
   // Public routes (authenticated and guest users)
   router.use("/checkout", checkoutRoutes);
   router.use("/location", locationRoutes);
+
+  // Seed routes (development only - should be protected in production)
+  router.use("/seed", seedRoutes);
 
   // Protected routes
   router.use("/cart", authMiddleware, cartRoutes);
