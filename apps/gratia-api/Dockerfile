@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package.json ./
 
 # Install dependencies
-RUN pnpm install --no-frozen-lockfile --prod=false
+RUN pnpm install --prod=false
 
 # Copy source code
 COPY . .
@@ -31,7 +31,7 @@ WORKDIR /app
 COPY package.json ./
 
 # Install only production dependencies
-RUN pnpm install --no-frozen-lockfile --prod
+RUN pnpm install --prod
 
 # Copy built files from base stage
 COPY --from=base /app/dist ./dist

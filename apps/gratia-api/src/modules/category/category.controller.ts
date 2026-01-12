@@ -3,6 +3,7 @@ import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { asyncHandler } from "../../shared/middlewares";
 import { StatusCode } from "../../shared/types";
 import { returnSuccess } from "../../shared/utils/response.utils";
+import { getIdParam, getStringParam } from "../../shared/utils/params.utils";
 import { CATEGORY_MESSAGES } from "./category.constants";
 import {
   createCategoryService,
@@ -15,17 +16,6 @@ import {
 } from "./category.service";
 import { CategoryTreeNode } from "./category.types";
 import type { CreateCategoryDto } from "./category.validations";
-
-const parseId = (id: string): number => {
-  const parsed = parseInt(id, 10);
-  if (isNaN(parsed)) {
-    throw new AppError(
-      CATEGORY_MESSAGES.CATEGORY_ID_REQUIRED,
-      ErrorCode.BAD_REQUEST
-    );
-  }
-  return parsed;
-};
 
 export const createCategoryController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -70,16 +60,7 @@ export const getActiveCategoriesController = asyncHandler(
 
 export const getCategoryByIdController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
-
-    if (!id) {
-      throw new AppError(
-        CATEGORY_MESSAGES.CATEGORY_ID_REQUIRED,
-        ErrorCode.BAD_REQUEST
-      );
-    }
-
-    const categoryId = parseId(id);
+    const categoryId = getIdParam(req.params.id, "category ID");
     const result = await getCategoryByIdService(categoryId);
 
     returnSuccess(
@@ -93,15 +74,7 @@ export const getCategoryByIdController = asyncHandler(
 
 export const getCategoryBySlugController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { slug } = req.params;
-
-    if (!slug) {
-      throw new AppError(
-        CATEGORY_MESSAGES.CATEGORY_SLUG_REQUIRED,
-        ErrorCode.BAD_REQUEST
-      );
-    }
-
+    const slug = getStringParam(req.params.slug, "category slug");
     const result = await getCategoryBySlugService(slug);
 
     returnSuccess(
@@ -115,17 +88,8 @@ export const getCategoryBySlugController = asyncHandler(
 
 export const getSubCategoriesController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { parentId } = req.params;
-
-    if (!parentId) {
-      throw new AppError(
-        CATEGORY_MESSAGES.PARENT_CATEGORY_ID_REQUIRED,
-        ErrorCode.BAD_REQUEST
-      );
-    }
-
-    const parentIdNumber = parseId(parentId);
-    const result = await getSubCategoriesService(parentIdNumber);
+    const parentId = getIdParam(req.params.parentId, "parent category ID");
+    const result = await getSubCategoriesService(parentId);
 
     returnSuccess(
       res,

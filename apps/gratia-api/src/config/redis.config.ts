@@ -39,7 +39,7 @@ export const connectRedis = async (): Promise<void> => {
     await redisClient.connect();
   } catch (error) {
     console.error("Redis connection error:", error);
-    process.exit(1);
+    throw error; // Throw error instead of crashing the app
   }
 };
 

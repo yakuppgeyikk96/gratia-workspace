@@ -2,6 +2,7 @@ import { Response } from "express";
 import { asyncHandler } from "../../shared/middlewares";
 import { AuthRequest, StatusCode } from "../../shared/types";
 import { returnSuccess } from "../../shared/utils/response.utils";
+import { getStringParam } from "../../shared/utils/params.utils";
 import {
   getAllCountriesService,
   getCitiesByStateCodeService,
@@ -47,9 +48,8 @@ export const createCheckoutSessionController = asyncHandler(
  */
 export const getCheckoutSessionController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { token } = req.params;
-
-    const session = await getCheckoutSessionService(token!);
+    const token = getStringParam(req.params.token, "token");
+    const session = await getCheckoutSessionService(token);
 
     returnSuccess(
       res,
@@ -66,12 +66,11 @@ export const getCheckoutSessionController = asyncHandler(
  */
 export const updateShippingAddressController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { token } = req.params;
-
+    const token = getStringParam(req.params.token, "token");
     const payload: UpdateShippingAddressDto = req.body;
 
     const session = await updateShippingAddressService(
-      token!,
+      token,
       payload.shippingAddress,
       payload.billingAddress,
       payload.billingIsSameAsShipping
@@ -92,11 +91,11 @@ export const updateShippingAddressController = asyncHandler(
  */
 export const selectShippingMethodController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { token } = req.params;
+    const token = getStringParam(req.params.token, "token");
     const payload: SelectShippingMethodDto = req.body;
 
     const updatedSession = await selectShippingMethodService(
-      token!,
+      token,
       payload.shippingMethodId
     );
 
@@ -115,11 +114,11 @@ export const selectShippingMethodController = asyncHandler(
  */
 export const completeCheckoutController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { token } = req.params;
+    const token = getStringParam(req.params.token, "token");
     const payload: CompletePaymentDto = req.body;
 
     const createdOrder = await completeCheckoutService(
-      token!,
+      token,
       payload.paymentMethodType,
       payload.paymentToken || ""
     );
@@ -142,10 +141,10 @@ export const completeCheckoutController = asyncHandler(
  */
 export const getShippingMethodsController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { token } = req.params;
+    const token = getStringParam(req.params.token, "token");
 
     // Delegate all logic to service layer
-    const shippingMethods = await getShippingMethodsForSessionService(token!);
+    const shippingMethods = await getShippingMethodsForSessionService(token);
 
     returnSuccess(
       res,
@@ -175,9 +174,8 @@ export const getShippingCountryOptionsController = asyncHandler(
 
 export const getShippingStatesOptionsController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { code } = req.params;
-
-    const states = await getStatesByCountryCodeService(code!);
+    const code = getStringParam(req.params.code, "country code");
+    const states = await getStatesByCountryCodeService(code);
 
     const availableStates = states.filter(
       (state) => state.isAvailableForShipping
@@ -194,9 +192,10 @@ export const getShippingStatesOptionsController = asyncHandler(
 
 export const getShippingCitiesOptionsController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { countryCode, stateCode } = req.params;
+    const countryCode = getStringParam(req.params.countryCode, "country code");
+    const stateCode = getStringParam(req.params.stateCode, "state code");
 
-    const cities = await getCitiesByStateCodeService(countryCode!, stateCode!);
+    const cities = await getCitiesByStateCodeService(countryCode, stateCode);
 
     returnSuccess(
       res,

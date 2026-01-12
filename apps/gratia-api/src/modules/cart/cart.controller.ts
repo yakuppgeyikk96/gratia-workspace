@@ -2,6 +2,7 @@ import { Response } from "express";
 import { asyncHandler } from "../../shared/middlewares";
 import { AuthRequest, StatusCode } from "../../shared/types";
 import { returnSuccess } from "../../shared/utils/response.utils";
+import { getStringParam } from "../../shared/utils/params.utils";
 import { CART_MESSAGES } from "./cart.constants";
 import { parseUserId } from "./cart.helper";
 import {
@@ -53,9 +54,9 @@ export const updateCartItemController = asyncHandler(
 export const removeFromCartController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
     const userId = parseUserId(req.user!.userId);
-    const { sku } = req.params;
+    const sku = getStringParam(req.params.sku, "SKU");
 
-    const cart = await removeFromCartService(userId, sku!);
+    const cart = await removeFromCartService(userId, sku);
 
     returnSuccess(res, cart, CART_MESSAGES.ITEM_REMOVED, StatusCode.SUCCESS);
   }

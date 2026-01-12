@@ -2,6 +2,7 @@ import { Response } from "express";
 import { asyncHandler } from "../../shared/middlewares";
 import { AuthRequest, StatusCode } from "../../shared/types";
 import { returnSuccess } from "../../shared/utils/response.utils";
+import { getIdParam, getStringParam } from "../../shared/utils/params.utils";
 import {
   getAllCountriesService,
   getCitiesByStateCodeService,
@@ -34,9 +35,8 @@ export const getAllCountriesController = asyncHandler(
  */
 export const getCountryByCodeController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { code } = req.params;
-
-    const country = await getCountryByCodeService(code!);
+    const code = getStringParam(req.params.code, "country code");
+    const country = await getCountryByCodeService(code);
 
     returnSuccess(
       res,
@@ -53,14 +53,8 @@ export const getCountryByCodeController = asyncHandler(
  */
 export const getStatesByCountryController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { countryId } = req.params;
-
-    const countryIdNum = parseInt(countryId!, 10);
-    if (isNaN(countryIdNum)) {
-      throw new Error("Invalid country ID");
-    }
-
-    const states = await getStatesByCountryService(countryIdNum);
+    const countryId = getIdParam(req.params.countryId, "country ID");
+    const states = await getStatesByCountryService(countryId);
 
     returnSuccess(
       res,
@@ -77,14 +71,8 @@ export const getStatesByCountryController = asyncHandler(
  */
 export const getCitiesByStateController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { stateId } = req.params;
-
-    const stateIdNum = parseInt(stateId!, 10);
-    if (isNaN(stateIdNum)) {
-      throw new Error("Invalid state ID");
-    }
-
-    const cities = await getCitiesByStateService(stateIdNum);
+    const stateId = getIdParam(req.params.stateId, "state ID");
+    const cities = await getCitiesByStateService(stateId);
 
     returnSuccess(
       res,
@@ -101,9 +89,8 @@ export const getCitiesByStateController = asyncHandler(
  */
 export const getStatesByCountryCodeController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { code } = req.params;
-
-    const states = await getStatesByCountryCodeService(code!);
+    const code = getStringParam(req.params.code, "country code");
+    const states = await getStatesByCountryCodeService(code);
 
     returnSuccess(
       res,
@@ -120,9 +107,10 @@ export const getStatesByCountryCodeController = asyncHandler(
  */
 export const getCitiesByStateCodeController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { countryCode, stateCode } = req.params;
+    const countryCode = getStringParam(req.params.countryCode, "country code");
+    const stateCode = getStringParam(req.params.stateCode, "state code");
 
-    const cities = await getCitiesByStateCodeService(countryCode!, stateCode!);
+    const cities = await getCitiesByStateCodeService(countryCode, stateCode);
 
     returnSuccess(
       res,

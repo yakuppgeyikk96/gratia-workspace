@@ -16,8 +16,13 @@ validateEnvironment();
 
 const app = express();
 
-connectRedis();
-testPostgresConnection();
+// Connect to services (non-blocking, don't crash if they fail)
+connectRedis().catch((err) => {
+  console.error("Redis connection failed:", err);
+});
+testPostgresConnection().catch((err) => {
+  console.error("PostgreSQL connection failed:", err);
+});
 initializeEmailService();
 
 // Middleware

@@ -3,6 +3,7 @@ import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { asyncHandler } from "../../shared/middlewares";
 import { AuthRequest, StatusCode } from "../../shared/types";
 import { returnSuccess } from "../../shared/utils/response.utils";
+import { getIdParam, getStringParam } from "../../shared/utils/params.utils";
 import { COLLECTION_MESSAGES } from "./collection.constants";
 import {
   createCollectionService,
@@ -57,16 +58,8 @@ export const getActiveCollectionsController = asyncHandler(
 
 export const getCollectionByIdController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-
-    if (!id || isNaN(parseInt(id, 10))) {
-      throw new AppError(
-        COLLECTION_MESSAGES.INVALID_COLLECTION_ID,
-        ErrorCode.BAD_REQUEST
-      );
-    }
-
-    const collection = await getCollectionByIdService(parseInt(id, 10));
+    const id = getIdParam(req.params.id, "collection ID");
+    const collection = await getCollectionByIdService(id);
 
     returnSuccess(
       res,
@@ -79,15 +72,7 @@ export const getCollectionByIdController = asyncHandler(
 
 export const getCollectionBySlugController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { slug } = req.params;
-
-    if (!slug) {
-      throw new AppError(
-        COLLECTION_MESSAGES.COLLECTION_SLUG_REQUIRED,
-        ErrorCode.BAD_REQUEST
-      );
-    }
-
+    const slug = getStringParam(req.params.slug, "collection slug");
     const collection = await getCollectionBySlugService(slug);
 
     returnSuccess(
@@ -101,14 +86,9 @@ export const getCollectionBySlugController = asyncHandler(
 
 export const getCollectionsByTypeController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { type } = req.params;
+    const type = getStringParam(req.params.type, "collection type");
 
-    if (
-      !type ||
-      !["new", "trending", "sale", "featured"].includes(
-        type as "new" | "trending" | "sale" | "featured"
-      )
-    ) {
+    if (!["new", "trending", "sale", "featured"].includes(type)) {
       throw new AppError(
         COLLECTION_MESSAGES.INVALID_COLLECTION_TYPE,
         ErrorCode.BAD_REQUEST

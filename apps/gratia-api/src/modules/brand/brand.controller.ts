@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { asyncHandler } from "../../shared/middlewares";
 import { StatusCode } from "../../shared/types";
+import { getIdParam, getStringParam } from "../../shared/utils/params.utils";
 import { returnSuccess } from "../../shared/utils/response.utils";
-import { BRAND_MESSAGES } from "./brand.constants";
 import {
   createBrandService,
   getActiveBrandsService,
@@ -13,14 +12,6 @@ import {
   updateBrandService,
 } from "./brand.service";
 import type { CreateBrandDto } from "./brand.validations";
-
-const parseId = (id: string): number => {
-  const parsed = parseInt(id, 10);
-  if (isNaN(parsed)) {
-    throw new AppError(BRAND_MESSAGES.BRAND_NOT_FOUND, ErrorCode.BAD_REQUEST);
-  }
-  return parsed;
-};
 
 export const createBrandController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -55,13 +46,7 @@ export const getActiveBrandsController = asyncHandler(
 
 export const getBrandByIdController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
-
-    if (!id) {
-      throw new AppError("Brand ID is required", ErrorCode.BAD_REQUEST);
-    }
-
-    const brandId = parseId(id);
+    const brandId = getIdParam(req.params.id, "Brand ID");
     const result = await getBrandByIdService(brandId);
 
     returnSuccess(res, result, "Brand found", StatusCode.SUCCESS);
@@ -70,12 +55,7 @@ export const getBrandByIdController = asyncHandler(
 
 export const getBrandBySlugController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { slug } = req.params;
-
-    if (!slug) {
-      throw new AppError("Brand slug is required", ErrorCode.BAD_REQUEST);
-    }
-
+    const slug = getStringParam(req.params.slug, "Brand slug");
     const result = await getBrandBySlugService(slug);
 
     returnSuccess(res, result, "Brand found", StatusCode.SUCCESS);
@@ -84,14 +64,8 @@ export const getBrandBySlugController = asyncHandler(
 
 export const updateBrandController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const brandId = getIdParam(req.params.id, "Brand ID");
     const payload = req.body;
-
-    if (!id) {
-      throw new AppError("Brand ID is required", ErrorCode.BAD_REQUEST);
-    }
-
-    const brandId = parseId(id);
     const result = await updateBrandService(brandId, payload);
 
     returnSuccess(

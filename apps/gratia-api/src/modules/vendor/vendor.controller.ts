@@ -1,8 +1,8 @@
 import { Response } from "express";
-import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { asyncHandler } from "../../shared/middlewares";
 import { AuthRequest, StatusCode } from "../../shared/types";
 import { returnSuccess } from "../../shared/utils/response.utils";
+import { getIdParam, getStringParam } from "../../shared/utils/params.utils";
 import {
   createVendorService,
   getActiveVendorsService,
@@ -46,13 +46,7 @@ export const getActiveVendorsController = asyncHandler(
 
 export const getVendorByIdController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-
-    if (!id || isNaN(parseInt(id, 10))) {
-      throw new AppError("Invalid vendor ID", ErrorCode.BAD_REQUEST);
-    }
-
-    const vendorId = parseInt(id, 10);
+    const vendorId = getIdParam(req.params.id, "vendor ID");
     const result = await getVendorByIdService(vendorId);
 
     returnSuccess(res, result, "Vendor found", StatusCode.SUCCESS);
@@ -61,12 +55,7 @@ export const getVendorByIdController = asyncHandler(
 
 export const getVendorBySlugController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { slug } = req.params;
-
-    if (!slug) {
-      throw new AppError("Vendor slug is required", ErrorCode.BAD_REQUEST);
-    }
-
+    const slug = getStringParam(req.params.slug, "vendor slug");
     const result = await getVendorBySlugService(slug);
 
     returnSuccess(res, result, "Vendor found", StatusCode.SUCCESS);
@@ -75,14 +64,9 @@ export const getVendorBySlugController = asyncHandler(
 
 export const updateVendorController = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
+    const vendorId = getIdParam(req.params.id, "vendor ID");
     const data: UpdateVendorDto = req.body;
 
-    if (!id || isNaN(parseInt(id, 10))) {
-      throw new AppError("Invalid vendor ID", ErrorCode.BAD_REQUEST);
-    }
-
-    const vendorId = parseInt(id, 10);
     const result = await updateVendorService(vendorId, data);
 
     returnSuccess(
