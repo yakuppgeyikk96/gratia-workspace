@@ -140,11 +140,13 @@ export function useCart(isLoggedIn: boolean) {
   });
 
   const handleAddToCart = (product: Partial<Product>) => {
+    const now = new Date().toISOString();
+
     const itemToAdd: CartItem = {
       id: 0,
       cartId: 0,
-      createdAt: product.createdAt?.toISOString() ?? "",
-      updatedAt: product.updatedAt?.toISOString() ?? "",
+      createdAt: now,
+      updatedAt: now,
       productId: product.id!,
       sku: product.sku!,
       quantity: 1,
