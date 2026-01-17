@@ -1,7 +1,7 @@
 "use client";
 
 import ProductCard from "@/components/features/product/ProductCard";
-import type { Product } from "@/types/Product.types";
+import type { Product, ProductListItem } from "@/types/Product.types";
 import IconButton from "@gratia/ui/components/IconButton";
 import IconChevronLeft from "@gratia/ui/icons/IconChevronLeft";
 import IconChevronRight from "@gratia/ui/icons/IconChevronRight";
@@ -11,7 +11,7 @@ import { useCallback, useEffect, useState } from "react";
 import styles from "./FeaturedProductsCarousel.module.scss";
 
 interface FeaturedProductsCarouselProps {
-  products: Partial<Product>[];
+  products: ProductListItem[] | Partial<Product>[];
   isLoggedIn: boolean;
 }
 

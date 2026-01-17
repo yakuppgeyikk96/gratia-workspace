@@ -14,13 +14,9 @@ const API_BASE_ROUTE = "/cart";
 export async function getCart(): Promise<CartResponse> {
   const authHeader: Record<string, string> = await getAuthHeader();
 
-  console.log(authHeader);
-
   const response: CartResponse = await apiClient.get(API_BASE_ROUTE, {
     headers: { ...authHeader },
   });
-
-  console.log(response);
 
   return response;
 }
@@ -36,7 +32,7 @@ export async function addToCart(dto: AddToCartDto): Promise<CartResponse> {
 }
 
 export async function updateCartItem(
-  dto: UpdateCartItemDto
+  dto: UpdateCartItemDto,
 ): Promise<CartResponse> {
   const authHeader: Record<string, string> = await getAuthHeader();
 
@@ -55,7 +51,7 @@ export async function syncCart(dto: SyncCartDto): Promise<CartResponse> {
     dto,
     {
       headers: { ...authHeader },
-    }
+    },
   );
 
   return response;

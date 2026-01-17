@@ -22,30 +22,36 @@
 
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); // Desktop: 4 kolonlar
-  gap: $spacing-8;
+  grid-template-columns: repeat(5, 1fr); // Desktop (1368px+): 5 kolon
+  gap: $spacing-6;
+
+  // 1280px ve altı: 4 kolon
+  @include media-xl {
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-5;
+  }
 
   // 1024px ve altı: 3 kolon
   @include media-lg {
     grid-template-columns: repeat(3, 1fr);
-    gap: $spacing-6;
+    gap: $spacing-4;
   }
 
   // 768px ve altı: 2 kolon
   @include media-md {
     grid-template-columns: repeat(2, 1fr);
-    gap: $spacing-6;
+    gap: $spacing-4;
   }
 
   // 640px ve altı: 2 kolon
   @include media-sm {
     grid-template-columns: repeat(2, 1fr);
-    gap: $spacing-4;
+    gap: $spacing-3;
   }
 
   // 480px ve altı: 1 kolon
   @include media-xs {
     grid-template-columns: 1fr;
-    gap: $spacing-4;
+    gap: $spacing-3;
   }
 }

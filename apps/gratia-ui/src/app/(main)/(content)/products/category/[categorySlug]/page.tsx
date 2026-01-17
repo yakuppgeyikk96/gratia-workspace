@@ -21,8 +21,6 @@ export default async function CategoryProductsPage({
     limit: 12,
   });
 
-  console.log("Data: ", data);
-
   return (
     <ProductList
       products={data?.products ?? []}

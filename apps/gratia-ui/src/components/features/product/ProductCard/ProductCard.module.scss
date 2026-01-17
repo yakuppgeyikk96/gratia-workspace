@@ -6,11 +6,11 @@
 
 .productCard {
   @include flex-column;
-  @include gap(3);
+  @include gap(2);
   background-color: $bg-color;
   @include border($border-1, $border-light);
-  @include rounded($radius-lg);
-  @include pb(2);
+  @include rounded($radius-md);
+  @include pb(1);
   overflow: hidden;
   transition:
     transform $transition-normal,

@@ -22,7 +22,7 @@ const buildCategoryFilter = (categorySlug: string) => {
     ilike(products.categoryPath, `${escapedSlug}#%`),
     ilike(products.categoryPath, `%#${escapedSlug}#%`),
     ilike(products.categoryPath, `%#${escapedSlug}`),
-    eq(products.categoryPath, escapedSlug)
+    eq(products.categoryPath, escapedSlug),
   )!;
 };
 
@@ -35,7 +35,7 @@ const buildCollectionFilter = (collectionSlug: string) => {
  */
 const buildDynamicAttributeFilters = (
   filters: ProductFiltersDto,
-  categoryId?: number
+  categoryId?: number,
 ): Promise<Array<ReturnType<typeof sql>>> => {
   return new Promise(async (resolve) => {
     const conditions: Array<ReturnType<typeof sql>> = [];
@@ -58,7 +58,7 @@ const buildDynamicAttributeFilters = (
         ) {
           const filterConditions = filterValue.map(
             (value) =>
-              sql`${products.attributes}->>${sql.raw(`'${def.key}'`)} = ${value}`
+              sql`${products.attributes}->>${sql.raw(`'${def.key}'`)} = ${value}`,
           );
           conditions.push(or(...filterConditions)!);
         }
@@ -79,7 +79,7 @@ const buildDynamicAttributeFilters = (
 };
 
 const buildPriceFilters = (
-  filters: ProductFiltersDto
+  filters: ProductFiltersDto,
 ): Array<ReturnType<typeof gte> | ReturnType<typeof lte>> => {
   const conditions: Array<ReturnType<typeof gte> | ReturnType<typeof lte>> = [];
 
@@ -136,7 +136,7 @@ const buildWhereConditions = async (options: ProductQueryOptionsDto) => {
 
     const attributeFilters = await buildDynamicAttributeFilters(
       options.filters,
-      categoryId
+      categoryId,
     );
     conditions.push(...attributeFilters);
   }
@@ -149,7 +149,7 @@ const buildWhereConditions = async (options: ProductQueryOptionsDto) => {
  * Avoids N+1 query problem by fetching all categories at once
  */
 export const buildCategoryPath = async (
-  categoryId: number
+  categoryId: number,
 ): Promise<string> => {
   // Fetch all categories at once
   const allCategories = await db
@@ -215,11 +215,9 @@ export const createProduct = async (productData: {
 
 export const findProducts = async (
   options: ProductQueryOptionsDto,
-  withDetails: boolean = false
+  withDetails: boolean = false,
 ): Promise<{ products: Product[]; total: number }> => {
   const { sort = "newest", page = 1, limit = 12 } = options;
-
-  console.log("limit", limit);
 
   const whereClause = await buildWhereConditions(options);
   const orderByClause = buildOrderBy(sort);
@@ -232,8 +230,6 @@ export const findProducts = async (
       asc(products.productGroupId),
       ...(Array.isArray(orderByClause) ? orderByClause : [orderByClause]),
     ];
-
-    console.log("distinctOrderBy", distinctOrderBy);
 
     const distinctGroupIds = await db
       .selectDistinctOn([products.productGroupId], {
@@ -276,7 +272,7 @@ export const findProducts = async (
         .leftJoin(brands, eq(products.brandId, brands.id))
         .leftJoin(vendors, eq(products.vendorId, vendors.id))
         .where(
-          sql`${products.id} = ANY(${sql.raw(`ARRAY[${productIds.join(",")}]`)})`
+          sql`${products.id} = ANY(${sql.raw(`ARRAY[${productIds.join(",")}]`)})`,
         ),
       // Count distinct productGroupIds for total
       db
@@ -289,7 +285,7 @@ export const findProducts = async (
 
     // Sort by original order (preserve pagination order)
     const productMap = new Map(
-      productListWithDetails.map((row) => [row.product.id, row])
+      productListWithDetails.map((row) => [row.product.id, row]),
     );
     const sortedProducts = productIds
       .map((id) => productMap.get(id))
@@ -346,7 +342,7 @@ export const findProducts = async (
         .select()
         .from(products)
         .where(
-          sql`${products.id} = ANY(${sql.raw(`ARRAY[${productIds.join(",")}]`)})`
+          sql`${products.id} = ANY(${sql.raw(`ARRAY[${productIds.join(",")}]`)})`,
         ),
       // Count distinct productGroupIds for total
       db
@@ -372,7 +368,7 @@ export const findProducts = async (
 
 export const extractFilterOptions = async (
   categorySlug?: string,
-  collectionSlug?: string
+  collectionSlug?: string,
 ): Promise<
   Record<string, string[]> & {
     priceRange: { min: number; max: number };
@@ -452,7 +448,7 @@ export const extractFilterOptions = async (
 };
 
 export const findProductBySlug = async (
-  slug: string
+  slug: string,
 ): Promise<Product | null> => {
   const [product] = await db
     .select()
@@ -474,7 +470,7 @@ export const findProductById = async (id: number): Promise<Product | null> => {
 };
 
 export const findProductByIdWithDetails = async (
-  id: number
+  id: number,
 ): Promise<Product | null> => {
   const [result] = await db
     .select({
@@ -503,7 +499,7 @@ export const findProductByIdWithDetails = async (
 };
 
 export const findProductBySku = async (
-  sku: string
+  sku: string,
 ): Promise<Product | null> => {
   const [product] = await db
     .select()
@@ -519,7 +515,7 @@ export const findProductBySku = async (
  * Avoids N+1 query problem when validating cart items
  */
 export const findProductsBySkus = async (
-  skus: string[]
+  skus: string[],
 ): Promise<Product[]> => {
   if (skus.length === 0) {
     return [];
@@ -529,12 +525,12 @@ export const findProductsBySkus = async (
     .select()
     .from(products)
     .where(
-      sql`${products.sku} = ANY(${sql.raw(`ARRAY[${skus.map((s) => `'${s}'`).join(",")}]`)})`
+      sql`${products.sku} = ANY(${sql.raw(`ARRAY[${skus.map((s) => `'${s}'`).join(",")}]`)})`,
     );
 };
 
 export const findProductsByGroupId = async (
-  productGroupId: string
+  productGroupId: string,
 ): Promise<Product[]> => {
   return await db
     .select()
@@ -542,17 +538,17 @@ export const findProductsByGroupId = async (
     .where(
       and(
         eq(products.productGroupId, productGroupId),
-        eq(products.isActive, true)
-      )
+        eq(products.isActive, true),
+      ),
     )
     .orderBy(
       sql`${products.attributes}->>'color'`,
-      sql`${products.attributes}->>'size'`
+      sql`${products.attributes}->>'size'`,
     );
 };
 
 export const findFeaturedProducts = async (
-  limitCount: number = 10
+  limitCount: number = 10,
 ): Promise<Product[]> => {
   return await db
     .select()

@@ -55,7 +55,7 @@ export default function ProductCard({
       >
         <ProductCardInfo
           name={product.name ?? ""}
-          description={description}
+          description={description ?? ""}
           brandName={brandName}
         />
       </Link>

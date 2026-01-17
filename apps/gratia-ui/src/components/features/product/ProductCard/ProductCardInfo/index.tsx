@@ -9,10 +9,12 @@ export default function ProductCardInfo({
   return (
     <div className={styles.infoContainer}>
       {brandName && <span className={styles.brandName}>{brandName}</span>}
-      <h3 className={styles.productName}>{name}</h3>
-      {description && (
-        <p className={styles.productDescription}>{description}</p>
-      )}
+      <p className={styles.productNameRow}>
+        <span className={styles.productName}>{name}</span>
+        {description && (
+          <span className={styles.productDescription}> - {description}</span>
+        )}
+      </p>
     </div>
   );
 }

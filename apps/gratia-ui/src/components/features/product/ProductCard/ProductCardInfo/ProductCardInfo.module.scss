@@ -5,11 +5,11 @@
 .infoContainer {
   display: flex;
   flex-direction: column;
-  @include gap(2);
+  @include gap(1);
 }
 
 .brandName {
-  font-size: $text-xs;
+  font-size: 0.65rem;
   font-weight: $font-semibold;
   color: $text-muted-color;
   text-transform: uppercase;
@@ -17,25 +17,24 @@
   margin: 0;
 }
 
+.productNameRow {
+  margin: 0;
+  line-height: $leading-tight;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .productName {
-  font-size: $text-base;
+  font-size: $text-sm;
   font-weight: $font-semibold;
   color: $text-primary-color;
-  line-height: $leading-tight;
-  margin: 0;
 }
 
 .productDescription {
   font-size: $text-sm;
   font-weight: $font-normal;
   color: $text-muted-color;
-  line-height: $leading-normal;
-  margin: 0;
-
-  // İki satırdan fazlasını truncate et
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
