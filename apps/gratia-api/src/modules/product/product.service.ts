@@ -1,10 +1,10 @@
 import { Product } from "../../db/schema/product.schema";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
+import { getCategoryAttributeTemplate } from "../category-attribute-template/category-attribute-template.repository";
 import { PRODUCT_LIMITS, PRODUCT_MESSAGES } from "./product.constants";
 import {
   buildCategoryPath,
   createProduct,
-  extractFilterOptions,
   findFeaturedProducts,
   findProductById,
   findProductByIdWithDetails,
@@ -16,6 +16,10 @@ import type { CreateProductDto } from "./product.validations";
 import type ProductQueryOptionsDto from "./types/ProductQueryOptionsDto";
 import type ProductsResponseDto from "./types/ProductsResponseDto";
 import type ProductWithVariantsDto from "./types/ProductWithVariantsDto";
+import {
+  validateProductAttributes,
+  validateRequiredAttributes,
+} from "./utils/attribute-validator";
 import { buildProductInsertData } from "./utils/product-builder.utils";
 import {
   generateProductGroupId,
@@ -45,6 +49,38 @@ export const createProductService = async (
 
   // Run collection validation
   await validateCollectionsExist(data.collectionSlugs || []);
+
+  // Attribute validation - based on category template
+  const template = await getCategoryAttributeTemplate(data.categoryId);
+  if (template && template.attributeDefinitions.length > 0) {
+    const attributes = data.attributes || {};
+
+    // Check required attributes
+    const requiredCheck = validateRequiredAttributes(
+      attributes,
+      template.attributeDefinitions
+    );
+
+    if (!requiredCheck.valid) {
+      throw new AppError(
+        `Missing required attributes: ${requiredCheck.missing.join(", ")}`,
+        ErrorCode.BAD_REQUEST
+      );
+    }
+
+    // Attribute validation
+    const validation = validateProductAttributes(
+      attributes,
+      template.attributeDefinitions
+    );
+
+    if (!validation.valid) {
+      throw new AppError(
+        `Invalid product attributes: ${validation.errors.join(", ")}`,
+        ErrorCode.BAD_REQUEST
+      );
+    }
+  }
 
   // Generate metadata
   const categoryPath = await buildCategoryPath(data.categoryId);
@@ -83,18 +119,17 @@ export const getProductsService = async (
 
   const { products, total } = await findProducts(options, withDetails);
 
-  const filterOptions = await extractFilterOptions(
-    options.categorySlug,
-    options.collectionSlug
-  );
+  // const filterOptions = await extractFilterOptions(
+  //   options.categorySlug,
+  //   options.collectionSlug
+  // );
 
   const page = options.page || 1;
-  const limit = options.limit || 10;
+  const limit = options.limit || 12;
   const totalPages = Math.ceil(total / limit);
 
   return {
     products,
-    filters: filterOptions,
     pagination: {
       total,
       page,
@@ -138,26 +173,32 @@ export const getProductWithVariantsService = async (
 
   const variants = await findProductsByGroupId(product.productGroupId);
 
-  const colors = new Set<string>();
-  const sizes = new Set<string>();
-  const materials = new Set<string>();
+  // Get category template
+  const template = await getCategoryAttributeTemplate(product.categoryId);
 
-  variants.forEach((v) => {
-    if (v.attributes?.color) colors.add(v.attributes.color);
-    if (v.attributes?.size) sizes.add(v.attributes.size);
-    if (v.attributes?.material) materials.add(v.attributes.material);
-  });
+  // Create dynamic available options
+  const availableOptions: Record<string, string[]> = {};
 
-  const availableOptions = {
-    colors: Array.from(colors).sort(),
-    sizes: Array.from(sizes).sort(),
-    materials: Array.from(materials).sort(),
-  };
+  if (template && template.attributeDefinitions.length > 0) {
+    // Available options for enum type attributes in template
+    for (const def of template.attributeDefinitions) {
+      if (def.type === "enum" && def.enumValues) {
+        const values = new Set<string>();
+        variants.forEach((v) => {
+          if (v.attributes?.[def.key]) {
+            values.add(String(v.attributes[def.key]));
+          }
+        });
+        availableOptions[def.key] = Array.from(values).sort();
+      }
+    }
+  }
 
   return {
     product,
     variants,
     availableOptions,
+    ...(template ? { attributeTemplate: template } : {}),
   };
 };
 

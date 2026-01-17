@@ -1,5 +1,5 @@
 import ProductDetailInfoCard from "@/components/features/product/ProductDetailInfoCard";
-import { ProductWithVariantsDto } from "@/types/Product.types";
+import { ProductDetailResponse } from "@/types/Product.types";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import styles from "./ProductDetailPage.module.scss";
@@ -15,7 +15,7 @@ const ProductDetailImageGallery = dynamic(
 );
 
 interface ProductDetailPageProps {
-  productData: ProductWithVariantsDto;
+  productData: ProductDetailResponse;
   isLoggedIn: boolean;
 }
 
@@ -23,7 +23,7 @@ export default function ProductDetailPage({
   productData,
   isLoggedIn,
 }: ProductDetailPageProps) {
-  if (!productData?.product) {
+  if (!productData) {
     notFound();
   }
 
@@ -31,8 +31,8 @@ export default function ProductDetailPage({
     <div className={styles.productDetailContainer}>
       <div className={styles.imageGalleryContainer}>
         <ProductDetailImageGallery
-          images={productData.product.images}
-          productName={productData.product.name}
+          images={productData.images}
+          productName={productData.name}
         />
       </div>
 

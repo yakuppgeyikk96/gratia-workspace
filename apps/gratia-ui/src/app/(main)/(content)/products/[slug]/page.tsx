@@ -31,7 +31,7 @@ export async function generateMetadata({
 
   const { data, success } = await getCachedProduct(slug);
 
-  if (!success || !data?.product) {
+  if (!success || !data) {
     return {
       title: "Product Not Found",
       description: "The product you are looking for does not exist.",
@@ -39,8 +39,8 @@ export async function generateMetadata({
   }
 
   return {
-    title: data.product.metaTitle || data.product.name,
-    description: data.product.metaDescription || data.product.description,
+    title: data.metaTitle || data.name,
+    description: data.metaDescription || data.description,
   };
 }
 
@@ -56,7 +56,7 @@ export default async function ProductDetail({
 
   const { data, success } = productResponse;
 
-  if (!success || !data?.product) {
+  if (!success || !data) {
     notFound();
   }
 

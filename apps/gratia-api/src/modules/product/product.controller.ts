@@ -30,7 +30,6 @@ export const createProductController = asyncHandler(
 
 export const getProductsController = asyncHandler(
   async (req: Request, res: Response) => {
-    // After validation middleware, query params are already validated and typed
     const { categorySlug, collectionSlug, sort, page, limit, details } =
       req.query as any;
 
@@ -71,7 +70,6 @@ export const getProductByIdController = asyncHandler(
 
 export const getProductWithVariantsController = asyncHandler(
   async (req: Request, res: Response) => {
-    // After validation middleware, params are already validated
     const { slug } = req.params as any;
 
     const result = await getProductWithVariantsService(slug);

@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/types/Product.types";
+import { VariantSelectableProduct } from "@/types/Product.types";
 import { usePathname } from "next/navigation";
 import ProductColorSelector from "./ProductColorSelector";
 import ProductSizeSelector from "./ProductSizeSelector";
@@ -10,8 +10,8 @@ import { getVariantLabel, getVariantValue, VariantType } from "./utils";
 
 interface ProductVariantSelectorProps {
   variantType: VariantType;
-  currentProduct: Product;
-  variants: Product[];
+  currentProduct: VariantSelectableProduct;
+  variants: VariantSelectableProduct[];
   currency?: string;
 }
 
@@ -29,7 +29,6 @@ export default function ProductVariantSelector({
 
   const filteredVariants = useProductVariants({
     variantType,
-    currentProduct,
     variants,
     currentSlug,
   });

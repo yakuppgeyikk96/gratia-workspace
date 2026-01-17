@@ -1,12 +1,12 @@
 "use client";
 
-import { Product } from "@/types/Product.types";
+import { VariantSelectableProduct } from "@/types/Product.types";
 import Link from "next/link";
 import styles from "./ProductVariantSelector.module.scss";
 import { getVariantValue } from "./utils";
 
 interface ProductSizeSelectorProps {
-  variants: Product[];
+  variants: VariantSelectableProduct[];
   currentSlug: string;
 }
 

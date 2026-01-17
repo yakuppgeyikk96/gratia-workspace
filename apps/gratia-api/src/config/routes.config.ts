@@ -8,6 +8,7 @@ import collectionRoutes from "../modules/collection/collection.routes";
 import locationRoutes from "../modules/location/location.routes";
 import navigationRoutes from "../modules/navigation/navigation.routes";
 import productRoutes from "../modules/product/product.routes";
+import { productV2Routes } from "../modules/productV2";
 import seedRoutes from "../modules/seed/seed.routes";
 import vendorRoutes from "../modules/vendor/vendor.routes";
 import { authMiddleware } from "../shared/middlewares";
@@ -21,6 +22,7 @@ export const routesConfig = (app: Express) => {
   router.use("/categories", categoryRoutes);
   router.use("/collections", collectionRoutes);
   router.use("/products", productRoutes);
+  router.use("/v2/products", productV2Routes);
   router.use("/vendors", vendorRoutes);
   router.use("/brands", brandRoutes);
   router.use("/navigation", navigationRoutes);

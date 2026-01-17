@@ -4,6 +4,7 @@ import { brands } from "../../db/schema/brand.schema";
 import { categories } from "../../db/schema/category.schema";
 import { products } from "../../db/schema/product.schema";
 import { vendors } from "../../db/schema/vendor.schema";
+import seedComprehensive from "../../scripts/seed-comprehensive";
 import { createBrand } from "../brand/brand.repository";
 import { createCategory } from "../category/category.repository";
 import {
@@ -1356,4 +1357,8 @@ export const seedVendorCategoriesProductsService = async () => {
     console.error("❌ Seed process failed:", error);
     throw error;
   }
+};
+
+export const seedComprehensiveService = async () => {
+  return await seedComprehensive();
 };

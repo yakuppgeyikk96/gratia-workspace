@@ -1,4 +1,4 @@
-import { Product } from "@/types/Product.types";
+import { VariantSelectableProduct } from "@/types/Product.types";
 
 export type VariantType = "size" | "color";
 
@@ -11,7 +11,7 @@ export const getVariantLabel = (variantType: VariantType): string => {
 };
 
 export const getVariantValue = (
-  product: Product,
+  product: VariantSelectableProduct,
   variantType: VariantType
 ): string => {
   const value = product.attributes[variantType];

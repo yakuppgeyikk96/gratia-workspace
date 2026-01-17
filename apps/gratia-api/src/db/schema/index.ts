@@ -3,6 +3,7 @@
  */
 export * from "./brand.schema";
 export * from "./cart.schema";
+export * from "./category-attribute-template.schema";
 export * from "./category.schema";
 export * from "./collection.schema";
 export * from "./email-verification.schema";

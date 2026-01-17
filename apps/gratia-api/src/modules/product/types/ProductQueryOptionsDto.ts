@@ -1,9 +1,7 @@
 export type SortOptions = "newest" | "price-low" | "price-high" | "name";
 
 export interface ProductFiltersDto {
-  colors?: string[];
-  sizes?: string[];
-  materials?: string[];
+  [key: string]: string[] | number | undefined;
   minPrice?: number;
   maxPrice?: number;
 }

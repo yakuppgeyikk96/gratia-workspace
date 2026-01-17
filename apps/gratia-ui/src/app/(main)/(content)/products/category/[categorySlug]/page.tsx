@@ -1,4 +1,4 @@
-import { getProducts } from "@/actions/product";
+import { getProductsByCategory } from "@/actions/product";
 import ProductList from "@/components/features/product/ProductList";
 
 interface CategoryProductsPageProps {
@@ -16,10 +16,12 @@ export default async function CategoryProductsPage({
   const pageNumber = page ? parseInt(page, 10) : 1;
   const validPage = isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber;
 
-  const { data } = await getProducts({
-    categorySlug,
+  const { data } = await getProductsByCategory(categorySlug, {
     page: validPage,
+    limit: 12,
   });
+
+  console.log("Data: ", data);
 
   return (
     <ProductList

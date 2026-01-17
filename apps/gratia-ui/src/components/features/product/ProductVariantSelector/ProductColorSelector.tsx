@@ -1,13 +1,13 @@
 "use client";
 
 import { formatPrice } from "@/lib/utils/format";
-import { Product } from "@/types/Product.types";
+import { VariantSelectableProduct } from "@/types/Product.types";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./ProductVariantSelector.module.scss";
 
 interface ProductColorSelectorProps {
-  variants: Product[];
+  variants: VariantSelectableProduct[];
   currentSlug: string;
   currency?: string;
 }
@@ -37,7 +37,7 @@ export default function ProductColorSelector({
               {firstImage ? (
                 <Image
                   src={firstImage}
-                  alt={variant.name}
+                  alt={`Product variant`}
                   fill
                   className={styles.variantImage}
                   sizes="(max-width: 768px) 100px, 120px"

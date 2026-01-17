@@ -5,7 +5,7 @@ import styles from "./ProductDetailPrice.module.scss";
 
 interface ProductDetailPriceProps {
   price: string;
-  discountedPrice?: string;
+  discountedPrice?: string | null;
   currency?: string;
 }
 
@@ -17,13 +17,18 @@ export default function ProductDetailPrice({
   const priceValue = parseFloat(price);
   const discountedPriceValue = discountedPrice
     ? parseFloat(discountedPrice)
-    : 0;
+    : null;
 
+  // Only show discount if discountedPrice exists and is less than original price
   const hasDiscount =
-    discountedPriceValue !== undefined && discountedPriceValue < priceValue;
-  const displayPrice = hasDiscount ? discountedPriceValue! : priceValue;
+    discountedPriceValue !== null &&
+    discountedPriceValue !== undefined &&
+    !isNaN(discountedPriceValue) &&
+    discountedPriceValue < priceValue &&
+    discountedPriceValue > 0;
 
-  const savings = hasDiscount ? priceValue - discountedPriceValue! : 0;
+  const displayPrice = hasDiscount ? discountedPriceValue : priceValue;
+  const savings = hasDiscount ? priceValue - discountedPriceValue : 0;
 
   return (
     <div className={styles.priceContainer}>

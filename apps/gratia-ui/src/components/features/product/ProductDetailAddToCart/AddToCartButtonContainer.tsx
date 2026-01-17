@@ -1,5 +1,5 @@
 import { useCart } from "@/hooks/useCart";
-import { Product } from "@/types/Product.types";
+import { CartableProduct } from "@/types/Product.types";
 import Button from "@gratia/ui/components/Button";
 import IconBagPlus from "@gratia/ui/icons/IconBagPlus";
 import { memo } from "react";
@@ -7,7 +7,7 @@ import { memo } from "react";
 import styles from "./AddToCartButtonContainer.module.scss";
 
 interface AddToCartButtonContainerProps {
-  product: Partial<Product>;
+  product: CartableProduct;
   isLoggedIn: boolean;
 }
 

@@ -43,3 +43,39 @@
     }
   }
 }
+
+.attributesSection {
+  @include flex-column;
+  @include gap(3);
+  padding-top: $spacing-4;
+  border-top: 1px solid $border-light;
+}
+
+.attributesTitle {
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  margin: 0;
+  color: $text-primary-color;
+}
+
+.attributesList {
+  @include flex-column;
+  @include gap(2);
+}
+
+.attributeItem {
+  @include flex-row;
+  @include justify-between;
+  @include align-center;
+  font-size: $text-sm;
+}
+
+.attributeLabel {
+  color: $text-muted-color;
+  font-weight: $font-medium;
+}
+
+.attributeValue {
+  color: $text-primary-color;
+  font-weight: $font-normal;
+}

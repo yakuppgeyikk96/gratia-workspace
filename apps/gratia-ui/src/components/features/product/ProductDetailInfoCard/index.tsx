@@ -1,54 +1,59 @@
-import { ProductWithVariantsDto } from "@/types/Product.types";
+import { ProductDetailResponse } from "@/types/Product.types";
 import ProductDetailAddToCart from "../ProductDetailAddToCart";
 import ProductDetailPrice from "../ProductDetailPrice";
 import ProductVariantSelector from "../ProductVariantSelector";
 import styles from "./ProductDetailInfoCard.module.scss";
 
 interface ProductDetailInfoCardProps {
-  productData: ProductWithVariantsDto;
+  productData: ProductDetailResponse;
   isLoggedIn: boolean;
 }
+
 export default function ProductDetailInfoCard({
   productData,
   isLoggedIn,
 }: ProductDetailInfoCardProps) {
+  const availableOptions = productData.availableOptions;
+
+  // Get variant types that have multiple options (size, color)
+  const variantTypes = Object.keys(availableOptions).filter(
+    (key) =>
+      (key === "size" || key === "color") && availableOptions[key].length > 1
+  );
+
   return (
     <div className={styles.productDetailInfoCard}>
       <div className={styles.productDetailInfoCardHeader}>
-        <h1>{productData.product.name}</h1>
-        <p>{productData.product.description}</p>
+        <h1>{productData.name}</h1>
+        <p>{productData.description}</p>
       </div>
 
       <ProductDetailPrice
-        price={productData.product.price}
-        discountedPrice={productData.product.discountedPrice}
+        price={productData.price}
+        discountedPrice={productData.discountedPrice}
         currency="USD"
       />
 
-      {productData.product.attributes.size &&
-        productData.availableOptions.sizes.length > 0 && (
+      {variantTypes.map((variantKey) => {
+        const variantType = variantKey as "size" | "color";
+        const currentValue = productData.attributes[variantKey];
+
+        if (!currentValue) {
+          return null;
+        }
+
+        return (
           <ProductVariantSelector
-            variantType="size"
-            currentProduct={productData.product}
+            key={variantKey}
+            variantType={variantType}
+            currentProduct={productData}
             variants={productData.variants}
             currency="USD"
           />
-        )}
+        );
+      })}
 
-      {productData.product.attributes.color &&
-        productData.availableOptions.colors.length > 0 && (
-          <ProductVariantSelector
-            variantType="color"
-            currentProduct={productData.product}
-            variants={productData.variants}
-            currency="USD"
-          />
-        )}
-
-      <ProductDetailAddToCart
-        product={productData.product}
-        isLoggedIn={isLoggedIn}
-      />
+      <ProductDetailAddToCart product={productData} isLoggedIn={isLoggedIn} />
     </div>
   );
 }

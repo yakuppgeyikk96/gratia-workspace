@@ -14,56 +14,11 @@ import { categories } from "./category.schema";
 import { vendors } from "./vendor.schema";
 
 /**
- * Product table schema for PostgreSQL
- * ProductAttributes interface for type safety
+ * Product Attributes - Flexible structure
+ * Now any key-value pair can be used
+ * Validation will be done based on category template
  */
-export interface ProductAttributes {
-  color?:
-    | "black"
-    | "white"
-    | "gray"
-    | "red"
-    | "blue"
-    | "green"
-    | "yellow"
-    | "orange"
-    | "purple"
-    | "pink"
-    | "brown"
-    | "beige"
-    | "navy"
-    | "teal"
-    | "burgundy"
-    | "olive"
-    | "cream"
-    | "tan"
-    | "maroon"
-    | "coral"
-    | "silver"
-    | "gold"
-    | "khaki"
-    | "mint"
-    | "lavender";
-  size?: "XXS" | "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL" | "one-size";
-  material?:
-    | "cotton"
-    | "polyester"
-    | "wool"
-    | "silk"
-    | "linen"
-    | "denim"
-    | "leather"
-    | "suede"
-    | "cashmere"
-    | "nylon"
-    | "spandex"
-    | "rayon"
-    | "velvet"
-    | "satin"
-    | "acrylic"
-    | "modal"
-    | "viscose";
-}
+export type ProductAttributes = Record<string, any>;
 
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
@@ -95,6 +50,7 @@ export const products = pgTable("products", {
 
   stock: integer("stock").notNull().default(0),
 
+  // Flexible attributes - now any key-value pair can be used
   attributes: jsonb("attributes")
     .$type<ProductAttributes>()
     .notNull()

@@ -1,12 +1,12 @@
 import { isAuthenticatedUser } from "@/actions/auth";
-import { PaginationInfo, Product } from "@/types/Product.types";
+import { PaginationInfo, Product, ProductListItem } from "@/types/Product.types";
 import Container from "@gratia/ui/components/Container";
 import ProductCard from "../ProductCard";
 import PaginationWrapper from "./PaginationWrapper";
 import styles from "./ProductList.module.scss";
 
 interface ProductListProps {
-  products: Partial<Product>[];
+  products: ProductListItem[] | Partial<Product>[];
   title?: string;
   pagination?: PaginationInfo;
 }

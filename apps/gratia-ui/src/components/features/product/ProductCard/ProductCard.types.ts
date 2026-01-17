@@ -1,7 +1,7 @@
-import { Product } from "@/types/Product.types";
+import { Product, ProductListItem } from "@/types/Product.types";
 
 export interface ProductCardProps {
-  product: Partial<Product>;
+  product: ProductListItem | Partial<Product>;
   className?: string;
   isLoggedIn: boolean;
 }

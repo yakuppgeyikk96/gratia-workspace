@@ -1,7 +1,7 @@
 "use client";
 
 import { useCartStore } from "@/store/cartStore";
-import { Product } from "@/types/Product.types";
+import { CartableProduct } from "@/types/Product.types";
 import { lazy, Suspense } from "react";
 import AddToCartButtonContainer from "./AddToCartButtonContainer";
 import styles from "./ProductDetailAddToCart.module.scss";
@@ -12,7 +12,7 @@ const QuantitySelectorContainer = lazy(
 );
 
 interface ProductDetailAddToCartProps {
-  product: Partial<Product>;
+  product: CartableProduct;
   isLoggedIn: boolean;
 }
 

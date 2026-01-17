@@ -1,4 +1,4 @@
-import { getProducts } from "@/actions/product";
+import { getProductsByCollection } from "@/actions/product";
 import ProductList from "@/components/features/product/ProductList";
 
 interface CollectionProductsPageProps {
@@ -16,9 +16,9 @@ export default async function CollectionProductsPage({
   const pageNumber = page ? parseInt(page, 10) : 1;
   const validPage = isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber;
 
-  const { data } = await getProducts({
-    collectionSlug,
+  const { data } = await getProductsByCollection(collectionSlug, {
     page: validPage,
+    limit: 12,
   });
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/hooks/useCart";
+import { CartableProduct } from "@/types/Product.types";
 import Link from "next/link";
 import styles from "./ProductCard.module.scss";
 import { ProductCardProps } from "./ProductCard.types";
@@ -20,11 +21,24 @@ export default function ProductCard({
   };
 
   const onAddToCart = () => {
-    handleAddToCart(product);
+    // Build CartableProduct from available product data
+    const cartProduct: CartableProduct = {
+      id: product.id!,
+      name: product.name ?? "",
+      sku: product.sku ?? "",
+      price: product.price ?? "",
+      discountedPrice: product.discountedPrice,
+      images: product.images ?? [],
+      attributes: "attributes" in product ? product.attributes : undefined,
+    };
+    handleAddToCart(cartProduct);
   };
 
   // Extract brand name from brand object if it's populated
-  const brandName = product.brand?.name;
+  const brandName = "brand" in product ? product.brand?.name : undefined;
+
+  // Extract description if available (not present in ProductListItem)
+  const description = "description" in product ? product.description : undefined;
 
   return (
     <article className={`${styles.productCard} ${className}`}>
@@ -41,7 +55,7 @@ export default function ProductCard({
       >
         <ProductCardInfo
           name={product.name ?? ""}
-          description={product.description}
+          description={description}
           brandName={brandName}
         />
       </Link>

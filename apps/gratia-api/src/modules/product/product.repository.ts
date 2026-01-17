@@ -1,15 +1,4 @@
-import {
-  and,
-  asc,
-  count,
-  desc,
-  eq,
-  gte,
-  ilike,
-  lte,
-  or,
-  sql,
-} from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { db } from "../../config/postgres.config";
 import { brands } from "../../db/schema/brand.schema";
 import { categories } from "../../db/schema/category.schema";
@@ -20,6 +9,7 @@ import {
   products,
 } from "../../db/schema/product.schema";
 import { vendors } from "../../db/schema/vendor.schema";
+import { getCategoryAttributeTemplate } from "../category-attribute-template/category-attribute-template.repository";
 import type ProductQueryOptionsDto from "./types/ProductQueryOptionsDto";
 import type {
   ProductFiltersDto,
@@ -40,33 +30,52 @@ const buildCollectionFilter = (collectionSlug: string) => {
   return sql`${products.collectionSlugs} @> ${sql.raw(`'${JSON.stringify([collectionSlug])}'`)}::jsonb`;
 };
 
-const buildAttributeFilters = (
-  filters: ProductFiltersDto
-): Array<ReturnType<typeof sql>> => {
-  const conditions: Array<ReturnType<typeof sql>> = [];
+/**
+ * Builds dynamic attribute filters based on category template
+ */
+const buildDynamicAttributeFilters = (
+  filters: ProductFiltersDto,
+  categoryId?: number
+): Promise<Array<ReturnType<typeof sql>>> => {
+  return new Promise(async (resolve) => {
+    const conditions: Array<ReturnType<typeof sql>> = [];
 
-  if (filters.colors && filters.colors.length > 0) {
-    const colorConditions = filters.colors.map(
-      (color) => sql`${products.attributes}->>'color' = ${color}`
-    );
-    conditions.push(or(...colorConditions)!);
-  }
+    // Get category template
+    let template = null;
+    if (categoryId) {
+      template = await getCategoryAttributeTemplate(categoryId);
+    }
 
-  if (filters.sizes && filters.sizes.length > 0) {
-    const sizeConditions = filters.sizes.map(
-      (size) => sql`${products.attributes}->>'size' = ${size}`
-    );
-    conditions.push(or(...sizeConditions)!);
-  }
+    // Dynamic filtering for attributes in template
+    if (template && template.attributeDefinitions.length > 0) {
+      for (const def of template.attributeDefinitions) {
+        const filterValue = filters[def.key];
 
-  if (filters.materials && filters.materials.length > 0) {
-    const materialConditions = filters.materials.map(
-      (material) => sql`${products.attributes}->>'material' = ${material}`
-    );
-    conditions.push(or(...materialConditions)!);
-  }
+        if (
+          filterValue &&
+          Array.isArray(filterValue) &&
+          filterValue.length > 0
+        ) {
+          const filterConditions = filterValue.map(
+            (value) =>
+              sql`${products.attributes}->>${sql.raw(`'${def.key}'`)} = ${value}`
+          );
+          conditions.push(or(...filterConditions)!);
+        }
+      }
+    }
 
-  return conditions;
+    // Price filters (always available)
+    if (filters.minPrice !== undefined) {
+      conditions.push(gte(products.price, filters.minPrice.toString()));
+    }
+
+    if (filters.maxPrice !== undefined) {
+      conditions.push(lte(products.price, filters.maxPrice.toString()));
+    }
+
+    resolve(conditions);
+  });
 };
 
 const buildPriceFilters = (
@@ -100,7 +109,7 @@ const buildOrderBy = (sort: SortOptions) => {
   }
 };
 
-const buildWhereConditions = (options: ProductQueryOptionsDto) => {
+const buildWhereConditions = async (options: ProductQueryOptionsDto) => {
   const conditions = [eq(products.isActive, true)];
 
   if (options.categorySlug) {
@@ -112,8 +121,24 @@ const buildWhereConditions = (options: ProductQueryOptionsDto) => {
   }
 
   if (options.filters) {
-    conditions.push(...buildAttributeFilters(options.filters));
-    conditions.push(...buildPriceFilters(options.filters));
+    // Find category (if categorySlug is provided)
+    let categoryId: number | undefined;
+    if (options.categorySlug) {
+      const category = await db
+        .select({ id: categories.id })
+        .from(categories)
+        .where(eq(categories.slug, options.categorySlug))
+        .limit(1);
+      if (category.length > 0 && category[0]) {
+        categoryId = category[0].id;
+      }
+    }
+
+    const attributeFilters = await buildDynamicAttributeFilters(
+      options.filters,
+      categoryId
+    );
+    conditions.push(...attributeFilters);
   }
 
   return and(...conditions);
@@ -192,15 +217,52 @@ export const findProducts = async (
   options: ProductQueryOptionsDto,
   withDetails: boolean = false
 ): Promise<{ products: Product[]; total: number }> => {
-  const { sort = "newest", page = 1, limit = 10 } = options;
+  const { sort = "newest", page = 1, limit = 12 } = options;
 
-  const whereClause = buildWhereConditions(options);
+  console.log("limit", limit);
 
+  const whereClause = await buildWhereConditions(options);
   const orderByClause = buildOrderBy(sort);
-
   const offset = (page - 1) * limit;
 
   if (withDetails) {
+    // First, get distinct productGroupIds with pagination using DISTINCT ON
+    // DISTINCT ON requires the distinct column to be first in ORDER BY
+    const distinctOrderBy = [
+      asc(products.productGroupId),
+      ...(Array.isArray(orderByClause) ? orderByClause : [orderByClause]),
+    ];
+
+    console.log("distinctOrderBy", distinctOrderBy);
+
+    const distinctGroupIds = await db
+      .selectDistinctOn([products.productGroupId], {
+        id: products.id,
+        productGroupId: products.productGroupId,
+      })
+      .from(products)
+      .where(whereClause)
+      .orderBy(...distinctOrderBy)
+      .limit(limit)
+      .offset(offset);
+
+    const productIds = distinctGroupIds.map((g) => g.id);
+
+    // If no products found, return empty result
+    if (productIds.length === 0) {
+      const totalResult = await db
+        .select({
+          count: sql<number>`COUNT(DISTINCT ${products.productGroupId})`,
+        })
+        .from(products)
+        .where(whereClause);
+
+      return {
+        products: [],
+        total: Number(totalResult[0]?.count || 0),
+      };
+    }
+
     const [productListWithDetails, totalResult] = await Promise.all([
       db
         .select({
@@ -213,14 +275,27 @@ export const findProducts = async (
         .leftJoin(categories, eq(products.categoryId, categories.id))
         .leftJoin(brands, eq(products.brandId, brands.id))
         .leftJoin(vendors, eq(products.vendorId, vendors.id))
-        .where(whereClause)
-        .orderBy(orderByClause)
-        .limit(limit)
-        .offset(offset),
-      db.select({ count: count() }).from(products).where(whereClause),
+        .where(
+          sql`${products.id} = ANY(${sql.raw(`ARRAY[${productIds.join(",")}]`)})`
+        ),
+      // Count distinct productGroupIds for total
+      db
+        .select({
+          count: sql<number>`COUNT(DISTINCT ${products.productGroupId})`,
+        })
+        .from(products)
+        .where(whereClause),
     ]);
 
-    const mappedProducts: Product[] = productListWithDetails.map((row) => ({
+    // Sort by original order (preserve pagination order)
+    const productMap = new Map(
+      productListWithDetails.map((row) => [row.product.id, row])
+    );
+    const sortedProducts = productIds
+      .map((id) => productMap.get(id))
+      .filter((row): row is NonNullable<typeof row> => row !== undefined);
+
+    const mappedProducts: Product[] = sortedProducts.map((row) => ({
       ...row.product,
       category: row.category || null,
       brand: row.brand || null,
@@ -229,23 +304,68 @@ export const findProducts = async (
 
     return {
       products: mappedProducts,
-      total: totalResult[0]?.count || 0,
+      total: Number(totalResult[0]?.count || 0),
     };
   } else {
+    // Similar logic for non-details case
+    const distinctOrderBy = [
+      asc(products.productGroupId),
+      ...(Array.isArray(orderByClause) ? orderByClause : [orderByClause]),
+    ];
+
+    const distinctGroupIds = await db
+      .selectDistinctOn([products.productGroupId], {
+        id: products.id,
+        productGroupId: products.productGroupId,
+      })
+      .from(products)
+      .where(whereClause)
+      .orderBy(...distinctOrderBy)
+      .limit(limit)
+      .offset(offset);
+
+    const productIds = distinctGroupIds.map((g) => g.id);
+
+    // If no products found, return empty result
+    if (productIds.length === 0) {
+      const totalResult = await db
+        .select({
+          count: sql<number>`COUNT(DISTINCT ${products.productGroupId})`,
+        })
+        .from(products)
+        .where(whereClause);
+
+      return {
+        products: [],
+        total: Number(totalResult[0]?.count || 0),
+      };
+    }
+
     const [productList, totalResult] = await Promise.all([
       db
         .select()
         .from(products)
-        .where(whereClause)
-        .orderBy(orderByClause)
-        .limit(limit)
-        .offset(offset),
-      db.select({ count: count() }).from(products).where(whereClause),
+        .where(
+          sql`${products.id} = ANY(${sql.raw(`ARRAY[${productIds.join(",")}]`)})`
+        ),
+      // Count distinct productGroupIds for total
+      db
+        .select({
+          count: sql<number>`COUNT(DISTINCT ${products.productGroupId})`,
+        })
+        .from(products)
+        .where(whereClause),
     ]);
 
+    // Sort by original order (preserve pagination order)
+    const productMap = new Map(productList.map((p) => [p.id, p]));
+    const sortedProducts = productIds
+      .map((id) => productMap.get(id))
+      .filter((p): p is ProductBase => p !== undefined);
+
     return {
-      products: productList as ProductBase[],
-      total: totalResult[0]?.count || 0,
+      products: sortedProducts,
+      total: Number(totalResult[0]?.count || 0),
     };
   }
 };
@@ -253,24 +373,43 @@ export const findProducts = async (
 export const extractFilterOptions = async (
   categorySlug?: string,
   collectionSlug?: string
-): Promise<{
-  colors: string[];
-  sizes: string[];
-  materials: string[];
-  priceRange: { min: number; max: number };
-}> => {
+): Promise<
+  Record<string, string[]> & {
+    priceRange: { min: number; max: number };
+  }
+> => {
   const options: ProductQueryOptionsDto = {};
   if (categorySlug) options.categorySlug = categorySlug;
   if (collectionSlug) options.collectionSlug = collectionSlug;
 
-  const whereClause = buildWhereConditions(options);
+  const whereClause = await buildWhereConditions(options);
 
   const productList = await db.select().from(products).where(whereClause);
 
-  const colors = new Set<string>();
-  const sizes = new Set<string>();
-  const materials = new Set<string>();
+  // Get category template
+  let template = null;
+  if (categorySlug) {
+    const category = await db
+      .select({ id: categories.id })
+      .from(categories)
+      .where(eq(categories.slug, categorySlug))
+      .limit(1);
+    if (category.length > 0 && category[0]) {
+      template = await getCategoryAttributeTemplate(category[0].id);
+    }
+  }
+
+  const filterOptions: Record<string, Set<string>> = {};
   const prices: number[] = [];
+
+  // Create available options based on template
+  if (template && template.attributeDefinitions.length > 0) {
+    for (const def of template.attributeDefinitions) {
+      if (def.type === "enum" && def.enumValues) {
+        filterOptions[def.key] = new Set<string>();
+      }
+    }
+  }
 
   productList.forEach((product) => {
     const price = parseFloat(product.price);
@@ -279,25 +418,36 @@ export const extractFilterOptions = async (
       prices.push(parseFloat(product.discountedPrice));
     }
 
-    if (product.attributes?.color) {
-      colors.add(product.attributes.color);
-    }
-    if (product.attributes?.size) {
-      sizes.add(product.attributes.size);
-    }
-    if (product.attributes?.material) {
-      materials.add(product.attributes.material);
+    // Collect values for enum attributes in template
+    if (template && template.attributeDefinitions.length > 0) {
+      for (const def of template.attributeDefinitions) {
+        if (def.type === "enum" && product.attributes?.[def.key]) {
+          const value = String(product.attributes[def.key]);
+          const existingSet = filterOptions[def.key];
+          if (existingSet) {
+            existingSet.add(value);
+          } else {
+            filterOptions[def.key] = new Set([value]);
+          }
+        }
+      }
     }
   });
 
+  // Convert sets to arrays and sort
+  const result: Record<string, string[]> = {};
+  for (const [key, values] of Object.entries(filterOptions)) {
+    result[key] = Array.from(values).sort();
+  }
+
   return {
-    colors: Array.from(colors).sort(),
-    sizes: Array.from(sizes).sort(),
-    materials: Array.from(materials).sort(),
+    ...result,
     priceRange: {
       min: prices.length > 0 ? Math.min(...prices) : 0,
       max: prices.length > 0 ? Math.max(...prices) : 0,
     },
+  } as Record<string, string[]> & {
+    priceRange: { min: number; max: number };
   };
 };
 
@@ -378,7 +528,9 @@ export const findProductsBySkus = async (
   return await db
     .select()
     .from(products)
-    .where(sql`${products.sku} = ANY(${sql.raw(`ARRAY[${skus.map((s) => `'${s}'`).join(",")}]`)})`);
+    .where(
+      sql`${products.sku} = ANY(${sql.raw(`ARRAY[${skus.map((s) => `'${s}'`).join(",")}]`)})`
+    );
 };
 
 export const findProductsByGroupId = async (

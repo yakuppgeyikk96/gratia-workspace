@@ -8,7 +8,7 @@ import {
   SyncCartDto,
   UpdateCartItemDto,
 } from "@/types/Cart.types";
-import { Product } from "@/types/Product.types";
+import { CartableProduct } from "@/types/Product.types";
 import { useToastContext } from "@gratia/ui/components/Toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -139,7 +139,7 @@ export function useCart(isLoggedIn: boolean) {
     },
   });
 
-  const handleAddToCart = (product: Partial<Product>) => {
+  const handleAddToCart = (product: CartableProduct) => {
     const now = new Date().toISOString();
 
     const itemToAdd: CartItem = {
@@ -147,8 +147,8 @@ export function useCart(isLoggedIn: boolean) {
       cartId: 0,
       createdAt: now,
       updatedAt: now,
-      productId: product.id!,
-      sku: product.sku!,
+      productId: product.id,
+      sku: product.sku,
       quantity: 1,
       price: product.price?.toString() ?? "",
       discountedPrice: product.discountedPrice?.toString(),
@@ -160,8 +160,8 @@ export function useCart(isLoggedIn: boolean) {
 
     if (isLoggedIn) {
       addToCartMutation.mutate({
-        productId: product.id!,
-        sku: product.sku!,
+        productId: product.id,
+        sku: product.sku,
         quantity: 1,
       });
     } else {
