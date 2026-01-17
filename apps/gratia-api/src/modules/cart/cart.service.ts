@@ -1,7 +1,7 @@
 import { Product } from "../../db/schema/product.schema";
 import { NewCartItem } from "../../db/schema/cart.schema";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
-import { CART_LIMITS, CART_MESSAGES } from "./cartV2.constants";
+import { CART_LIMITS, CART_MESSAGES } from "./cart.constants";
 import {
   findOrCreateCartWithItems,
   findProductsByIds,
@@ -14,14 +14,14 @@ import {
   recalculateAndUpdateCart,
   clearAndResetCart,
   syncCartItems,
-} from "./cartV2.repository";
+} from "./cart.repository";
 import {
   CartWithItems,
   CartSyncResult,
   CartItemUpdate,
   ValidatedCartItem,
-} from "./cartV2.types";
-import type { AddToCartDto, SyncCartDto, UpdateCartItemDto } from "./cartV2.validations";
+} from "./cart.types";
+import type { AddToCartDto, SyncCartDto, UpdateCartItemDto } from "./cart.validations";
 
 export const buildCartItem = (
   product: Product,

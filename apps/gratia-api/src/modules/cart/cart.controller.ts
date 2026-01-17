@@ -4,7 +4,7 @@ import { AuthRequest, StatusCode } from "../../shared/types";
 import { returnSuccess } from "../../shared/utils/response.utils";
 import { getStringParam } from "../../shared/utils/params.utils";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
-import { CART_MESSAGES } from "./cartV2.constants";
+import { CART_MESSAGES } from "./cart.constants";
 import {
   addToCartService,
   clearCartService,
@@ -12,8 +12,8 @@ import {
   removeFromCartService,
   syncCartService,
   updateCartItemService,
-} from "./cartV2.service";
-import type { AddToCartDto, SyncCartDto, UpdateCartItemDto } from "./cartV2.validations";
+} from "./cart.service";
+import type { AddToCartDto, SyncCartDto, UpdateCartItemDto } from "./cart.validations";
 
 const parseUserId = (userId: string): number => {
   const parsed = parseInt(userId, 10);

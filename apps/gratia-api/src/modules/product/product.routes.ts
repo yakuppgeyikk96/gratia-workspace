@@ -8,7 +8,7 @@ import {
   getFiltersByCollection,
   getProductBySlug,
   getFeatured,
-} from "./productV2.controller";
+} from "./product.controller";
 
 const router: IRouter = Router();
 

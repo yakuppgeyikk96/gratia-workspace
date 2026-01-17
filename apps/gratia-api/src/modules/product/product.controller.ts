@@ -4,7 +4,7 @@ import {
   getFilterOptionsForProducts,
   getProductDetail,
   getProductList,
-} from "./productV2.service";
+} from "./product.service";
 import { parseProductFilters, parseProductListQuery } from "./utils/filter.utils";
 
 // Helper function to ensure string type from params

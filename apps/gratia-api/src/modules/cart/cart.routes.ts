@@ -10,13 +10,13 @@ import {
   removeFromCartController,
   syncCartController,
   updateCartItemController,
-} from "./cartV2.controller";
+} from "./cart.controller";
 import {
   addToCartSchema,
   removeFromCartParamsSchema,
   syncCartSchema,
   updateCartItemSchema,
-} from "./cartV2.validations";
+} from "./cart.validations";
 
 const router: Router = Router();
 

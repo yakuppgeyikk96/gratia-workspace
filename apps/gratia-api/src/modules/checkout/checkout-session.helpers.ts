@@ -1,9 +1,9 @@
 import crypto from "crypto";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { getRedisKeyTTL, getRedisValue } from "../../shared/services";
-import { buildCartItem } from "../cartV2/cartV2.service";
-import { CartWithItems } from "../cartV2/cartV2.types";
-import { findProductsBySkus } from "../productV2/productV2.repository";
+import { buildCartItem } from "../cart/cart.service";
+import { CartWithItems } from "../cart/cart.types";
+import { findProductsBySkus } from "../product/product.repository";
 import type { Product } from "../../db/schema/product.schema";
 import {
   CartSnapshot,

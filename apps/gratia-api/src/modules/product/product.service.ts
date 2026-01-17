@@ -4,7 +4,7 @@ import {
   findProductBySlug,
   findVariantsByGroupId,
   findFeaturedProducts,
-} from "./productV2.repository";
+} from "./product.repository";
 import type {
   ProductListQueryOptions,
   ProductListResponse,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CART_LIMITS } from "./cartV2.constants";
+import { CART_LIMITS } from "./cart.constants";
 
 export const addToCartSchema = z.object({
   productId: z.number().int().positive(),

@@ -1,5 +1,5 @@
 // Routes
-export { default as productV2Routes } from "./productV2.routes";
+export { default as productRoutes } from "./product.routes";
 
 // Services (for external use if needed)
 export {
@@ -7,7 +7,7 @@ export {
   getFilterOptionsForProducts,
   getProductDetail,
   getFeaturedProducts,
-} from "./productV2.service";
+} from "./product.service";
 
 // Types
 export type {

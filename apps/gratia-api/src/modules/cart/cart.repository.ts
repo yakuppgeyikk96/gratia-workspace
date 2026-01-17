@@ -8,7 +8,7 @@ import {
   NewCartItem,
 } from "../../db/schema/cart.schema";
 import { products, Product } from "../../db/schema/product.schema";
-import { CartWithItems, BatchProductResult, CartItemUpdate } from "./cartV2.types";
+import { CartWithItems, BatchProductResult, CartItemUpdate } from "./cart.types";
 
 export const findCartByUserId = async (userId: number): Promise<Cart | null> => {
   const [cart] = await db

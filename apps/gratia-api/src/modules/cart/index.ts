@@ -1,4 +1,4 @@
-export { default as cartV2Routes } from "./cartV2.routes";
+export { default as cartRoutes } from "./cart.routes";
 
 export {
   getCartService,
@@ -7,7 +7,8 @@ export {
   removeFromCartService,
   clearCartService,
   syncCartService,
-} from "./cartV2.service";
+  buildCartItem,
+} from "./cart.service";
 
 export type {
   CartWithItems,
@@ -15,10 +16,10 @@ export type {
   ValidatedCartItem,
   CartSyncError,
   CartSyncResult,
-} from "./cartV2.types";
+} from "./cart.types";
 
 export type {
   AddToCartDto,
   UpdateCartItemDto,
   SyncCartDto,
-} from "./cartV2.validations";
+} from "./cart.validations";
