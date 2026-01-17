@@ -10,31 +10,26 @@ import {
   removeFromCartController,
   syncCartController,
   updateCartItemController,
-} from "./cart.controller";
+} from "./cartV2.controller";
 import {
   addToCartSchema,
   removeFromCartParamsSchema,
   syncCartSchema,
   updateCartItemSchema,
-} from "./cart.validations";
+} from "./cartV2.validations";
 
 const router: Router = Router();
 
-// GET /api/cart - Get user's cart
 router.get("/", getCartController);
 
-// POST /api/cart - Add item to cart
 router.post("/", validateBody(addToCartSchema), addToCartController);
 
 router.post("/sync", validateBody(syncCartSchema), syncCartController);
 
-// PUT /api/cart - Update cart item quantity
 router.put("/", validateBody(updateCartItemSchema), updateCartItemController);
 
-// DELETE /api/cart - Clear cart
 router.delete("/", clearCartController);
 
-// DELETE /api/cart/:sku - Remove item from cart
 router.delete(
   "/:sku",
   validateParams(removeFromCartParamsSchema),

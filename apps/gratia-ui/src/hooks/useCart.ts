@@ -124,8 +124,17 @@ export function useCart(isLoggedIn: boolean) {
     onSuccess: (response) => {
       if (response.success && response.data) {
         clearCart();
-        addItems(response.data.items);
+        addItems(response.data.cart.items);
         queryClient.invalidateQueries({ queryKey: ["cart"] });
+
+        if (response.data.errors.length > 0) {
+          addToast({
+            title: "Cart Synced",
+            description: `${response.data.errors.length} item(s) could not be synced`,
+            variant: "warning",
+            duration: TOAST_DURATION,
+          });
+        }
       }
     },
     onError: (error) => {

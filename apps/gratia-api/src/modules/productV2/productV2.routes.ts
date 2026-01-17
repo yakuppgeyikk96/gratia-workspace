@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, type IRouter } from "express";
 import {
   getProducts,
   getProductsByCategory,
@@ -10,7 +10,7 @@ import {
   getFeatured,
 } from "./productV2.controller";
 
-const router = Router();
+const router: IRouter = Router();
 
 // ============================================================================
 // Product List Routes

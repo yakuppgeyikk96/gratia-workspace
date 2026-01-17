@@ -1,11 +1,25 @@
 import type { Request, Response } from "express";
 import {
-  getProductList,
+  getFeaturedProducts,
   getFilterOptionsForProducts,
   getProductDetail,
-  getFeaturedProducts,
+  getProductList,
 } from "./productV2.service";
-import { parseProductListQuery, parseProductFilters } from "./utils/filter.utils";
+import { parseProductFilters, parseProductListQuery } from "./utils/filter.utils";
+
+// Helper function to ensure string type from params
+const ensureString = (value: string | string[] | undefined): string | undefined => {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value) && value.length > 0) return value[0];
+  return undefined;
+};
+
+// Helper function to ensure string type from query
+const ensureStringFromQuery = (value: unknown): string | undefined => {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value) && value.length > 0) return String(value[0]);
+  return undefined;
+};
 
 // ============================================================================
 // Product List Controller
@@ -50,7 +64,7 @@ export const getProducts = async (req: Request, res: Response) => {
  */
 export const getProductsByCategory = async (req: Request, res: Response) => {
   try {
-    const { categorySlug } = req.params;
+    const categorySlug = ensureString(req.params.categorySlug);
     const baseOptions = parseProductListQuery(req.query as Record<string, unknown>);
     const filters = parseProductFilters(req.query as Record<string, unknown>);
 
@@ -77,7 +91,7 @@ export const getProductsByCategory = async (req: Request, res: Response) => {
  */
 export const getProductsByCollection = async (req: Request, res: Response) => {
   try {
-    const { collectionSlug } = req.params;
+    const collectionSlug = ensureString(req.params.collectionSlug);
     const baseOptions = parseProductListQuery(req.query as Record<string, unknown>);
     const filters = parseProductFilters(req.query as Record<string, unknown>);
 
@@ -117,8 +131,8 @@ export const getProductsByCollection = async (req: Request, res: Response) => {
  */
 export const getFilters = async (req: Request, res: Response) => {
   try {
-    const categorySlug = req.query.categorySlug as string | undefined;
-    const collectionSlug = req.query.collectionSlug as string | undefined;
+    const categorySlug = ensureStringFromQuery(req.query.categorySlug);
+    const collectionSlug = ensureStringFromQuery(req.query.collectionSlug);
 
     const result = await getFilterOptionsForProducts(categorySlug, collectionSlug);
 
@@ -142,7 +156,7 @@ export const getFilters = async (req: Request, res: Response) => {
  */
 export const getFiltersByCategory = async (req: Request, res: Response) => {
   try {
-    const { categorySlug } = req.params;
+    const categorySlug = ensureString(req.params.categorySlug);
 
     const result = await getFilterOptionsForProducts(categorySlug);
 
@@ -166,7 +180,7 @@ export const getFiltersByCategory = async (req: Request, res: Response) => {
  */
 export const getFiltersByCollection = async (req: Request, res: Response) => {
   try {
-    const { collectionSlug } = req.params;
+    const collectionSlug = ensureString(req.params.collectionSlug);
 
     const result = await getFilterOptionsForProducts(undefined, collectionSlug);
 
@@ -194,7 +208,7 @@ export const getFiltersByCollection = async (req: Request, res: Response) => {
  */
 export const getProductBySlug = async (req: Request, res: Response) => {
   try {
-    const slug = req.params.slug;
+    const slug = ensureString(req.params.slug);
 
     if (!slug) {
       return res.status(400).json({

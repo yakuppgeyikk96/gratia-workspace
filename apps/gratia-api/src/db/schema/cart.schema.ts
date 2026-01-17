@@ -1,6 +1,7 @@
 import {
   boolean,
   decimal,
+  index,
   integer,
   jsonb,
   pgTable,
@@ -40,50 +41,43 @@ export const carts = pgTable("carts", {
  * CartItem table schema for PostgreSQL
  * Equivalent to CartItem embedded schema in Mongoose
  */
-export const cartItems = pgTable("cart_items", {
-  // Primary key
-  id: serial("id").primaryKey(),
-
-  // Foreign key to carts table
-  cartId: integer("cart_id")
-    .notNull()
-    .references(() => carts.id, { onDelete: "cascade" }),
-
-  // Product information
-  productId: integer("product_id")
-    .notNull()
-    .references(() => products.id, { onDelete: "cascade" }),
-  sku: varchar("sku", { length: 100 }).notNull(),
-  productName: varchar("product_name", { length: 255 }).notNull(),
-  productImages: jsonb("product_images")
-    .$type<string[]>()
-    .notNull()
-    .default([]),
-
-  // Pricing
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-  discountedPrice: decimal("discounted_price", { precision: 10, scale: 2 }),
-
-  // Quantity
-  quantity: integer("quantity").notNull().default(1),
-
-  // Product attributes (color, size, material)
-  attributes: jsonb("attributes")
-    .$type<{
-      color?: string;
-      size?: string;
-      material?: string;
-    }>()
-    .notNull()
-    .default({}),
-
-  // Variant flag
-  isVariant: boolean("is_variant").notNull().default(false),
-
-  // Timestamps
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+export const cartItems = pgTable(
+  "cart_items",
+  {
+    id: serial("id").primaryKey(),
+    cartId: integer("cart_id")
+      .notNull()
+      .references(() => carts.id, { onDelete: "cascade" }),
+    productId: integer("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    sku: varchar("sku", { length: 100 }).notNull(),
+    productName: varchar("product_name", { length: 255 }).notNull(),
+    productImages: jsonb("product_images")
+      .$type<string[]>()
+      .notNull()
+      .default([]),
+    price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+    discountedPrice: decimal("discounted_price", { precision: 10, scale: 2 }),
+    quantity: integer("quantity").notNull().default(1),
+    attributes: jsonb("attributes")
+      .$type<{
+        color?: string;
+        size?: string;
+        material?: string;
+      }>()
+      .notNull()
+      .default({}),
+    isVariant: boolean("is_variant").notNull().default(false),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("cart_items_cart_id_idx").on(table.cartId),
+    index("cart_items_sku_idx").on(table.sku),
+    index("cart_items_cart_id_sku_idx").on(table.cartId, table.sku),
+  ]
+);
 
 /**
  * TypeScript type inference from schemas

@@ -1,20 +1,20 @@
+import { and, asc, eq, sql } from "drizzle-orm";
 import { db } from "../../config/postgres.config";
-import { products } from "../../db/schema/product.schema";
 import { brands } from "../../db/schema/brand.schema";
 import { categories } from "../../db/schema/category.schema";
-import { eq, sql, and, asc } from "drizzle-orm";
+import { Product, products } from "../../db/schema/product.schema";
+import type {
+  ProductFilters,
+  ProductListItem,
+  ProductListQueryOptions,
+  ProductVariant,
+  ProductWithRelations,
+} from "./types";
 import {
   buildBaseConditions,
   buildOrderByClause,
   buildPriceConditions,
 } from "./utils/query-builder.utils";
-import type {
-  ProductListQueryOptions,
-  ProductListItem,
-  ProductFilters,
-  ProductVariant,
-  ProductWithRelations,
-} from "./types";
 
 // ============================================================================
 // Product Listing Repository
@@ -390,4 +390,56 @@ export const findFeaturedProducts = async (
         }
       : null,
   }));
+};
+
+// ============================================================================
+// Batch Product Queries
+// ============================================================================
+
+/**
+ * Find multiple products by IDs in a single query
+ * Avoids N+1 query problem when fetching cart items
+ * Returns products in the same order as input IDs (when possible)
+ */
+export const findProductsByIds = async (
+  ids: number[]
+): Promise<Product[]> => {
+  if (ids.length === 0) {
+    return [];
+  }
+
+  const result = await db
+    .select()
+    .from(products)
+    .where(
+      sql`${products.id} = ANY(${sql.raw(`ARRAY[${ids.join(",")}]`)})`,
+    );
+
+  // Create a map for O(1) lookup
+  const productMap = new Map(result.map((p) => [p.id, p]));
+
+  // Return products in the same order as input IDs (preserve order when fetching for cart)
+  return ids
+    .map((id) => productMap.get(id))
+    .filter((p): p is typeof result[0] => p !== undefined);
+};
+
+/**
+ * Find multiple products by SKUs in a single query
+ * Avoids N+1 query problem when validating checkout items
+ * Used for guest checkout cart validation
+ */
+export const findProductsBySkus = async (
+  skus: string[]
+): Promise<Product[]> => {
+  if (skus.length === 0) {
+    return [];
+  }
+
+  return await db
+    .select()
+    .from(products)
+    .where(
+      sql`${products.sku} = ANY(${sql.raw(`ARRAY[${skus.map((s) => `'${s}'`).join(",")}]`)})`,
+    );
 };

@@ -4,6 +4,7 @@ import { apiClient } from "@/lib/apiClient";
 import {
   AddToCartDto,
   CartResponse,
+  CartSyncResponse,
   SyncCartDto,
   UpdateCartItemDto,
 } from "@/types/Cart.types";
@@ -43,10 +44,10 @@ export async function updateCartItem(
   return response;
 }
 
-export async function syncCart(dto: SyncCartDto): Promise<CartResponse> {
+export async function syncCart(dto: SyncCartDto): Promise<CartSyncResponse> {
   const authHeader: Record<string, string> = await getAuthHeader();
 
-  const response: CartResponse = await apiClient.post(
+  const response: CartSyncResponse = await apiClient.post(
     API_BASE_ROUTE + "/sync",
     dto,
     {

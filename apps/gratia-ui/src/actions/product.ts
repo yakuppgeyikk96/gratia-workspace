@@ -16,7 +16,7 @@ export async function getProducts(
     .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`);
 
   const queryString = queryParams.join("&");
-  const url = queryString ? `/v2/products?${queryString}` : "/v2/products";
+  const url = queryString ? `/products?${queryString}` : "/products";
   return await apiClient.get(url);
 }
 
@@ -30,8 +30,8 @@ export async function getProductsByCategory(
 
   const queryString = queryParams.join("&");
   const url = queryString
-    ? `/v2/products/category/${categorySlug}?${queryString}`
-    : `/v2/products/category/${categorySlug}`;
+    ? `/products/category/${categorySlug}?${queryString}`
+    : `/products/category/${categorySlug}`;
   return await apiClient.get(url);
 }
 
@@ -45,21 +45,21 @@ export async function getProductsByCollection(
 
   const queryString = queryParams.join("&");
   const url = queryString
-    ? `/v2/products/collection/${collectionSlug}?${queryString}`
-    : `/v2/products/collection/${collectionSlug}`;
+    ? `/products/collection/${collectionSlug}?${queryString}`
+    : `/products/collection/${collectionSlug}`;
   return await apiClient.get(url);
 }
 
 export async function getProductBySlug(
   slug: string
 ): Promise<IApiResponse<ProductDetailResponse>> {
-  return await apiClient.get(`/v2/products/${slug}`);
+  return await apiClient.get(`/products/${slug}`);
 }
 
 export async function getFeaturedProducts(
   limit?: number
 ): Promise<IApiResponse<ProductListItem[]>> {
-  const url = limit ? `/v2/products/featured?limit=${limit}` : "/v2/products/featured";
+  const url = limit ? `/products/featured?limit=${limit}` : "/products/featured";
   return await apiClient.get(url);
 }
 
@@ -68,10 +68,10 @@ export async function getFilterOptions(
   collectionSlug?: string
 ): Promise<IApiResponse<FilterOptionsResponse>> {
   if (categorySlug) {
-    return await apiClient.get(`/v2/products/category/${categorySlug}/filters`);
+    return await apiClient.get(`/products/category/${categorySlug}/filters`);
   }
   if (collectionSlug) {
-    return await apiClient.get(`/v2/products/collection/${collectionSlug}/filters`);
+    return await apiClient.get(`/products/collection/${collectionSlug}/filters`);
   }
-  return await apiClient.get("/v2/products/filters");
+  return await apiClient.get("/products/filters");
 }

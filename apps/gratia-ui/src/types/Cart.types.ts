@@ -43,3 +43,15 @@ export interface AddToCartDto {
 export interface SyncCartDto {
   items: AddToCartDto[];
 }
+
+export interface CartSyncError {
+  sku: string;
+  error: string;
+}
+
+export interface CartSyncResult {
+  cart: Cart;
+  errors: CartSyncError[];
+}
+
+export type CartSyncResponse = IApiResponse<CartSyncResult>;
