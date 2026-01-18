@@ -3,6 +3,7 @@ import { AppError, ErrorCode } from "../errors/base.errors";
 
 // Stripe secret key from environment
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
 if (!STRIPE_SECRET_KEY) {
   throw new Error("STRIPE_SECRET_KEY is not set in environment variables");
@@ -14,6 +15,31 @@ const stripe = new Stripe(STRIPE_SECRET_KEY, {
 });
 
 /**
+ * Constructs and verifies a Stripe webhook event.
+ * Requires raw request body (Buffer) and Stripe-Signature header.
+ */
+export const constructWebhookEvent = (
+  payload: string | Buffer,
+  signature: string
+): Stripe.Event => {
+  if (!STRIPE_WEBHOOK_SECRET) {
+    throw new AppError(
+      "STRIPE_WEBHOOK_SECRET is not set in environment variables",
+      ErrorCode.INTERNAL_SERVER_ERROR
+    );
+  }
+
+  try {
+    return stripe.webhooks.constructEvent(payload, signature, STRIPE_WEBHOOK_SECRET);
+  } catch (error: any) {
+    throw new AppError(
+      error.message || "Webhook signature verification failed",
+      ErrorCode.BAD_REQUEST
+    );
+  }
+};
+
+/**
  * Creates a payment intent for checkout
  * @param amount - Amount in the currency's smallest unit (e.g., cents for USD)
  * @param currency - Currency code (default: 'usd')
@@ -23,13 +49,14 @@ const stripe = new Stripe(STRIPE_SECRET_KEY, {
 export const createPaymentIntent = async (
   amount: number,
   currency: string = "usd",
-  metadata?: Record<string, string>
+  metadata?: Record<string, string>,
+  idempotencyKey?: string
 ): Promise<Stripe.PaymentIntent> => {
   try {
     // Convert amount to cents (Stripe uses smallest currency unit)
     const amountInCents = Math.round(amount * 100);
 
-    const paymentIntent = await stripe.paymentIntents.create({
+    const params: Stripe.PaymentIntentCreateParams = {
       amount: amountInCents,
       currency: currency.toLowerCase(),
       metadata: metadata || {},
@@ -37,7 +64,16 @@ export const createPaymentIntent = async (
         enabled: true,
         allow_redirects: "never",
       },
-    });
+    };
+
+    const requestOptions: Stripe.RequestOptions | undefined = idempotencyKey
+      ? { idempotencyKey }
+      : undefined;
+
+    const paymentIntent = await stripe.paymentIntents.create(
+      params,
+      requestOptions
+    );
 
     return paymentIntent;
   } catch (error: any) {

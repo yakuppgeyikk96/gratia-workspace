@@ -1,12 +1,14 @@
 import { Order } from "../../db/schema/order.schema";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import {
-  confirmPaymentIntent,
   createPaymentIntent,
   deleteRedisValue,
+  getRedisValue,
   setRedisValue,
 } from "../../shared/services";
+import { generateUniqueToken } from "../../shared/utils/token.utils";
 import { generateOrderNumber } from "../order/order.helpers";
+import { updateOrderPaymentIntentId } from "../order/order.repository";
 import { createOrderFromSession } from "../order/order.service";
 import {
   calculateShippingCost,
@@ -28,6 +30,7 @@ import {
   CheckoutStatus,
   CheckoutStep,
   CreateCheckoutSessionResponse,
+  CreateOrderResponse,
   PaymentMethodType,
   type ShippingMethodDto,
 } from "./checkout-session.types";
@@ -249,8 +252,16 @@ export const selectShippingMethodService = async (
 export const completeCheckoutService = async (
   sessionToken: string,
   paymentMethodType: PaymentMethodType,
-  paymentToken: string
-): Promise<Order> => {
+  paymentToken: string,
+  notes?: string
+): Promise<CreateOrderResponse> => {
+  // Idempotency: if this session was completed recently, return the same response
+  const completionCacheKey = `checkout:complete:${sessionToken}`;
+  const cached = await getRedisValue<CreateOrderResponse>(completionCacheKey);
+  if (cached) {
+    return cached;
+  }
+
   /* Generate order number to be used for the order follow-up */
   const orderNumber = generateOrderNumber();
 
@@ -260,31 +271,7 @@ export const completeCheckoutService = async (
   /* Validate if session is valid */
   validateCheckoutCompletion(session);
 
-  let paymentIntentId: string | undefined;
-
-  if (paymentMethodType === PaymentMethodType.CREDIT_CARD) {
-    if (!paymentToken) {
-      throw new AppError(
-        CHECKOUT_MESSAGES.PAYMENT_TOKEN_REQUIRED,
-        ErrorCode.BAD_REQUEST
-      );
-    }
-
-    const paymentIntent = await createPaymentIntent(
-      session.pricing.total,
-      "usd",
-      {
-        sessionToken: session.sessionToken,
-      }
-    );
-
-    const confirmedPaymentIntent = await confirmPaymentIntent(
-      paymentIntent.id,
-      paymentToken
-    );
-
-    paymentIntentId = confirmedPaymentIntent.id;
-  } else if (paymentMethodType === PaymentMethodType.BANK_TRANSFER) {
+  if (paymentMethodType === PaymentMethodType.BANK_TRANSFER) {
     throw new AppError(
       CHECKOUT_MESSAGES.BANK_TRANSFER_NOT_SUPPORTED,
       ErrorCode.BAD_REQUEST
@@ -306,9 +293,12 @@ export const completeCheckoutService = async (
   };
 
   /**
-   * Create order from session
+   * Create order FIRST (paymentStatus starts as PENDING; webhook will update)
    */
-  const order = await createOrderFromSession(completedSession, paymentIntentId);
+  const order: Order = await createOrderFromSession(completedSession, {
+    userId: null,
+    notes: notes || null,
+  });
 
   if (!order) {
     throw new AppError(
@@ -317,8 +307,58 @@ export const completeCheckoutService = async (
     );
   }
 
+  // Create payment intent (DO NOT confirm on backend; confirmation happens client-side)
+  if (paymentMethodType === PaymentMethodType.CREDIT_CARD) {
+    if (!paymentToken) {
+      throw new AppError(
+        CHECKOUT_MESSAGES.PAYMENT_TOKEN_REQUIRED,
+        ErrorCode.BAD_REQUEST
+      );
+    }
+  }
+
+  const paymentIntent = await createPaymentIntent(
+    session.pricing.total,
+    "usd",
+    {
+      sessionToken: session.sessionToken,
+      orderNumber: order.orderNumber,
+      orderId: order.id.toString(),
+    },
+    `checkout:complete:${sessionToken}`
+  );
+
+  const clientSecret = paymentIntent.client_secret;
+  if (!clientSecret) {
+    throw new AppError(
+      "Stripe did not return a client_secret for payment intent",
+      ErrorCode.INTERNAL_SERVER_ERROR
+    );
+  }
+
+  // Persist payment intent id on the order
+  await updateOrderPaymentIntentId(order.id, paymentIntent.id);
+
+  // Issue short-lived guest order access token
+  const orderAccessToken = generateUniqueToken();
+  await setRedisValue(
+    `order:access:${orderAccessToken}`,
+    { orderNumber: order.orderNumber, email: order.email },
+    60 * 60
+  );
+
+  const response: CreateOrderResponse = {
+    orderId: order.id.toString(),
+    orderNumber: order.orderNumber,
+    paymentIntentClientSecret: clientSecret,
+    orderAccessToken,
+  };
+
+  // Cache response for a short time to prevent duplicate orders on retries
+  await setRedisValue(completionCacheKey, response, 60 * 60);
+
   /* Remove session from Redis after order is created */
   await deleteCheckoutSessionService(sessionToken);
 
-  return order;
+  return response;
 };

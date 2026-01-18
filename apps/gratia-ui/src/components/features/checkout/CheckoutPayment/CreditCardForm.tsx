@@ -12,6 +12,7 @@ import {
   StripeCardCvcElementChangeEvent,
   StripeCardExpiryElementChangeEvent,
   StripeCardNumberElementChangeEvent,
+  type PaymentIntentResult,
 } from "@stripe/stripe-js";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import styles from "./CreditCardForm.module.scss";
@@ -23,6 +24,10 @@ interface CreditCardFormProps {
 
 export interface CreditCardFormRef {
   createPaymentMethod: () => Promise<string | null>;
+  confirmCardPayment: (
+    clientSecret: string,
+    paymentMethodId: string
+  ) => Promise<PaymentIntentResult>;
 }
 
 const CreditCardForm = forwardRef<CreditCardFormRef, CreditCardFormProps>(
@@ -110,6 +115,26 @@ const CreditCardForm = forwardRef<CreditCardFormRef, CreditCardFormProps>(
 
     useImperativeHandle(ref, () => ({
       createPaymentMethod,
+      confirmCardPayment: async (clientSecret: string, paymentMethodId: string) => {
+        if (!stripe) {
+          const message = "Stripe is not initialized";
+          onError?.(message);
+          return { error: { type: "api_error", message } } as PaymentIntentResult;
+        }
+
+        setIsProcessing(true);
+        try {
+          const result = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: paymentMethodId,
+          });
+          if (result.error) {
+            onError?.(result.error.message || "Payment confirmation failed");
+          }
+          return result;
+        } finally {
+          setIsProcessing(false);
+        }
+      },
     }));
 
     const elementOptions = {

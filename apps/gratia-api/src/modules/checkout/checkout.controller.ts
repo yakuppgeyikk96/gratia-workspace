@@ -117,18 +117,16 @@ export const completeCheckoutController = asyncHandler(
     const token = getStringParam(req.params.token, "token");
     const payload: CompletePaymentDto = req.body;
 
-    const createdOrder = await completeCheckoutService(
+    const result = await completeCheckoutService(
       token,
       payload.paymentMethodType,
-      payload.paymentToken || ""
+      payload.paymentToken || "",
+      payload.notes
     );
 
     returnSuccess(
       res,
-      {
-        orderId: createdOrder.id.toString(),
-        orderNumber: createdOrder.orderNumber,
-      },
+      result,
       "Checkout completed successfully",
       StatusCode.SUCCESS
     );

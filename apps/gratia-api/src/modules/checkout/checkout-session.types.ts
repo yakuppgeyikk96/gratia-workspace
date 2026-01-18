@@ -108,6 +108,8 @@ export interface CreateCheckoutSessionResponse {
 export interface CreateOrderResponse {
   orderId: string;
   orderNumber: string;
+  paymentIntentClientSecret: string;
+  orderAccessToken: string;
 }
 
 /**
