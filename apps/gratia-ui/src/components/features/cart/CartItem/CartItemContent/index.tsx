@@ -15,7 +15,7 @@ export default function CartItemContent({
   price,
   discountedPrice,
 }: CartItemContentProps) {
-  const hasDiscount = discountedPrice !== undefined && discountedPrice < price;
+  const hasDiscount = discountedPrice && discountedPrice < price;
   const unitPrice = hasDiscount ? discountedPrice! : price;
 
   return (
@@ -29,9 +29,9 @@ export default function CartItemContent({
               <span className={styles.quantity}> × {quantity}</span>
             )}
           </span>
-          {hasDiscount && (
+          {hasDiscount ? (
             <span className={styles.originalUnitPrice}>${price}</span>
-          )}
+          ) : null}
           <span className={styles.totalPrice}>${totalPrice.toFixed(2)}</span>
         </div>
       </div>
