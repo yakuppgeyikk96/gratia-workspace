@@ -41,3 +41,5 @@ yarn-error.log*
 storybook-static
 
 drizzle
+
+apps/gratia-mobile

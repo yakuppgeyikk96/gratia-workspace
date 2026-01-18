@@ -48,9 +48,9 @@ export default function OrderSummary({
           const price = parseFloat(item.price);
 
           const hasDiscount =
-            discountedPrice !== undefined && discountedPrice < price;
+            discountedPrice > 0 && discountedPrice < price;
 
-          const unitPrice = hasDiscount ? discountedPrice! : price;
+          const unitPrice = hasDiscount ? discountedPrice : price;
           const totalPrice = unitPrice * item.quantity;
 
           return (

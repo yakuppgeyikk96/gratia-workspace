@@ -49,6 +49,8 @@ export default function CheckoutPayment({
         paymentToken: paymentMethodId,
       });
 
+      console.log(response);
+
       if (
         response.success &&
         response.data?.orderId &&

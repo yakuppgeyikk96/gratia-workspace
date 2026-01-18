@@ -1,10 +1,10 @@
 import crypto from "crypto";
+import type { Product } from "../../db/schema/product.schema";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { getRedisKeyTTL, getRedisValue } from "../../shared/services";
 import { buildCartItem } from "../cart/cart.service";
 import { CartWithItems } from "../cart/cart.types";
 import { findProductsBySkus } from "../product/product.repository";
-import type { Product } from "../../db/schema/product.schema";
 import {
   CartSnapshot,
   CartSnapshotItem,
@@ -213,7 +213,7 @@ export const validateAndBuildGuestCartSnapshot = async (
 
   // Calculate subtotal
   const subtotal = validatedItems.reduce((sum, item) => {
-    const itemPrice = item.discountedPrice ?? item.price;
+    const itemPrice = item.discountedPrice > 0 ? item.discountedPrice : item.price;
     return sum + itemPrice * item.quantity;
   }, 0);
 
