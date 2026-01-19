@@ -127,6 +127,10 @@ pnpm build:ui         # Build only the main UI app
 pnpm lint             # Run ESLint on all packages
 ```
 
+# Tunnel stripe webhooks
+
+stripe listen --forward-to http://localhost:8080/api/webhooks/stripe
+
 ## 🎨 UI Component Library
 
 The project includes a custom UI component library (`@gratia/ui`) with:

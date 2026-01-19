@@ -1,21 +1,13 @@
 "use client";
 
-// import { completePayment } from "@/actions/checkout";
 import { completeCheckout } from "@/actions";
 import { StripeElementsProvider } from "@/components/providers";
-import { CheckoutSession } from "@/types";
 import Button from "@gratia/ui/components/Button";
-import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import styles from "./CheckoutPayment.module.scss";
 import CreditCardForm, { CreditCardFormRef } from "./CreditCardForm";
 
-export default function CheckoutPayment({
-  session,
-}: {
-  session: CheckoutSession;
-}) {
-  const router = useRouter();
+export default function CheckoutPayment() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryContext, setRetryContext] = useState<{
@@ -23,8 +15,6 @@ export default function CheckoutPayment({
     clientSecret: string;
   } | null>(null);
   const creditCardFormRef = useRef<CreditCardFormRef>(null);
-
-  console.log(session);
 
   const handleCompletePayment = async () => {
     if (!creditCardFormRef.current) {
@@ -42,7 +32,7 @@ export default function CheckoutPayment({
 
       if (!paymentMethodId) {
         setError(
-          "Failed to create payment method. Please check your card details."
+          "Failed to create payment method. Please check your card details.",
         );
         setIsProcessing(false);
         return;
@@ -58,8 +48,6 @@ export default function CheckoutPayment({
           paymentMethodType: "credit_card",
           paymentToken: paymentMethodId,
         });
-
-        console.log(response);
 
         if (
           !response.success ||
@@ -80,7 +68,7 @@ export default function CheckoutPayment({
       // Confirm payment client-side (3DS handled by Stripe)
       const result = await creditCardFormRef.current.confirmCardPayment(
         clientSecret,
-        paymentMethodId
+        paymentMethodId,
       );
 
       if (result.error) {
@@ -89,12 +77,14 @@ export default function CheckoutPayment({
         return;
       }
 
-      // Redirect to order page; webhook will finalize payment status in DB
-      router.push(`/orders/${orderNumber}`);
+      // Full page redirect to avoid checkout layout re-running and redirecting to /cart
+      window.location.href = `/orders/${orderNumber}`;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An unexpected error occurred";
       setError(errorMessage);
+      setIsProcessing(false);
+    } finally {
       setIsProcessing(false);
     }
   };

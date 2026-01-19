@@ -14,9 +14,9 @@ import ShippingMethodCard from "./ShippingMethodCard";
 import ShippingMethodsSkeleton from "./ShippingMethodsSkeleton";
 
 export default function CheckoutShippingMethod({
-  session,
+  shippingMethodId,
 }: {
-  session: CheckoutSession;
+  shippingMethodId: number | null;
 }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +28,7 @@ export default function CheckoutShippingMethod({
   });
 
   const shippingMethods = data?.data || [];
-  const selectedMethodId = session.shippingMethodId;
+  const selectedMethodId = shippingMethodId;
 
   const handleMethodSelect = async (methodId: number) => {
     if (selectedMethodId === methodId) return;

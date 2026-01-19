@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { validateBody, validateParams } from "../../shared/middlewares";
+import {
+  optionalAuthMiddleware,
+  validateBody,
+  validateParams,
+} from "../../shared/middlewares";
 import {
   countryCodeParamsSchema,
   stateCodeParamsSchema,
@@ -58,6 +62,7 @@ router.put(
 // POST /api/checkout/session/:token/complete - Complete checkout
 router.post(
   "/session/:token/complete",
+  optionalAuthMiddleware,
   validateParams(tokenParamsSchema),
   validateBody(completePaymentSchema),
   completeCheckoutController

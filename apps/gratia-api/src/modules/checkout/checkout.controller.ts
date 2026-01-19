@@ -117,11 +117,15 @@ export const completeCheckoutController = asyncHandler(
     const token = getStringParam(req.params.token, "token");
     const payload: CompletePaymentDto = req.body;
 
+    // Extract userId from authenticated user (if present)
+    const userId = req.user?.userId ? parseInt(req.user.userId, 10) : null;
+
     const result = await completeCheckoutService(
       token,
       payload.paymentMethodType,
       payload.paymentToken || "",
-      payload.notes
+      payload.notes,
+      userId
     );
 
     returnSuccess(

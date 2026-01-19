@@ -253,7 +253,8 @@ export const completeCheckoutService = async (
   sessionToken: string,
   paymentMethodType: PaymentMethodType,
   paymentToken: string,
-  notes?: string
+  notes?: string,
+  userId?: number | null
 ): Promise<CreateOrderResponse> => {
   // Idempotency: if this session was completed recently, return the same response
   const completionCacheKey = `checkout:complete:${sessionToken}`;
@@ -296,7 +297,7 @@ export const completeCheckoutService = async (
    * Create order FIRST (paymentStatus starts as PENDING; webhook will update)
    */
   const order: Order = await createOrderFromSession(completedSession, {
-    userId: null,
+    userId: userId ?? null,
     notes: notes || null,
   });
 
