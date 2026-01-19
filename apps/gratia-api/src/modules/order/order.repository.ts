@@ -103,3 +103,56 @@ export const findOrdersByEmail = async (email: string): Promise<Order[]> => {
     .where(eq(orders.email, email.toLowerCase()))
     .orderBy(orders.createdAt);
 };
+
+/**
+ * Find order by Stripe payment intent ID
+ */
+export const findOrderByPaymentIntentId = async (
+  paymentIntentId: string
+): Promise<Order | null> => {
+  const [order] = await db
+    .select()
+    .from(orders)
+    .where(eq(orders.paymentIntentId, paymentIntentId))
+    .limit(1);
+
+  return order || null;
+};
+
+/**
+ * Update order payment intent ID (after PaymentIntent creation)
+ */
+export const updateOrderPaymentIntentId = async (
+  orderId: number,
+  paymentIntentId: string
+): Promise<Order | null> => {
+  const [updatedOrder] = await db
+    .update(orders)
+    .set({
+      paymentIntentId,
+      updatedAt: new Date(),
+    })
+    .where(eq(orders.id, orderId))
+    .returning();
+
+  return updatedOrder || null;
+};
+
+/**
+ * Update order payment status (used by Stripe webhooks)
+ */
+export const updateOrderPaymentStatus = async (
+  orderId: number,
+  paymentStatus: PaymentStatus
+): Promise<Order | null> => {
+  const [updatedOrder] = await db
+    .update(orders)
+    .set({
+      paymentStatus,
+      updatedAt: new Date(),
+    })
+    .where(eq(orders.id, orderId))
+    .returning();
+
+  return updatedOrder || null;
+};

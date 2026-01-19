@@ -1,25 +1,20 @@
 "use client";
 
-// import { completePayment } from "@/actions/checkout";
 import { completeCheckout } from "@/actions";
 import { StripeElementsProvider } from "@/components/providers";
-import { CheckoutSession } from "@/types";
 import Button from "@gratia/ui/components/Button";
 import { useRef, useState } from "react";
 import styles from "./CheckoutPayment.module.scss";
 import CreditCardForm, { CreditCardFormRef } from "./CreditCardForm";
 
-export default function CheckoutPayment({
-  session,
-}: {
-  session: CheckoutSession;
-}) {
-  // const router = useRouter();
+export default function CheckoutPayment() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [retryContext, setRetryContext] = useState<{
+    orderNumber: string;
+    clientSecret: string;
+  } | null>(null);
   const creditCardFormRef = useRef<CreditCardFormRef>(null);
-
-  console.log(session);
 
   const handleCompletePayment = async () => {
     if (!creditCardFormRef.current) {
@@ -37,34 +32,59 @@ export default function CheckoutPayment({
 
       if (!paymentMethodId) {
         setError(
-          "Failed to create payment method. Please check your card details."
+          "Failed to create payment method. Please check your card details.",
         );
         setIsProcessing(false);
         return;
       }
 
-      // Then send to backend
-      const response = await completeCheckout({
-        paymentMethodType: "credit_card",
-        paymentToken: paymentMethodId,
-      });
+      // If we already have an order + payment intent client secret, retry confirm directly
+      let orderNumber = retryContext?.orderNumber;
+      let clientSecret = retryContext?.clientSecret;
 
-      console.log(response);
+      if (!orderNumber || !clientSecret) {
+        // Create order + PaymentIntent on backend (returns client secret)
+        const response = await completeCheckout({
+          paymentMethodType: "credit_card",
+          paymentToken: paymentMethodId,
+        });
 
-      if (
-        response.success &&
-        response.data?.orderId &&
-        response.data?.orderNumber
-      ) {
-        console.log(response.data);
-      } else {
-        setError(response.message || "Payment failed. Please try again.");
-        setIsProcessing(false);
+        if (
+          !response.success ||
+          !response.data?.orderNumber ||
+          !response.data?.paymentIntentClientSecret
+        ) {
+          setError(response.message || "Payment failed. Please try again.");
+          setIsProcessing(false);
+          return;
+        }
+
+        orderNumber = response.data.orderNumber;
+        clientSecret = response.data.paymentIntentClientSecret;
+
+        setRetryContext({ orderNumber, clientSecret });
       }
+
+      // Confirm payment client-side (3DS handled by Stripe)
+      const result = await creditCardFormRef.current.confirmCardPayment(
+        clientSecret,
+        paymentMethodId,
+      );
+
+      if (result.error) {
+        setError(result.error.message || "Payment confirmation failed.");
+        setIsProcessing(false);
+        return;
+      }
+
+      // Full page redirect to avoid checkout layout re-running and redirecting to /cart
+      window.location.href = `/orders/${orderNumber}`;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An unexpected error occurred";
       setError(errorMessage);
+      setIsProcessing(false);
+    } finally {
       setIsProcessing(false);
     }
   };

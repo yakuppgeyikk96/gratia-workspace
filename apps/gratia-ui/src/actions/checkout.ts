@@ -7,6 +7,7 @@ import {
   CheckoutSession,
   CheckoutSessionResponse,
   CompleteCheckoutRequest,
+  CompleteCheckoutResponse,
   CompleteCheckoutResponseType,
   CreateCheckoutSessionRequest,
   CreateSessionResponse,
@@ -16,6 +17,7 @@ import {
 import { ICity, ICountry, IState } from "@/types/Location.types";
 import { cookies } from "next/headers";
 import { cache } from "react";
+import { getAuthHeader } from "./utils";
 
 const API_BASE_ROUTE = "/checkout";
 
@@ -183,10 +185,26 @@ export async function completeCheckout(
     };
   }
 
-  return await apiClient.post(
+  const authHeader = await getAuthHeader();
+
+  const response = await apiClient.post<CompleteCheckoutResponse>(
     `${API_BASE_ROUTE}/session/${sessionToken}/complete`,
-    payload
+    payload,
+    { headers: authHeader }
   );
+
+  // Store short-lived guest access token for order pages
+  if (response.success && response.data?.orderAccessToken) {
+    cookieStore.set("gratia-order-access", response.data.orderAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60,
+      path: "/orders",
+    });
+  }
+
+  return response;
 }
 
 export {
@@ -197,5 +215,6 @@ export {
   getAvailableStatesForShipping,
   getCheckoutSessionData,
   selectShippingMethod,
-  updateShippingAddress,
+  updateShippingAddress
 };
+

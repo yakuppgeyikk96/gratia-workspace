@@ -1,6 +1,5 @@
 import { Order } from "../../db/schema/order.schema";
 import type { CheckoutSession } from "../checkout/checkout-session.types";
-import { findUserIdByEmail } from "../user/user.repository";
 import {
   generateOrderNumber,
   mapCheckoutSessionToOrder,
@@ -9,9 +8,13 @@ import { createOrder } from "./order.repository";
 
 export const createOrderFromSession = async (
   session: CheckoutSession,
-  paymentIntentId?: string
+  opts?: {
+    userId?: number | null;
+    paymentIntentId?: string;
+    notes?: string | null;
+  }
 ): Promise<Order> => {
-  const userId = await findUserIdByEmail(session.shippingAddress!.email!);
+  const userId = opts?.userId ?? null;
 
   // Use orderNumber from session if available, otherwise generate a new one
   const orderNumber = session.orderNumber || generateOrderNumber();
@@ -19,11 +22,14 @@ export const createOrderFromSession = async (
   const orderData = mapCheckoutSessionToOrder(
     session,
     orderNumber,
-    userId,
-    paymentIntentId
+    userId === null ? undefined : userId,
+    opts?.paymentIntentId
   );
 
-  const order = await createOrder(orderData);
+  const order = await createOrder({
+    ...orderData,
+    notes: opts?.notes ?? null,
+  });
 
   if (!order) {
     throw new Error("Failed to create order");

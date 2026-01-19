@@ -93,6 +93,8 @@ export interface CompleteCheckoutRequest {
 export interface CompleteCheckoutResponse {
   orderId: string;
   orderNumber: string;
+  paymentIntentClientSecret: string;
+  orderAccessToken: string;
 }
 
 // Response Types

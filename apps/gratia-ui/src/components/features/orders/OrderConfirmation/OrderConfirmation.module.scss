@@ -1,0 +1,134 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  @include p(6);
+}
+
+.card {
+  background-color: $bg-color;
+  @include border($border-1, $border-light);
+  @include rounded($radius-lg);
+  @include p(6);
+}
+
+.header {
+  @include flex(row, space-between, center);
+  @include mb(6);
+  @include pb(4);
+  @include border-b($border-1, $border-light);
+  gap: $spacing-4;
+}
+
+.title {
+  font-size: $text-xl;
+  font-weight: $font-semibold;
+  margin: 0;
+}
+
+.status {
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  color: $text-secondary-color;
+}
+
+.statusPaid {
+  color: $text-success-color;
+}
+
+.statusFailed {
+  color: $text-error-color;
+}
+
+.statusPending {
+  color: $text-info-color;
+}
+
+.sectionTitle {
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  margin: 0 0 $spacing-3 0;
+}
+
+.items {
+  @include flex-column;
+  @include gap(3);
+  @include mb(6);
+}
+
+.itemRow {
+  @include flex(row, space-between, center);
+  gap: $spacing-4;
+}
+
+.itemName {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-primary-color;
+  margin: 0;
+}
+
+.muted {
+  font-size: $text-xs;
+  color: $text-muted-color;
+}
+
+.price {
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  white-space: nowrap;
+}
+
+.pricing {
+  @include flex-column;
+  @include gap(2);
+  @include pt(4);
+  @include border-t($border-1, $border-light);
+}
+
+.pricingRow {
+  @include flex(row, space-between, center);
+}
+
+.label {
+  font-size: $text-sm;
+  color: $text-muted-color;
+}
+
+.value {
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+}
+
+.formRow {
+  @include flex(row, flex-start, flex-end);
+  gap: $spacing-3;
+  flex-wrap: wrap;
+}
+
+.input {
+  min-width: 260px;
+  height: 40px;
+  padding: 0 $spacing-3;
+  border: 1px solid $border-light;
+  border-radius: $radius-md;
+}
+
+.error {
+  margin-top: $spacing-3;
+  color: $text-error-color;
+  font-size: $text-sm;
+}
+
+.hint {
+  margin-top: $spacing-3;
+  color: $text-muted-color;
+  font-size: $text-sm;
+}
+

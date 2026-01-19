@@ -100,6 +100,7 @@ export const mapCheckoutSessionToOrder = (
     paymentIntentId: paymentIntentId || null,
     pricing: session.pricing,
     status: OrderStatus.PENDING,
-    paymentStatus: paymentIntentId ? PaymentStatus.PAID : PaymentStatus.PENDING,
+    // Always start as PENDING; Stripe webhooks will transition to PAID/FAILED/REFUNDED
+    paymentStatus: PaymentStatus.PENDING,
   };
 };

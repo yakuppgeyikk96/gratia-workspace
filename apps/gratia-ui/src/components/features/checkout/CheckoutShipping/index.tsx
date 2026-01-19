@@ -15,16 +15,17 @@ import { useForm } from "react-hook-form";
 import ShippingForm from "../ShippingForm";
 import styles from "./CheckoutShipping.module.scss";
 
-interface Props {
-  session: CheckoutSession;
+interface CheckoutShippingProps {
+  shippingAddress: CheckoutSession["shippingAddress"];
+  billingAddress: CheckoutSession["billingAddress"];
 }
 
-export default function CheckoutShipping({ session }: Props) {
+export default function CheckoutShipping({ shippingAddress, billingAddress }: CheckoutShippingProps) {
   const router = useRouter();
   const [billingIsSame, setBillingIsSame] = useState<boolean>(
-    session.billingAddress === null ||
-      JSON.stringify(session.shippingAddress) ===
-        JSON.stringify(session.billingAddress)
+    billingAddress === null ||
+      JSON.stringify(shippingAddress) ===
+        JSON.stringify(billingAddress)
   );
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,10 +38,10 @@ export default function CheckoutShipping({ session }: Props) {
   } = useForm<ShippingAddressFormData>({
     resolver: zodResolver(shippingAddressSchema),
     defaultValues: {
-      shippingAddress: session.shippingAddress || {},
+      shippingAddress: shippingAddress || {},
       billingAddress: billingIsSame
         ? null
-        : session.billingAddress || session.shippingAddress || null,
+        : billingAddress || shippingAddress || null,
       billingIsSameAsShipping: billingIsSame,
     },
   });

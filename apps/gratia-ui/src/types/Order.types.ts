@@ -1,7 +1,5 @@
 import { IApiResponse } from "./Api.types";
-import { CartItem } from "./Cart.types";
 import { Address, CheckoutPricing, PaymentMethodType } from "./Checkout.types";
-import { ShippingMethod } from "./Shipping.types";
 
 export type OrderStatus =
   | "pending"
@@ -13,50 +11,61 @@ export type OrderStatus =
 
 export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
 
-export type OrderItem = CartItem;
+export interface OrderItem {
+  productId: number;
+  sku: string;
+  quantity: number;
+  price: number;
+  discountedPrice?: number;
+  productName: string;
+  productImages: string[];
+  attributes: {
+    color?: string;
+    size?: string;
+    material?: string;
+    [key: string]: unknown;
+  };
+  isVariant: boolean;
+}
 
 export interface Order {
-  _id: string;
+  id: number;
   orderNumber: string;
-
-  userId: string | null;
-  guestEmail: string | null;
-
+  userId: number | null;
+  email: string;
+  items: OrderItem[];
   shippingAddress: Address;
   billingAddress: Address;
-
-  shippingMethodId: string;
-  shippingMethod: ShippingMethod;
-
+  shippingMethodId: number | null;
   paymentMethodType: PaymentMethodType;
-  paymentStatus: PaymentStatus;
-  paymentToken?: string;
-  paymentGateway?: string;
-
-  items: OrderItem[];
-  totalItems: number;
-
+  paymentIntentId: string | null;
   pricing: CheckoutPricing;
-
-  orderStatus: OrderStatus;
-  notes?: string;
-  sessionToken: string;
-  cartId: string;
-
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  notes: string | null;
   createdAt: string;
   updatedAt: string;
-  shippedAt?: string;
-  deliveredAt?: string;
-  cancelledAt?: string;
 }
 
-export type OrderResponse = IApiResponse<Order>;
-export type OrdersResponse = IApiResponse<Order[]>;
+export type OrderResponse = IApiResponse<Order | null>;
 
-export interface UpdateOrderStatusRequest {
-  orderStatus: OrderStatus;
+export interface RequestOrderAccessRequest {
+  email: string;
 }
 
-export interface UpdatePaymentStatusRequest {
-  paymentStatus: PaymentStatus;
+export interface RequestOrderAccessResponse {
+  requestToken: string;
 }
+
+export type RequestOrderAccessResponseType = IApiResponse<RequestOrderAccessResponse>;
+
+export interface VerifyOrderAccessRequest {
+  requestToken: string;
+  code: string;
+}
+
+export interface VerifyOrderAccessResponse {
+  orderAccessToken: string;
+}
+
+export type VerifyOrderAccessResponseType = IApiResponse<VerifyOrderAccessResponse>;

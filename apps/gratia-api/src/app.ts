@@ -4,6 +4,7 @@ import express from "express";
 import helmet from "helmet";
 import { connectRedis, routesConfig, validateEnvironment } from "./config";
 import { testPostgresConnection } from "./config/postgres.config";
+import stripeWebhookRoutes from "./modules/webhooks/stripe.routes";
 import { requestLogger } from "./shared/middlewares/request-logger.middleware";
 import {
   getRedisKeyTTL,
@@ -46,6 +47,9 @@ app.use(
     },
   })
 );
+
+// Stripe webhooks must be mounted BEFORE express.json()
+app.use("/api/webhooks", stripeWebhookRoutes);
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));

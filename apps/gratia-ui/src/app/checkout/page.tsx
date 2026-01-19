@@ -7,21 +7,21 @@ const CheckoutPayment = dynamic(
   () => import("@/components/features/checkout/CheckoutPayment"),
   {
     ssr: true,
-  }
+  },
 );
 
 const CheckoutShipping = dynamic(
   () => import("@/components/features/checkout/CheckoutShipping"),
   {
     ssr: true,
-  }
+  },
 );
 
 const CheckoutShippingMethod = dynamic(
   () => import("@/components/features/checkout/CheckoutShippingMethod"),
   {
     ssr: true,
-  }
+  },
 );
 
 interface CheckoutPageProps {
@@ -44,13 +44,20 @@ const CheckoutPage = async ({ searchParams }: CheckoutPageProps) => {
 
   switch (urlStep) {
     case "shipping":
-      return <CheckoutShipping session={session} />;
+      return (
+        <CheckoutShipping
+          shippingAddress={session.shippingAddress}
+          billingAddress={session.billingAddress}
+        />
+      );
 
     case "shipping_method":
-      return <CheckoutShippingMethod session={session} />;
+      return (
+        <CheckoutShippingMethod shippingMethodId={session.shippingMethodId} />
+      );
 
     case "payment":
-      return <CheckoutPayment session={session} />;
+      return <CheckoutPayment />;
 
     case "completed":
       if (session.orderId) {
