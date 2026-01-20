@@ -5,6 +5,12 @@ import {
   findVariantsByGroupId,
   findFeaturedProducts,
 } from "./product.repository";
+import {
+  getCachedCategoryProducts,
+  getCachedCollectionProducts,
+  cacheCategoryProducts,
+  cacheCollectionProducts,
+} from "./product.cache";
 import type {
   ProductListQueryOptions,
   ProductListResponse,
@@ -30,11 +36,24 @@ export const getProductList = async (
   options: ProductListQueryOptions,
   filters?: ProductFilters
 ): Promise<ProductListResponse> => {
-  const { page = 1, limit = 12 } = options;
+  const { page = 1, limit = 12, categorySlug, collectionSlug } = options;
+
+  // Cache only for category/collection requests without filters
+  const shouldCache = !filters && (categorySlug || collectionSlug);
+
+  if (shouldCache) {
+    const cached = categorySlug
+      ? await getCachedCategoryProducts(categorySlug, page, limit)
+      : await getCachedCollectionProducts(collectionSlug!, page, limit);
+
+    if (cached) {
+      return cached;
+    }
+  }
 
   const { products, total } = await findProducts(options, filters);
 
-  return {
+  const result: ProductListResponse = {
     products,
     pagination: {
       page,
@@ -43,6 +62,17 @@ export const getProductList = async (
       totalPages: Math.ceil(total / limit),
     },
   };
+
+  // Cache the result (non-blocking)
+  if (shouldCache) {
+    const cachePromise = categorySlug
+      ? cacheCategoryProducts(categorySlug, page, limit, result)
+      : cacheCollectionProducts(collectionSlug!, page, limit, result);
+
+    cachePromise.catch((err) => console.error("Cache write failed:", err));
+  }
+
+  return result;
 };
 
 // ============================================================================

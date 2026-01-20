@@ -1,22 +1,19 @@
-import {
-  deleteRedisValue,
-  getRedisValue,
-  setRedisValue,
-} from "../../shared/services/redis.service";
 import { getActiveRootCategoriesService } from "../category/category.service";
 import { getCollectionsByTypeService } from "../collection/collection.service";
+import {
+  clearNavigationCache,
+  getNavigationCache,
+  setNavigationCache,
+} from "./navigation.cache";
 import {
   NavigationCategoryItem,
   NavigationCollectionItem,
   NavigationResponse,
 } from "./navigation.types";
 
-const NAVIGATION_CACHE_KEY = "navigation:data";
-const NAVIGATION_CACHE_TTL = 300; // 5 minutes
-
 export const getNavigationService = async (): Promise<NavigationResponse> => {
   // Try to get from cache first
-  const cached = await getRedisValue<NavigationResponse>(NAVIGATION_CACHE_KEY);
+  const cached = await getNavigationCache();
   if (cached) {
     return cached;
   }
@@ -60,7 +57,7 @@ export const getNavigationService = async (): Promise<NavigationResponse> => {
   };
 
   // Cache the result
-  await setRedisValue(NAVIGATION_CACHE_KEY, result, NAVIGATION_CACHE_TTL);
+  await setNavigationCache(result);
 
   return result;
 };
@@ -70,5 +67,5 @@ export const getNavigationService = async (): Promise<NavigationResponse> => {
  * Call this when categories or collections are updated
  */
 export const invalidateNavigationCache = async (): Promise<void> => {
-  await deleteRedisValue(NAVIGATION_CACHE_KEY);
+  await clearNavigationCache();
 };
