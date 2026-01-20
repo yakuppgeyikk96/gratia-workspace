@@ -1,0 +1,43 @@
+# Git
+.git
+.gitignore
+
+# Dependencies (will be installed in container)
+node_modules
+**/node_modules
+.pnpm-store
+
+# Build outputs (will be built in container)
+dist
+**/dist
+.next
+**/.next
+.turbo
+**/.turbo
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test & Coverage
+coverage
+**/.coverage
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Mobile app (not needed for docker)
+apps/gratia-mobile
+
+# Drizzle migrations (if not needed)
+drizzle

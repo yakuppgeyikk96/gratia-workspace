@@ -1,0 +1,42 @@
+substitutions:
+  _REGION: us-central1
+  _AR_REPO: cloud-run
+  _SERVICE: gratia-api
+  _RUNTIME_SA: gratia-api-sa@gratia-483312.iam.gserviceaccount.com
+
+steps:
+  # Build (context = repo root)
+  - name: gcr.io/cloud-builders/docker
+    args:
+      [
+        "build",
+        "-f", "apps/gratia-api/Dockerfile",
+        "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/${_SERVICE}:$BUILD_ID",
+        "."
+      ]
+
+  # Push
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/${_SERVICE}:$BUILD_ID"]
+
+  # Deploy (Secrets -> env)
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      [
+        "run","deploy","${_SERVICE}",
+        "--image","${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/${_SERVICE}:$BUILD_ID",
+        "--region","${_REGION}",
+        "--platform","managed",
+        "--allow-unauthenticated",
+        "--service-account","${_RUNTIME_SA}",
+
+        "--set-env-vars",
+        "NODE_ENV=production",
+
+        "--set-secrets",
+        "DATABASE_URL_PRODUCTION=DATABASE_URL_PRODUCTION:latest,JWT_SECRET=JWT_SECRET:latest,ENCRYPTION_SECRET_KEY=ENCRYPTION_SECRET_KEY:latest,EMAIL_USER=EMAIL_USER:latest,EMAIL_PASSWORD=EMAIL_PASSWORD:latest,REDIS_HOST=REDIS_HOST:latest,REDIS_PORT=REDIS_PORT:latest,REDIS_USERNAME=REDIS_USERNAME:latest,REDIS_PASSWORD=REDIS_PASSWORD:latest,STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,STRIPE_WEBHOOK_SECRET=STRIPE_WEBHOOK_SECRET:latest,FRONTEND_URL=FRONTEND_URL:latest,JWT_EXPIRES_IN=JWT_EXPIRES_IN:latest,REFRESH_TOKEN_EXPIRES_IN=REFRESH_TOKEN_EXPIRES_IN:latest"
+      ]
+
+images:
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/${_SERVICE}:$BUILD_ID"
