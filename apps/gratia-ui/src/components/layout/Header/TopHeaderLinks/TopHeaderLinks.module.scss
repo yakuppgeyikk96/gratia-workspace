@@ -24,4 +24,8 @@
   font-size: $text-xs;
   font-weight: $font-medium;
   color: $text-muted-color;
+  // Enhanced font rendering for sharper text
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

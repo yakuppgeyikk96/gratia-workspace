@@ -2,9 +2,15 @@
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
 .contentLayout {
-  margin-block: $spacing-4;
+  margin-block: $spacing-6;
 
   @include media-md {
     margin-bottom: calc($spacing-4 + 6rem);
+  }
+
+  @include media-sm {
+    margin-block: $spacing-4;
+    // Add padding-bottom for fixed bottom bar (approximately 80px height)
+    padding-bottom: 5rem;
   }
 }

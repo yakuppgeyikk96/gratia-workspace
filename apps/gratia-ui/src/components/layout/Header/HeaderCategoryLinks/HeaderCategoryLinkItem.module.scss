@@ -11,20 +11,36 @@
   font-size: $text-sm;
   font-weight: $font-medium;
   font-family: $font-family-sans;
-  color: $text-secondary-color;
+  color: $text-secondary-color !important; // Override global link styles
   text-decoration: none;
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all $transition-fast;
   white-space: nowrap;
+  // Enhanced font rendering for sharper text
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  // Override visited state to prevent purple color
+  &:visited {
+    color: $text-secondary-color !important;
+  }
 
   &:hover {
-    color: $text-primary-color;
+    color: $text-primary-color !important;
     background: $interactive-hover-bg;
   }
 
   &:active {
     transform: scale(0.98);
+    color: $text-primary-color !important;
+  }
+
+  // Override focus styles for navigation
+  &:focus-visible {
+    outline: 2px solid $interactive-focus-ring;
+    outline-offset: 2px;
   }
 }

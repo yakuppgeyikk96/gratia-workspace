@@ -5,15 +5,30 @@
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
 .bottomBar {
-  display: block;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  display: block !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100vw !important; // Use viewport width instead of 100%
+  max-width: 100vw !important;
   background: $bg-color;
-  z-index: 1000;
+  z-index: 9999 !important; // Very high z-index to ensure it's always on top
   padding-bottom: env(safe-area-inset-bottom);
   border-top: 1px solid $border-light;
+  // Remove will-change as it can interfere with fixed positioning
+  // Prevent any transform from parent affecting fixed positioning
+  transform: translate3d(0, 0, 0) !important; // Use translate3d for better GPU acceleration
+  // Ensure it's always visible
+  visibility: visible !important;
+  opacity: 1 !important;
+  // Ensure it's not affected by parent containers
+  isolation: isolate; // Create new stacking context
+
+  // Only show on mobile
+  @include media-sm-up {
+    display: none !important;
+  }
 }
 
 .bottomBarInner {
@@ -45,8 +60,33 @@
   @include px(8);
   @include py(4);
   text-decoration: none;
-  color: inherit;
+  color: $text-secondary-color !important; // Changed from muted to secondary for better contrast
   width: 100%;
+  transition: color $transition-fast;
+  // Enhanced font rendering
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+
+  // Override visited state to prevent purple color
+  &:visited {
+    color: $text-secondary-color !important;
+  }
+
+  // Override hover state
+  &:hover {
+    color: $text-primary-color !important;
+  }
+
+  // Active/selected state
+  &:active,
+  &[aria-current="page"] {
+    color: $text-primary-color !important;
+  }
+
+  // Ensure all child elements inherit the color (except badge)
+  *:not(:global(.badge)) {
+    color: inherit;
+  }
 }
 
 .bottomBarItemIcon {
@@ -55,6 +95,7 @@
   width: 24px;
   height: 24px;
   transition: color 0.2s ease;
+  color: inherit; // Inherit from parent (bottomBarItemContent)
 }
 
 .bottomBarItemBadge {
@@ -62,10 +103,23 @@
   top: -6px;
   right: -6px;
   pointer-events: none;
+
+  // Ensure badge text is white and visible
+  :global(.badge) {
+    color: #ffffff !important; // Force white color for badge text
+    font-weight: $font-bold !important;
+    text-shadow: none !important; // Remove shadow for cleaner look
+  }
 }
 
 .bottomBarItemLabel {
   font-size: $text-xs;
-  font-weight: $font-medium;
-  line-height: 1;
+  font-weight: $font-semibold; // Increased from medium for better visibility
+  line-height: 1.2; // Slightly increased for better readability
+  color: inherit; // Inherit from parent (bottomBarItemContent)
+  // Enhanced font rendering for sharper text
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.01em; // Slight letter spacing for clarity
 }

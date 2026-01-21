@@ -3,6 +3,7 @@
 @use "@gratia/ui/styles/layout/_flex.scss" as *;
 @use "@gratia/ui/styles/core/_position.scss" as *;
 @use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/layout/_container.scss" as *;
 
 $hero-mobile-gradient: linear-gradient(
   135deg,
@@ -28,6 +29,14 @@ $hero-mobile-gradient-subtle: linear-gradient(
 .heroSectionContainer {
   background: $bg-color;
   height: calc(100vh - 12rem);
+  position: relative;
+}
+
+.heroSectionContainerInner {
+  // Remove Container's default padding and max-width - we'll handle it in grid
+  padding-inline: 0 !important;
+  max-width: 100% !important;
+  height: 100%;
 }
 
 .heroSection {
@@ -42,6 +51,11 @@ $hero-mobile-gradient-subtle: linear-gradient(
   display: grid;
   grid-template-columns: 1fr 1fr;
   height: 100%;
+  // Extend grid to full viewport width, breaking out of container
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 
   @include media-md {
     grid-template-columns: 1fr;
@@ -53,10 +67,22 @@ $hero-mobile-gradient-subtle: linear-gradient(
   z-index: 2;
   padding: $spacing-2xl 0;
   background: $bg-color;
+  // Align with header container padding - calculate based on container max-width
+  // For large screens: (viewport width - container max-width) / 2 + container padding
+  padding-left: max(
+    $container-padding,
+    calc((100vw - #{$container-max-width}) / 2 + #{$container-padding})
+  );
 
   @include media-md {
-    padding: $spacing-xl $spacing-lg;
+    padding: $spacing-xl $container-padding-tablet;
     background: transparent;
+    padding-left: $container-padding-tablet;
+  }
+
+  @include media-sm {
+    padding-left: $container-padding-mobile;
+    padding-right: $container-padding-mobile;
   }
 }
 

@@ -1,3 +1,6 @@
+@use "sass:map";
+@use "./colors.scss" as *;
+
 // Typography
 
 $font-family-roboto: "Roboto", sans-serif;
@@ -9,23 +12,39 @@ $font-family-sans:
   BlinkMacSystemFont,
   "Segoe UI",
   "Roboto",
+  "Helvetica Neue",
+  Arial,
   sans-serif;
 $font-family-logo: $font-family-concert-one, cursive;
 
-// Font sizes
-$text-xs: 0.75rem; // 12px
-$text-sm: 0.875rem; // 14px
-$text-base: 1rem; // 16px
-$text-lg: 1.125rem; // 18px
-$text-xl: 1.25rem; // 20px
-$text-2xl: 1.5rem; // 24px
-$text-3xl: 1.875rem; // 30px
-$text-4xl: 2rem; // 32px
-$text-5xl: 2.25rem; // 36px
-$text-6xl: 3rem; // 48px
+// Font sizes - Modern, refined scale with better hierarchy
+$text-xs: 0.75rem;      // 12px - Captions, labels
+$text-sm: 0.875rem;    // 14px - Small text, helper text
+$text-base: 1rem;      // 16px - Body text (base)
+$text-lg: 1.125rem;    // 18px - Large body text
+$text-xl: 1.25rem;     // 20px - Lead text, intro
+$text-2xl: 1.5rem;     // 24px - Subheadings
+$text-3xl: 1.875rem;   // 30px - Section headings
+$text-4xl: 2.25rem;    // 36px - Page headings
+$text-5xl: 3rem;       // 48px - Hero headings
+$text-6xl: 3.75rem;    // 60px - Large hero headings
+$text-7xl: 4.5rem;     // 72px - Extra large displays
 
-// Font weights
+// Responsive font sizes using clamp() for fluid typography
+$text-xs-fluid: clamp(0.6875rem, 0.625rem + 0.25vw, 0.75rem);    // 11-12px
+$text-sm-fluid: clamp(0.8125rem, 0.75rem + 0.25vw, 0.875rem);   // 13-14px
+$text-base-fluid: clamp(0.9375rem, 0.875rem + 0.25vw, 1rem);     // 15-16px
+$text-lg-fluid: clamp(1.0625rem, 1rem + 0.25vw, 1.125rem);      // 17-18px
+$text-xl-fluid: clamp(1.1875rem, 1.125rem + 0.25vw, 1.25rem);   // 19-20px
+$text-2xl-fluid: clamp(1.375rem, 1.25rem + 0.5vw, 1.5rem);      // 22-24px
+$text-3xl-fluid: clamp(1.625rem, 1.5rem + 0.5vw, 1.875rem);     // 26-30px
+$text-4xl-fluid: clamp(2rem, 1.75rem + 1vw, 2.25rem);            // 32-36px
+$text-5xl-fluid: clamp(2.5rem, 2rem + 2vw, 3rem);               // 40-48px
+$text-6xl-fluid: clamp(3rem, 2.5rem + 2.5vw, 3.75rem);          // 48-60px
+
+// Font weights - Semantic naming
 $font-thin: 100;
+$font-extralight: 200;
 $font-light: 300;
 $font-normal: 400;
 $font-medium: 500;
@@ -34,13 +53,54 @@ $font-bold: 700;
 $font-extrabold: 800;
 $font-black: 900;
 
-// Line heights
+// Line heights - Optimized for readability
 $leading-none: 1;
-$leading-tight: 1.25;
-$leading-snug: 1.375;
-$leading-normal: 1.5;
-$leading-relaxed: 1.625;
-$leading-loose: 2;
+$leading-tight: 1.25;      // Headings
+$leading-snug: 1.375;      // Tight headings
+$leading-normal: 1.5;      // Body text
+$leading-relaxed: 1.625;   // Comfortable reading
+$leading-loose: 2;          // Spacious text
+
+// Letter spacing - For better readability and hierarchy
+$tracking-tighter: -0.05em;
+$tracking-tight: -0.025em;
+$tracking-normal: 0;
+$tracking-wide: 0.025em;
+$tracking-wider: 0.05em;
+$tracking-widest: 0.1em;
+
+// Typography scale map for utilities
+$font-sizes: (
+  xs: $text-xs,
+  sm: $text-sm,
+  base: $text-base,
+  lg: $text-lg,
+  xl: $text-xl,
+  "2xl": $text-2xl,
+  "3xl": $text-3xl,
+  "4xl": $text-4xl,
+  "5xl": $text-5xl,
+  "6xl": $text-6xl,
+  "7xl": $text-7xl
+);
+
+$line-heights: (
+  none: $leading-none,
+  tight: $leading-tight,
+  snug: $leading-snug,
+  normal: $leading-normal,
+  relaxed: $leading-relaxed,
+  loose: $leading-loose
+);
+
+$letter-spacings: (
+  tighter: $tracking-tighter,
+  tight: $tracking-tight,
+  normal: $tracking-normal,
+  wide: $tracking-wide,
+  wider: $tracking-wider,
+  widest: $tracking-widest
+);
 
 // Z-index scale
 $z-dropdown: 1000;
@@ -58,19 +118,273 @@ $width-400: 400px;
 $width-500: 500px;
 $width-600: 600px;
 
-// Transition scale
-$transition-fast: 0.15s ease;
-$transition-normal: 0.2s ease;
-$transition-slow: 0.3s ease;
+// Transition scale - Enhanced with easing functions
+$transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-normal: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-bounce: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+$transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
-// Shadow scale
-$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+// Shadow scale - Modern, refined shadows
+$shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-sm:
+  0 1px 3px 0 rgba(0, 0, 0, 0.1),
+  0 1px 2px -1px rgba(0, 0, 0, 0.1);
 $shadow-md:
   0 4px 6px -1px rgba(0, 0, 0, 0.1),
-  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  0 2px 4px -2px rgba(0, 0, 0, 0.1);
 $shadow-lg:
   0 10px 15px -3px rgba(0, 0, 0, 0.1),
-  0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  0 4px 6px -4px rgba(0, 0, 0, 0.1);
 $shadow-xl:
   0 20px 25px -5px rgba(0, 0, 0, 0.1),
-  0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  0 8px 10px -6px rgba(0, 0, 0, 0.1);
+$shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+$shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+// Colored shadows for interactive elements
+$shadow-primary: 0 4px 14px 0 rgba(37, 99, 235, 0.15);
+$shadow-primary-lg: 0 10px 25px -3px rgba(37, 99, 235, 0.2);
+$shadow-success: 0 4px 14px 0 rgba(16, 185, 129, 0.15);
+$shadow-error: 0 4px 14px 0 rgba(220, 38, 38, 0.15);
+
+// Typography utility mixins
+@mixin text-size($size) {
+  @if map.has-key($font-sizes, $size) {
+    font-size: map.get($font-sizes, $size);
+  } @else {
+    @warn "Font size #{$size} not found in $font-sizes map.";
+  }
+}
+
+@mixin text-weight($weight) {
+  font-weight: $weight;
+}
+
+@mixin line-height($height) {
+  @if map.has-key($line-heights, $height) {
+    line-height: map.get($line-heights, $height);
+  } @else {
+    @warn "Line height #{$height} not found in $line-heights map.";
+  }
+}
+
+@mixin letter-spacing($spacing) {
+  @if map.has-key($letter-spacings, $spacing) {
+    letter-spacing: map.get($letter-spacings, $spacing);
+  } @else {
+    @warn "Letter spacing #{$spacing} not found in $letter-spacings map.";
+  }
+}
+
+// Typography preset mixins for common patterns
+@mixin heading-1 {
+  @include text-size("5xl");
+  @include text-weight($font-bold);
+  @include line-height(tight);
+  @include letter-spacing(tight);
+}
+
+@mixin heading-2 {
+  @include text-size("4xl");
+  @include text-weight($font-bold);
+  @include line-height(tight);
+  @include letter-spacing(tight);
+}
+
+@mixin heading-3 {
+  @include text-size("3xl");
+  @include text-weight($font-semibold);
+  @include line-height(snug);
+  @include letter-spacing(normal);
+}
+
+@mixin heading-4 {
+  @include text-size("2xl");
+  @include text-weight($font-semibold);
+  @include line-height(snug);
+  @include letter-spacing(normal);
+}
+
+@mixin heading-5 {
+  @include text-size("xl");
+  @include text-weight($font-semibold);
+  @include line-height(normal);
+  @include letter-spacing(normal);
+}
+
+@mixin heading-6 {
+  @include text-size("lg");
+  @include text-weight($font-semibold);
+  @include line-height(normal);
+  @include letter-spacing(normal);
+}
+
+@mixin body-large {
+  @include text-size("lg");
+  @include text-weight($font-normal);
+  @include line-height(relaxed);
+  @include letter-spacing(normal);
+}
+
+@mixin body {
+  @include text-size("base");
+  @include text-weight($font-normal);
+  @include line-height(normal);
+  @include letter-spacing(normal);
+}
+
+@mixin body-small {
+  @include text-size("sm");
+  @include text-weight($font-normal);
+  @include line-height(normal);
+  @include letter-spacing(normal);
+}
+
+@mixin caption {
+  @include text-size("xs");
+  @include text-weight($font-normal);
+  @include line-height(normal);
+  @include letter-spacing(wide);
+}
+
+// Animation keyframes - Modern, smooth animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+// Animation utility mixins
+@mixin animate-fade-in($duration: $transition-normal) {
+  animation: fadeIn $duration ease-out;
+}
+
+@mixin animate-fade-in-up($duration: $transition-normal) {
+  animation: fadeInUp $duration ease-out;
+}
+
+@mixin animate-fade-in-down($duration: $transition-normal) {
+  animation: fadeInDown $duration ease-out;
+}
+
+@mixin animate-slide-in-right($duration: $transition-normal) {
+  animation: slideInRight $duration ease-out;
+}
+
+@mixin animate-slide-in-left($duration: $transition-normal) {
+  animation: slideInLeft $duration ease-out;
+}
+
+@mixin animate-scale-in($duration: $transition-normal) {
+  animation: scaleIn $duration ease-out;
+}
+
+@mixin animate-shimmer($duration: 2s) {
+  background: linear-gradient(
+    90deg,
+    $bg-secondary-color 0%,
+    $interactive-hover-bg 50%,
+    $bg-secondary-color 100%
+  );
+  background-size: 2000px 100%;
+  animation: shimmer $duration infinite;
+}
+
+@mixin animate-pulse($duration: 2s) {
+  animation: pulse $duration ease-in-out infinite;
+}

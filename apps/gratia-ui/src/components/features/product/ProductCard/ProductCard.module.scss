@@ -9,18 +9,35 @@
   @include gap(2);
   background-color: $bg-color;
   @include border($border-1, $border-light);
-  @include rounded($radius-md);
+  @include rounded($radius-lg);
   @include pb(1);
   overflow: hidden;
-  transition:
-    transform $transition-normal,
-    box-shadow $transition-normal;
+  position: relative;
   cursor: pointer;
+  transition:
+    transform $transition-smooth,
+    box-shadow $transition-smooth,
+    border-color $transition-smooth;
+  will-change: transform, box-shadow;
+  @include animate-fade-in-up($transition-slow);
 
+  // Modern hover effect with lift
   &:hover {
-    box-shadow: $shadow-sm;
-    transition: all $transition-fast;
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
     border-color: $border-medium;
+  }
+
+  // Active state for better feedback
+  &:active {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+
+  // Focus state for accessibility
+  &:focus-visible {
+    outline: 2px solid $interactive-focus-ring;
+    outline-offset: 2px;
   }
 }
 
@@ -32,7 +49,7 @@
   @include px(2);
 
   &:hover {
-    opacity: 0.8;
+    opacity: 0.9;
   }
 }
 

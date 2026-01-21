@@ -7,6 +7,7 @@
 
 .skeletonContainer {
   width: 100%;
+  @include animate-fade-in($transition-slow);
 }
 
 .skeletonGrid {
@@ -37,6 +38,14 @@
   @include gap(3);
   @include rounded($radius-lg);
   overflow: hidden;
+  @include animate-fade-in-up($transition-slow);
+
+  // Stagger animation delay for each card
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
 }
 
 .skeletonImage {
@@ -95,11 +104,4 @@
   @include rounded($radius-sm);
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
+// Shimmer animation is now in _variables.scss
