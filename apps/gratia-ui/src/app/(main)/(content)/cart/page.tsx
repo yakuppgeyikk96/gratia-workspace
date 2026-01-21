@@ -1,4 +1,4 @@
-import CartPageContainer from "@/components/features/cart/CartPageContainer";
+import { CartPageContainer } from "@/components/features/cart";
 import { isAuthenticated } from "@/lib/utils/auth";
 
 export default async function CartPage() {

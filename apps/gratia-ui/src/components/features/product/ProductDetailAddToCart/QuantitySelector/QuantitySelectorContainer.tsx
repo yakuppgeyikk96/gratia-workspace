@@ -1,13 +1,13 @@
 "use client";
 
 import QuantitySelector from "@/components/common/QuantitySelector";
-import { useCartStore } from "@/store/cartStore";
 
 import { COLORS } from "@/constants";
-import { useCart } from "@/hooks/useCart";
 import IconBagCheck from "@gratia/ui/icons/IconBagCheck";
 import { memo } from "react";
 import styles from "./QuantitySelectorContainer.module.scss";
+import { useCartStore } from "@/store/cartStore";
+import { useCart } from "@/hooks/useCart";
 
 interface QuantitySelectorContainerProps {
   productSku: string;

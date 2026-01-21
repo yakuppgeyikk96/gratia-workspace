@@ -10,7 +10,6 @@ import navigationRoutes from "../modules/navigation/navigation.routes";
 import orderRoutes from "../modules/order/order.routes";
 import { productRoutes } from "../modules/product";
 import vendorRoutes from "../modules/vendor/vendor.routes";
-import { authMiddleware } from "../shared/middlewares";
 
 const basePath = "/api";
 
@@ -30,8 +29,8 @@ export const routesConfig = (app: Express) => {
   router.use("/location", locationRoutes);
   router.use("/orders", orderRoutes);
 
-  // Protected routes
-  router.use("/cart", authMiddleware, cartRoutes);
+  // Cart routes (guest + authenticated)
+  router.use("/cart", cartRoutes);
 
   app.use(`${basePath}`, router);
 };

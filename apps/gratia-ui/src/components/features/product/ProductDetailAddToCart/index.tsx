@@ -1,7 +1,7 @@
 "use client";
 
 import { useCartStore } from "@/store/cartStore";
-import { CartableProduct } from "@/types/Product.types";
+import { CartableProduct } from "@/types/Cart.types";
 import { lazy, Suspense } from "react";
 import AddToCartButtonContainer from "./AddToCartButtonContainer";
 import styles from "./ProductDetailAddToCart.module.scss";

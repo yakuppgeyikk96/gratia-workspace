@@ -1,46 +1,81 @@
 "use client";
 
-import { useCartStore } from "@/store/cartStore";
+import {
+  CartProvider,
+  useCartContext,
+} from "@/components/providers/CartProvider";
 import LoadingSpinner from "@gratia/ui/components/LoadingSpinner";
 import { lazy, Suspense } from "react";
 import CartIsEmpty from "../CartIsEmpty";
+import CartWarningBanner from "../CartWarningBanner";
 import styles from "./CartPageContainer.module.scss";
 
-const CartList = lazy(() => import("@/components/features/cart/CartList"));
+const CartListV2 = lazy(() => import("@/components/features/cart/CartList"));
 const CartSummary = lazy(
-  () => import("@/components/features/cart/CartSummary")
+  () => import("@/components/features/cart/CartSummary"),
 );
 
-interface CartPageContainerProps {
-  isLoggedIn: boolean;
-}
+// ============================================================================
+// Inner Component (uses context)
+// ============================================================================
 
-export default function CartPageContainer(props: CartPageContainerProps) {
-  const { isLoggedIn } = props;
+function CartPageContent() {
+  const { items, warnings, isLoading, hasWarnings } = useCartContext();
 
-  const cartItems = useCartStore((state) => state.items);
+  console.log(items);
 
-
-  if (!cartItems) {
-    return <LoadingSpinner />;
+  if (isLoading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <LoadingSpinner />
+      </div>
+    );
   }
 
-  if (cartItems.length === 0) {
+  if (!items || items.length === 0) {
     return <CartIsEmpty />;
   }
 
   return (
     <div className={styles.cartPageContainer}>
-      <div className={styles.cartList}>
-        <Suspense fallback={null}>
-          <CartList cartItems={cartItems} isLoggedIn={isLoggedIn} />
-        </Suspense>
-      </div>
-      <div className={styles.cartSummary}>
-        <Suspense fallback={null}>
-          <CartSummary items={cartItems} />
-        </Suspense>
+      {/* Warning Banner at the top */}
+      {hasWarnings && (
+        <div className={styles.warningBanner}>
+          <CartWarningBanner warnings={warnings} />
+        </div>
+      )}
+
+      {/* Cart content */}
+      <div className={styles.cartContent}>
+        <div className={styles.cartList}>
+          <Suspense fallback={<LoadingSpinner />}>
+            <CartListV2 />
+          </Suspense>
+        </div>
+        <div className={styles.cartSummary}>
+          <Suspense fallback={null}>
+            <CartSummary />
+          </Suspense>
+        </div>
       </div>
     </div>
+  );
+}
+
+// ============================================================================
+// Main Component (provides context)
+// ============================================================================
+
+interface CartPageContainerProps {
+  isLoggedIn: boolean;
+}
+
+export default function CartPageContainer({
+  isLoggedIn,
+}: CartPageContainerProps) {
+  return (
+    <CartProvider isLoggedIn={isLoggedIn}>
+      <CartPageContent />
+    </CartProvider>
   );
 }

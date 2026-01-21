@@ -1,16 +1,23 @@
-import { useCartStore } from "@/store/cartStore";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import ProductCardActions from ".";
 
+import { useCartStore } from "@/store/cartStore";
+
 vi.mock("@/store/cartStore", () => ({
   useCartStore: vi.fn(),
 }));
 
+const mockHandleUpdateQuantity = vi.fn();
+vi.mock("@/hooks/useCart", () => ({
+  useCart: () => ({
+    handleUpdateQuantity: mockHandleUpdateQuantity,
+  }),
+}));
+
 describe("ProductCardActions", () => {
   const mockGetItemCount = vi.fn();
-  const mockUpdateQuantity = vi.fn();
   const mockOnAddToCart = vi.fn();
 
   beforeEach(() => {
@@ -18,13 +25,10 @@ describe("ProductCardActions", () => {
 
     (useCartStore as unknown as Mock).mockImplementation(
       (
-        selector: (
-          state: ReturnType<typeof useCartStore>
-        ) => ReturnType<typeof useCartStore>
+        selector: (state: { getItemCount: (sku: string) => number }) => number
       ) => {
         const state = {
           getItemCount: mockGetItemCount,
-          updateQuantity: mockUpdateQuantity,
         };
         return selector(state);
       }
@@ -204,7 +208,7 @@ describe("ProductCardActions", () => {
       const incrementButton = screen.getByLabelText("Increment quantity");
       await user.click(incrementButton);
 
-      expect(mockUpdateQuantity).toHaveBeenCalledWith("TEST-001", 2, false);
+      expect(mockHandleUpdateQuantity).toHaveBeenCalledWith("TEST-001", 2);
     });
 
     it("should call updateQuantity when decrementing", async () => {
@@ -223,7 +227,7 @@ describe("ProductCardActions", () => {
       const decrementButton = screen.getByLabelText("Decrement quantity");
       await user.click(decrementButton);
 
-      expect(mockUpdateQuantity).toHaveBeenCalledWith("TEST-001", 1, false);
+      expect(mockHandleUpdateQuantity).toHaveBeenCalledWith("TEST-001", 1);
     });
 
     it("should pass isLoggedIn flag to updateQuantity", async () => {
@@ -242,7 +246,7 @@ describe("ProductCardActions", () => {
       const incrementButton = screen.getByLabelText("Increment quantity");
       await user.click(incrementButton);
 
-      expect(mockUpdateQuantity).toHaveBeenCalledWith("TEST-001", 2, true);
+      expect(mockHandleUpdateQuantity).toHaveBeenCalledWith("TEST-001", 2);
     });
   });
 
