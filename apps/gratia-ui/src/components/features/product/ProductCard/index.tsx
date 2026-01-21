@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "@/hooks/useCart";
-import { CartableProduct } from "@/types/Product.types";
+import { CartableProduct } from "@/types/Cart.types";
 import Link from "next/link";
 import styles from "./ProductCard.module.scss";
 import { ProductCardProps } from "./ProductCard.types";
@@ -29,7 +29,7 @@ export default function ProductCard({
       price: product.price ?? "",
       discountedPrice: product.discountedPrice,
       images: product.images ?? [],
-      attributes: "attributes" in product ? product.attributes : undefined,
+      slug: product.slug,
     };
     handleAddToCart(cartProduct);
   };

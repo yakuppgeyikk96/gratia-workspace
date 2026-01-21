@@ -1,0 +1,250 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+// ============================================================================
+// Variables
+// ============================================================================
+
+$warning-bg: #fef3c7;
+$warning-border: #f59e0b;
+$warning-text: #92400e;
+$warning-icon: #d97706;
+
+$error-bg: #fee2e2;
+$error-border: #ef4444;
+$error-text: #991b1b;
+$error-icon: #dc2626;
+
+$info-bg: #dbeafe;
+$info-border: #3b82f6;
+$info-text: #1e40af;
+$info-icon: #2563eb;
+
+// ============================================================================
+// Banner Container
+// ============================================================================
+
+.banner {
+  @include flex-column;
+  @include gap(3);
+  @include p(4);
+  @include rounded($radius-lg);
+  @include border($border-1, $warning-border);
+  background-color: $warning-bg;
+  @include mb(4);
+}
+
+// ============================================================================
+// Banner Header
+// ============================================================================
+
+.bannerHeader {
+  @include flex(row, space-between, flex-start);
+  @include gap(3);
+}
+
+.bannerTitle {
+  @include flex(row, flex-start, center);
+  @include gap(2);
+  font-weight: $font-semibold;
+  color: $warning-text;
+  font-size: $text-sm;
+
+  svg {
+    flex-shrink: 0;
+    color: $warning-icon;
+  }
+}
+
+.dismissButton {
+  @include flex(row, center, center);
+  @include p(1);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $warning-text;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  @include rounded($radius-sm);
+
+  &:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+// ============================================================================
+// Warning Groups
+// ============================================================================
+
+.warningGroups {
+  @include flex-column;
+  @include gap(2);
+}
+
+.warningGroup {
+  @include flex-column;
+  @include rounded($radius-md);
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.5);
+
+  &.warning {
+    .groupHeader {
+      color: $warning-text;
+    }
+    .groupIcon {
+      color: $warning-icon;
+    }
+  }
+
+  &.error {
+    .groupHeader {
+      color: $error-text;
+    }
+    .groupIcon {
+      color: $error-icon;
+    }
+  }
+
+  &.info {
+    .groupHeader {
+      color: $info-text;
+    }
+    .groupIcon {
+      color: $info-icon;
+    }
+  }
+}
+
+.groupHeader {
+  @include flex(row, flex-start, center);
+  @include gap(2);
+  @include px(3);
+  @include py(2);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.groupIcon {
+  @include flex(row, center, center);
+  flex-shrink: 0;
+}
+
+.groupTitle {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  flex: 1;
+}
+
+.groupCount {
+  font-size: $text-xs;
+  font-weight: $font-semibold;
+  @include px(2);
+  @include py(0.5);
+  @include rounded($radius-full);
+  background-color: rgba(0, 0, 0, 0.1);
+  min-width: 20px;
+  text-align: center;
+}
+
+.expandButton {
+  @include flex(row, center, center);
+  @include p(1);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  svg {
+    transition: transform 0.2s ease;
+
+    &.expanded {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+// ============================================================================
+// Warning List
+// ============================================================================
+
+.warningList {
+  @include flex-column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  @include px(3);
+  @include pb(2);
+}
+
+.warningItem {
+  @include flex(row, space-between, center);
+  @include gap(2);
+  @include py(1.5);
+  font-size: $text-sm;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.productName {
+  font-weight: $font-medium;
+  color: $text-primary-color;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.warningMessage {
+  color: $text-secondary-color;
+  font-size: $text-xs;
+  flex-shrink: 0;
+}
+
+// ============================================================================
+// Error Note
+// ============================================================================
+
+.errorNote {
+  font-size: $text-xs;
+  color: $error-text;
+  font-style: italic;
+  @include pt(2);
+  @include mt(1);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+// ============================================================================
+// Responsive
+// ============================================================================
+
+@include media-sm {
+  .banner {
+    @include p(3);
+  }
+
+  .bannerTitle {
+    font-size: $text-xs;
+  }
+
+  .warningItem {
+    @include flex-column;
+    @include gap(0.5);
+    align-items: flex-start;
+  }
+
+  .productName {
+    white-space: normal;
+  }
+}

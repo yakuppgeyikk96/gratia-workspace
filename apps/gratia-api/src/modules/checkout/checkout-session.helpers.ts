@@ -2,8 +2,7 @@ import crypto from "crypto";
 import type { Product } from "../../db/schema/product.schema";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { getRedisKeyTTL, getRedisValue } from "../../shared/services";
-import { buildCartItem } from "../cart/cart.service";
-import { CartWithItems } from "../cart/cart.types";
+import { CartResponse } from "../cart/cart.types";
 import { findProductsBySkus } from "../product/product.repository";
 import {
   CartSnapshot,
@@ -69,7 +68,7 @@ export const isSessionExpired = (session: CheckoutSession): boolean => {
   return new Date() > session.expiresAt;
 };
 
-export const createCartSnapshot = (cart: CartWithItems): CartSnapshot => {
+export const createCartSnapshot = (cart: CartResponse): CartSnapshot => {
   return {
     items: cart.items.map(
       (item): CartSnapshotItem => ({
@@ -86,8 +85,8 @@ export const createCartSnapshot = (cart: CartWithItems): CartSnapshot => {
         isVariant: item.isVariant,
       })
     ),
-    subtotal: parseFloat(cart.totalPrice),
-    totalItems: cart.totalItems,
+    subtotal: parseFloat(cart.summary.total),
+    totalItems: cart.summary.totalItems,
   };
 };
 
@@ -190,25 +189,9 @@ export const validateAndBuildGuestCartSnapshot = async (
     }
 
     // Build cart item
-    const cartItem = buildCartItem(product, item.quantity);
+    const cartItem = buildCartSnapshotItem(product, item.quantity);
     // Convert to CartSnapshot item format
-    validatedItems.push({
-      productId: cartItem.productId,
-      sku: cartItem.sku,
-      quantity: cartItem.quantity ?? item.quantity,
-      price: parseFloat(cartItem.price),
-      discountedPrice: cartItem.discountedPrice
-        ? parseFloat(cartItem.discountedPrice)
-        : 0,
-      productName: cartItem.productName,
-      productImages: cartItem.productImages || [],
-      attributes: (cartItem.attributes || {}) as {
-        color?: string;
-        size?: string;
-        material?: string;
-      },
-      isVariant: cartItem.isVariant ?? false,
-    });
+    validatedItems.push(cartItem);
   }
 
   // Calculate subtotal
@@ -292,4 +275,31 @@ export const validateCheckoutCompletion = (session: CheckoutSession): void => {
       ErrorCode.BAD_REQUEST
     );
   }
+};
+
+const buildCartSnapshotItem = (
+  product: Product,
+  quantity: number
+): Omit<CartSnapshotItem, never> => {
+  const isVariant =
+    !!product.productGroupId &&
+    product.productGroupId !== `pg_${product.id.toString()}`;
+
+  return {
+    productId: product.id,
+    sku: product.sku,
+    quantity,
+    price: parseFloat(product.price),
+    discountedPrice: product.discountedPrice
+      ? parseFloat(product.discountedPrice)
+      : 0,
+    productName: product.name,
+    productImages: (product.images as string[]) || [],
+    attributes: (product.attributes || {}) as {
+      color?: string;
+      size?: string;
+      material?: string;
+    },
+    isVariant,
+  };
 };

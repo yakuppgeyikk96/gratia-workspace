@@ -69,7 +69,30 @@
   color: $text-primary-color;
 }
 
+.unavailableNote {
+  @include flex(row, flex-start, center);
+  @include gap(2);
+  @include p(3);
+  @include my(2);
+  @include rounded($radius-md);
+  background-color: #fef3c7;
+  color: #92400e;
+  font-size: $text-sm;
+
+  svg {
+    flex-shrink: 0;
+    color: #d97706;
+  }
+}
+
 .checkoutButton {
   width: 100%;
   @include mt(4);
+}
+
+.noItemsNote {
+  @include mt(2);
+  font-size: $text-sm;
+  color: $text-muted-color;
+  text-align: center;
 }

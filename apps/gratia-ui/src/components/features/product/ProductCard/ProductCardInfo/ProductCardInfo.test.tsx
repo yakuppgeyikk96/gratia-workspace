@@ -19,20 +19,20 @@ describe("ProductCardInfo", () => {
       />
     );
 
-    expect(screen.getByText("This is a test description")).toBeInTheDocument();
+    expect(screen.getByText(/This is a test description/)).toBeInTheDocument();
   });
 
   it("should not render description when not provided", () => {
-    const { container } = render(<ProductCardInfo name="Test Product" />);
-
-    const description = container.querySelector("p");
-    expect(description).not.toBeInTheDocument();
+    render(<ProductCardInfo name="Test Product" />);
+    // Description span includes " - " prefix when present
+    expect(screen.queryByText(/ - /)).not.toBeInTheDocument();
   });
 
   it("should render with empty name", () => {
-    render(<ProductCardInfo name="" />);
+    const { container } = render(<ProductCardInfo name="" />);
 
-    const nameElement = screen.getByRole("heading", { level: 3 });
-    expect(nameElement).toHaveTextContent("");
+    // Still renders the name container even if empty
+    const nameSpan = container.querySelector("span");
+    expect(nameSpan).toBeInTheDocument();
   });
 });

@@ -1,10 +1,10 @@
-import { useCart } from "@/hooks/useCart";
-import { CartableProduct } from "@/types/Product.types";
 import Button from "@gratia/ui/components/Button";
 import IconBagPlus from "@gratia/ui/icons/IconBagPlus";
 import { memo } from "react";
 
 import styles from "./AddToCartButtonContainer.module.scss";
+import { useCart } from "@/hooks/useCart";
+import { CartableProduct } from "@/types/Cart.types";
 
 interface AddToCartButtonContainerProps {
   product: CartableProduct;

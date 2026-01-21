@@ -24,6 +24,11 @@ export default function ProductCardActions({
 
   const isInCart = itemCount > 0;
 
+  const formatPrice = (value: number) => `$${value.toFixed(2)}`;
+  const basePrice = Number(price) || 0;
+  const discounted = Number(discountedPrice) || 0;
+  const currentPrice = hasDiscount ? discounted : basePrice;
+
   const handleIncrement = () => {
     handleUpdateQuantity(productSku, itemCount + 1);
   };
@@ -36,9 +41,9 @@ export default function ProductCardActions({
     <div className={styles.actionsContainer}>
       {/* Price Section */}
       <div className={styles.priceSection}>
-        <span className={styles.currentPrice}>${price}</span>
+        <span className={styles.currentPrice}>{formatPrice(currentPrice)}</span>
         {hasDiscount && (
-          <span className={styles.originalPrice}>${discountedPrice}</span>
+          <span className={styles.originalPrice}>{formatPrice(basePrice)}</span>
         )}
       </div>
 

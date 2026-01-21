@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
-import CartInitializer from "@/components/features/cart/CartInitializer";
 import { TanstackQueryClientProvider } from "@/components/providers";
+import { CartInitializer } from "@/components/providers/CartProvider";
 import { isAuthenticated } from "@/lib/utils/auth";
 import {
   ToastContainer,

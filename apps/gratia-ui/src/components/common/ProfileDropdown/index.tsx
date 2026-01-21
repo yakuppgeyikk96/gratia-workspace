@@ -13,6 +13,7 @@ import { useMemo } from "react";
 export default function ProfileDropdown() {
   const router = useRouter();
   const clearCart = useCartStore((state) => state.clearCart);
+  const setSessionId = useCartStore((state) => state.setSessionId);
 
   const onValueChange = (value: string) => {
     if (value === "profile") {
@@ -20,6 +21,7 @@ export default function ProfileDropdown() {
     } else if (value === "logout") {
       logoutUser();
       clearCart();
+      setSessionId(null);
     }
   };
 

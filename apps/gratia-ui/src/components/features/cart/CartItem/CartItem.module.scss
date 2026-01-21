@@ -2,7 +2,12 @@
 @use "@gratia/ui/styles/core/_border.scss" as *;
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
 @use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 @use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+// ============================================================================
+// Main Container
+// ============================================================================
 
 .cartItem {
   @include flex(row, flex-start, flex-start);
@@ -11,10 +16,183 @@
   background-color: $bg-color;
   @include border($border-1, $border-light);
   @include rounded($radius-lg);
-  transition: box-shadow $transition-normal;
+  transition: box-shadow $transition-normal, opacity $transition-normal;
   width: 100%;
   position: relative;
+
+  &.unavailable {
+    opacity: 0.7;
+    background-color: rgba(0, 0, 0, 0.02);
+  }
 }
+
+// ============================================================================
+// Image Section
+// ============================================================================
+
+.imageContainer {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  @include rounded($radius-md);
+  overflow: hidden;
+  background-color: $bg-secondary-color;
+
+  &.unavailable {
+    .image {
+      filter: grayscale(100%);
+    }
+  }
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter $transition-normal;
+}
+
+.unavailableOverlay {
+  position: absolute;
+  inset: 0;
+  @include flex(row, center, center);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: $text-xs;
+  font-weight: $font-semibold;
+  text-transform: uppercase;
+}
+
+// ============================================================================
+// Content Section
+// ============================================================================
+
+.content {
+  @include flex-column;
+  @include gap(1);
+  flex: 1;
+  min-width: 0;
+  @include pr(8); // Space for remove button
+}
+
+.productName {
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  margin: 0;
+  line-height: 1.3;
+
+  &.unavailable {
+    text-decoration: line-through;
+    color: $text-muted-color;
+  }
+}
+
+.attributes {
+  font-size: $text-xs;
+  color: $text-secondary-color;
+  margin: 0;
+}
+
+.priceInfo {
+  @include flex(row, flex-start, center);
+  @include gap(2);
+  @include mt(1);
+}
+
+.price {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-primary-color;
+}
+
+.discountedPrice {
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  color: $text-success-color;
+}
+
+.originalPrice {
+  font-size: $text-xs;
+  color: $text-muted-color;
+  text-decoration: line-through;
+}
+
+.quantity {
+  font-size: $text-sm;
+  color: $text-secondary-color;
+}
+
+.totalPrice {
+  @include flex(row, flex-start, center);
+  @include gap(1);
+  @include mt(1);
+}
+
+.totalLabel {
+  font-size: $text-sm;
+  color: $text-secondary-color;
+}
+
+.totalValue {
+  font-size: $text-base;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+}
+
+// ============================================================================
+// Status Badges
+// ============================================================================
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  @include px(2);
+  @include py(0.5);
+  @include rounded($radius-sm);
+  font-size: $text-xs;
+  font-weight: $font-medium;
+  @include mt(1);
+  width: fit-content;
+
+  &.lowStock {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+
+  &.priceChanged {
+    background-color: #dbeafe;
+    color: #1e40af;
+  }
+}
+
+// ============================================================================
+// Remove Button
+// ============================================================================
+
+.removeButton {
+  position: absolute;
+  top: $spacing-3;
+  right: $spacing-3;
+  @include flex(row, center, center);
+  @include p(1);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $text-muted-color;
+  @include rounded($radius-sm);
+  transition: color $transition-normal, background-color $transition-normal;
+
+  &:hover {
+    color: $text-error-color;
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+}
+
+// ============================================================================
+// Quantity Section
+// ============================================================================
 
 .quantitySection {
   position: absolute;
@@ -36,4 +214,64 @@
 .quantitySectionUpdatingText {
   font-size: $text-sm;
   color: $text-muted-color;
+}
+
+// ============================================================================
+// Unavailable Actions
+// ============================================================================
+
+.unavailableAction {
+  @include flex(row, center, center);
+}
+
+.removeFromCartBtn {
+  @include px(3);
+  @include py(1.5);
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-error-color;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  @include rounded($radius-md);
+  cursor: pointer;
+  transition: all $transition-normal;
+
+  &:hover {
+    background-color: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+}
+
+// ============================================================================
+// Responsive
+// ============================================================================
+
+@include media-sm {
+  .cartItem {
+    @include flex-column;
+    @include gap(3);
+    @include p(3);
+  }
+
+  .imageContainer {
+    width: 80px;
+    height: 80px;
+  }
+
+  .content {
+    @include pr(0);
+  }
+
+  .quantitySection {
+    position: relative;
+    bottom: unset;
+    right: unset;
+    align-self: flex-end;
+    @include mt(2);
+  }
+
+  .removeButton {
+    top: $spacing-2;
+    right: $spacing-2;
+  }
 }

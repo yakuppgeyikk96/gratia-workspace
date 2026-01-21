@@ -12,7 +12,7 @@ export default function BottomBarCartItem() {
   const [mounted, setMounted] = useState(false);
 
   const itemCount = useCartStore((state) => state.getTotalItems());
-  const dataLoading = useCartStore((state) => state.dataLoading);
+  const dataLoading = useCartStore((state) => state.isLoading);
 
   useEffect(() => {
     setMounted(true);

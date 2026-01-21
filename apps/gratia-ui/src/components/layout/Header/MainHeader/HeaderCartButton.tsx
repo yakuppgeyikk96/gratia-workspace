@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 export default function HeaderCartButton() {
   const [mounted, setMounted] = useState(false);
 
-  const dataLoading = useCartStore((state) => state.dataLoading);
+  const isLoading = useCartStore((state) => state.isLoading);
   const totalItems = useCartStore((state) => state.getTotalItems());
 
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function HeaderCartButton() {
     setMounted(true);
   }, []);
 
-  if (!mounted || dataLoading) {
+  if (!mounted || isLoading) {
     return <LoadingSpinner />;
   }
 
@@ -35,7 +35,7 @@ export default function HeaderCartButton() {
       icon={<IconShoppingBag />}
       ariaLabel="Cart"
       onClick={handleClick}
-      disabled={dataLoading}
+      disabled={isLoading}
     >
       <Flex align="center" gap={8}>
         <span>Cart</span>

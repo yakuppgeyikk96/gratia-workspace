@@ -1,7 +1,23 @@
 @use "@gratia/ui/styles/layout/_grid.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
 
 .cartPageContainer {
+  @include flex-column;
+  @include gap(6);
+}
+
+.loadingContainer {
+  @include flex(row, center, center);
+  min-height: 400px;
+}
+
+.warningBanner {
+  width: 100%;
+}
+
+.cartContent {
   @include grid-container;
   @include grid-cols-12;
   @include grid-gap-8;
