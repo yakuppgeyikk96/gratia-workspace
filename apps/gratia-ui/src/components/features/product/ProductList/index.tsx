@@ -1,6 +1,5 @@
 import { isAuthenticatedUser } from "@/actions/auth";
 import { PaginationInfo, Product, ProductListItem } from "@/types/Product.types";
-import Container from "@gratia/ui/components/Container";
 import ProductCard from "../ProductCard";
 import PaginationWrapper from "./PaginationWrapper";
 import styles from "./ProductList.module.scss";
@@ -19,7 +18,7 @@ export default async function ProductList({
   const isLoggedIn = await isAuthenticatedUser();
 
   return (
-    <Container className={styles.productListContainer}>
+    <div className={styles.productListContainer}>
       {title && <h1 className={styles.title}>{title}</h1>}
       <div className={styles.productsGrid}>
         {products.map((product) => (
@@ -31,6 +30,6 @@ export default async function ProductList({
         ))}
       </div>
       {pagination && <PaginationWrapper pagination={pagination} />}
-    </Container>
+    </div>
   );
 }

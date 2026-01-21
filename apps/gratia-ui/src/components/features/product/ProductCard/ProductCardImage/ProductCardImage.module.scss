@@ -39,8 +39,9 @@
 
 .image {
   object-fit: cover;
-  transition: transform $transition-normal;
+  transition: transform $transition-slow;
   user-select: none;
+  will-change: transform;
 }
 
 .imagePlaceholder {
@@ -90,14 +91,20 @@
   z-index: 10;
 
   button {
-    background-color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(4px);
-    box-shadow: $shadow-sm;
-    transition: all $transition-fast;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    box-shadow: $shadow-md;
+    transition: all $transition-smooth;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 
     &:hover {
       background-color: rgba(255, 255, 255, 1);
-      box-shadow: $shadow-md;
+      box-shadow: $shadow-lg;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
     }
   }
 }

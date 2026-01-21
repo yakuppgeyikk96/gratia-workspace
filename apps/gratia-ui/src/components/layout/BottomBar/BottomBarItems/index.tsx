@@ -1,7 +1,8 @@
 "use client";
 
 import { BottomBarItem } from "@/types/Navigation.types";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import BottomBarCartItem from "./BottomBarCartItem";
 import BottomBarCategoriesItem from "./BottomBarCategoriesItem";
 import BottomBarHomeItem from "./BottomBarHomeItem";
@@ -14,6 +15,12 @@ interface BottomBarItemsProps {
 }
 
 export default function BottomBarItems(props: BottomBarItemsProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const items: BottomBarItem[] = useMemo(
     () => [
       {
@@ -36,7 +43,7 @@ export default function BottomBarItems(props: BottomBarItemsProps) {
     [props.isLoggedIn]
   );
 
-  return (
+  const bottomBarContent = (
     <nav className={styles.bottomBar}>
       <div className={styles.bottomBarInner}>
         {items.map((item) =>
@@ -58,4 +65,11 @@ export default function BottomBarItems(props: BottomBarItemsProps) {
       </div>
     </nav>
   );
+
+  // Render to body using portal to ensure fixed positioning works
+  if (!mounted) {
+    return null;
+  }
+
+  return createPortal(bottomBarContent, document.body);
 }

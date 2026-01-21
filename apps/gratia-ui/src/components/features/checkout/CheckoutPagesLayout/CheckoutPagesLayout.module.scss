@@ -1,11 +1,10 @@
 @use "@gratia/ui/styles/layout/_flex.scss" as *;
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_container.scss" as *;
 
 .checkoutPagesLayout {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 24px;
+  @include container-xl;
 }
 
 .checkoutPagesHeader {
@@ -16,12 +15,12 @@
 .contentWrapper {
   display: grid;
   grid-template-columns: 1fr 420px;
-  gap: 40px;
-  margin-top: 32px;
+  gap: $spacing-10;
+  margin-top: $spacing-8;
 
   @include media-lg {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: $spacing-6;
 
     .sidebar {
       order: -1;

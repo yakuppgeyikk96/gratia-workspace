@@ -21,6 +21,14 @@
   @include grid-container;
   @include grid-cols-12;
   @include grid-gap-8;
+
+  @include media-md {
+    @include grid-gap-6;
+  }
+
+  @include media-sm {
+    @include grid-gap-4;
+  }
 }
 
 .cartList {

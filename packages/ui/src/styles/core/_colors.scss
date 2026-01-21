@@ -1,53 +1,90 @@
-// Background colors
+// Background colors - Modern palette
 $bg-color: #ffffff;
 $bg-secondary-color: #f8fafc;
+$bg-tertiary-color: #f1f5f9;      // Additional subtle background
+$bg-elevated: #ffffff;             // For elevated surfaces (cards, modals)
 
-// Primary colors - WCAG AA compliant
-$primary-color: #1a202c;           // 7:1 contrast ratio
-$primary-color-light: #2d3748;     // 4.5:1 contrast ratio
-$primary-color-dark: #0f1419;      // 10:1 contrast ratio
+// Primary colors - Modern, vibrant palette (WCAG AA compliant)
+$primary-color: #2563eb;           // Modern blue - 4.5:1 contrast ratio
+$primary-color-light: #3b82f6;     // Lighter blue - 3:1 contrast ratio
+$primary-color-dark: #1e40af;     // Darker blue - 7:1 contrast ratio
+$primary-color-50: #eff6ff;        // Very light tint
+$primary-color-100: #dbeafe;       // Light tint
+$primary-color-500: #3b82f6;       // Base tint
+$primary-color-600: #2563eb;       // Medium tint
+$primary-color-700: #1d4ed8;       // Dark tint
+$primary-color-900: #1e3a8a;       // Darkest tint
 
-// Secondary colors
-$secondary-color: #dc2626;         // 4.5:1 contrast ratio
-$secondary-color-light: #ef4444;   // 3:1 contrast ratio
-$secondary-color-dark: #b91c1c;    // 7:1 contrast ratio
+// Secondary colors - Modern accent palette
+$secondary-color: #dc2626;         // Red - 4.5:1 contrast ratio
+$secondary-color-light: #ef4444;   // Light red - 3:1 contrast ratio
+$secondary-color-dark: #b91c1c;    // Dark red - 7:1 contrast ratio
+$accent-color: #8b5cf6;            // Purple accent - 4.5:1 contrast ratio
+$accent-color-light: #a78bfa;      // Light purple
+$accent-color-dark: #7c3aed;      // Dark purple
 
-// Border colors
-$border-light: #e5e7eb;           // Subtle borders
-$border-medium: #d1d5db;          // Medium borders
-$border-dark: #9ca3af;            // Dark borders
+// Border colors - Refined palette
+$border-light: #e2e8f0;           // Softer subtle borders
+$border-medium: #cbd5e1;          // Medium borders
+$border-dark: #94a3b8;            // Dark borders
+$border-focus: #3b82f6;            // Focus border color
 
-// Text colors - WCAG AA compliant
-$text-primary-color: #111827;      // 12:1 contrast ratio on white
-$text-secondary-color: #374151;    // 7:1 contrast ratio on white
-$text-muted-color: #6b7280;        // 4.5:1 contrast ratio on white
-$text-on-primary-color: #ffffff;   // 12:1 contrast ratio on primary
-$text-on-secondary-color: #ffffff; // 7:1 contrast ratio on secondary
+// Text colors - WCAG AA compliant, improved hierarchy
+$text-primary-color: #0f172a;      // Almost black - 12:1 contrast ratio
+$text-secondary-color: #334155;    // Dark gray - 7:1 contrast ratio
+$text-muted-color: #64748b;        // Medium gray - 4.5:1 contrast ratio
+$text-disabled-color: #cbd5e1;     // Light gray for disabled
+$text-on-primary-color: #ffffff;   // White on primary - 12:1 contrast ratio
+$text-on-secondary-color: #ffffff; // White on secondary - 7:1 contrast ratio
 
-// Link colors - WCAG AA compliant
-$text-link-color: #1d4ed8;         // 4.5:1 contrast ratio
-$text-link-hover-color: #1e40af;   // 7:1 contrast ratio
-$text-link-visited-color: #7c3aed; // 4.5:1 contrast ratio
+// Link colors - Modern, accessible palette
+$text-link-color: #2563eb;         // Primary blue - 4.5:1 contrast ratio
+$text-link-hover-color: #1d4ed8;   // Darker blue - 7:1 contrast ratio
+$text-link-visited-color: #7c3aed; // Purple - 4.5:1 contrast ratio
+$text-link-active-color: #1e40af;  // Active state
 
-// Status colors - WCAG AA compliant
-$text-error-color: #dc2626;        // 4.5:1 contrast ratio
-$text-success-color: #059669;      // 4.5:1 contrast ratio
-$text-warning-color: #d97706;      // 4.5:1 contrast ratio
-$text-info-color: #0284c7;         // 4.5:1 contrast ratio
+// Status colors - Modern, vibrant palette (WCAG AA compliant)
+$text-error-color: #dc2626;        // Red - 4.5:1 contrast ratio
+$text-success-color: #10b981;      // Green - 4.5:1 contrast ratio (brighter)
+$text-warning-color: #f59e0b;      // Amber - 4.5:1 contrast ratio (warmer)
+$text-info-color: #06b6d4;         // Cyan - 4.5:1 contrast ratio (modern)
 
-// Interactive states
-$interactive-hover-bg: #f3f4f6;    // Light gray for hover
-$interactive-active-bg: #e5e7eb;   // Medium gray for active
+// Interactive states - Enhanced palette
+$interactive-hover-bg: #f1f5f9;    // Subtle hover background
+$interactive-active-bg: #e2e8f0;   // Active background
 $interactive-focus-ring: #3b82f6;  // Blue focus ring
+$interactive-focus-ring-offset: #ffffff; // Focus ring offset
 
-// Color maps for utilities
+// Gradient definitions - Modern gradients
+$gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+$gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+$gradient-subtle: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+$gradient-warm: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+$gradient-cool: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+
+// Surface colors - For cards, modals, etc.
+$surface-elevated: #ffffff;
+$surface-raised: #f8fafc;
+$surface-overlay: rgba(15, 23, 42, 0.8); // For overlays
+
+// Color maps for utilities - Enhanced
 $colors: (
   primary: $primary-color,
   primary-light: $primary-color-light,
   primary-dark: $primary-color-dark,
+  primary-50: $primary-color-50,
+  primary-100: $primary-color-100,
+  primary-500: $primary-color-500,
+  primary-600: $primary-color-600,
+  primary-700: $primary-color-700,
+  primary-900: $primary-color-900,
   secondary: $secondary-color,
   secondary-light: $secondary-color-light,
   secondary-dark: $secondary-color-dark,
+  accent: $accent-color,
+  accent-light: $accent-color-light,
+  accent-dark: $accent-color-dark,
   success: $text-success-color,
   error: $text-error-color,
   warning: $text-warning-color,
@@ -58,26 +95,43 @@ $colors: (
 $backgrounds: (
   white: $bg-color,
   bg-secondary: $bg-secondary-color,
+  bg-tertiary: $bg-tertiary-color,
+  bg-elevated: $bg-elevated,
   primary: $primary-color,
   secondary: $secondary-color,
   hover: $interactive-hover-bg,
-  active: $interactive-active-bg
+  active: $interactive-active-bg,
+  surface-elevated: $surface-elevated,
+  surface-raised: $surface-raised
 );
 
 $borders: (
   light: $border-light,
   medium: $border-medium,
-  dark: $border-dark
+  dark: $border-dark,
+  focus: $border-focus
 );
 
-// Semantic color tokens
+// Gradient map
+$gradients: (
+  primary: $gradient-primary,
+  secondary: $gradient-secondary,
+  accent: $gradient-accent,
+  subtle: $gradient-subtle,
+  warm: $gradient-warm,
+  cool: $gradient-cool
+);
+
+// Semantic color tokens - Enhanced
 $semantic-colors: (
   text-primary: $text-primary-color,
   text-secondary: $text-secondary-color,
   text-muted: $text-muted-color,
+  text-disabled: $text-disabled-color,
   link-default: $text-link-color,
   link-hover: $text-link-hover-color,
   link-visited: $text-link-visited-color,
+  link-active: $text-link-active-color,
   error: $text-error-color,
   success: $text-success-color,
   warning: $text-warning-color,

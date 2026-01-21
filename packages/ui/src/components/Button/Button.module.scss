@@ -10,22 +10,42 @@
   border-radius: $button-radius;
   cursor: pointer;
   font-family: $font-family-sans;
-  transition: all 0.2s ease;
+  transition:
+    all $transition-smooth,
+    transform $transition-fast,
+    box-shadow $transition-smooth;
   text-decoration: none;
   box-sizing: border-box;
+  overflow: hidden;
+  will-change: transform, box-shadow;
+  // Enhanced font rendering for sharper text
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 
+  // Smooth hover effect
   &:hover:not(:disabled) {
-    box-shadow: $shadow-md;
+    transform: translateY(-1px);
+    box-shadow: $shadow-lg;
   }
 
+  // Active state with press effect
   &:active:not(:disabled) {
-    box-shadow: none;
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
   }
 
   &.disabled {
     opacity: 0.5;
     cursor: not-allowed;
     box-shadow: none;
+    transform: none !important;
+  }
+
+  // Focus state for accessibility
+  &:focus-visible {
+    outline: 2px solid $interactive-focus-ring;
+    outline-offset: 2px;
   }
 
   &.loading {
@@ -68,17 +88,29 @@
   &-primary {
     background: $primary-color;
     color: $text-on-primary-color;
+    box-shadow: $shadow-sm;
 
     &:hover:not(:disabled) {
       background: $primary-color-dark;
+      box-shadow: $shadow-primary;
+    }
+
+    &:active:not(:disabled) {
+      background: $primary-color-700;
     }
   }
 
   &-secondary {
     background: $secondary-color;
     color: $text-on-secondary-color;
+    box-shadow: $shadow-sm;
 
     &:hover:not(:disabled) {
+      background: $secondary-color-dark;
+      box-shadow: $shadow-error;
+    }
+
+    &:active:not(:disabled) {
       background: $secondary-color-dark;
     }
   }
@@ -86,19 +118,33 @@
   &-outlined {
     background: transparent;
     color: $primary-color;
-    border: 1px solid $primary-color;
+    border: 1.5px solid $primary-color;
+    box-shadow: none;
 
     &:hover:not(:disabled) {
-      background: rgba($primary-color, 0.05);
+      background: $primary-color-50;
+      border-color: $primary-color-dark;
+      box-shadow: $shadow-sm;
+    }
+
+    &:active:not(:disabled) {
+      background: $primary-color-100;
     }
   }
 
   &-ghost {
     background: rgba($primary-color, 0.05);
     color: $text-secondary-color;
+    box-shadow: none;
 
     &:hover:not(:disabled) {
       background: rgba($primary-color, 0.1);
+      color: $text-primary-color;
+      box-shadow: $shadow-xs;
+    }
+
+    &:active:not(:disabled) {
+      background: rgba($primary-color, 0.15);
     }
   }
 }

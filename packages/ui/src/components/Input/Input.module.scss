@@ -19,6 +19,16 @@
   font-family: $font-family-sans;
   color: $text-primary-color;
   transition: all 0.2s ease;
+  // Enhanced font rendering for sharper text
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  &::placeholder {
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
   &:focus {
     outline: none;

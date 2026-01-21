@@ -1,23 +1,260 @@
 @use "@gratia/ui/styles/core/_colors.scss" as *;
 @use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
 :root {
+  // Background colors
   --background: #{$bg-color};
   --background-secondary: #{$bg-secondary-color};
+  --background-tertiary: #{$bg-tertiary-color};
+  --background-elevated: #{$bg-elevated};
+
+  // Primary colors
+  --primary: #{$primary-color};
+  --primary-light: #{$primary-color-light};
+  --primary-dark: #{$primary-color-dark};
+  --primary-50: #{$primary-color-50};
+  --primary-100: #{$primary-color-100};
+  --primary-500: #{$primary-color-500};
+  --primary-600: #{$primary-color-600};
+  --primary-700: #{$primary-color-700};
+  --primary-900: #{$primary-color-900};
+
+  // Secondary & Accent colors
+  --secondary: #{$secondary-color};
+  --secondary-light: #{$secondary-color-light};
+  --secondary-dark: #{$secondary-color-dark};
+  --accent: #{$accent-color};
+  --accent-light: #{$accent-color-light};
+  --accent-dark: #{$accent-color-dark};
+
+  // Text colors
   --text-primary: #{$text-primary-color};
+  --text-secondary: #{$text-secondary-color};
+  --text-muted: #{$text-muted-color};
+  --text-disabled: #{$text-disabled-color};
+  --text-on-primary: #{$text-on-primary-color};
+  --text-on-secondary: #{$text-on-secondary-color};
+
+  // Link colors
+  --link: #{$text-link-color};
+  --link-hover: #{$text-link-hover-color};
+  --link-visited: #{$text-link-visited-color};
+  --link-active: #{$text-link-active-color};
+
+  // Status colors
+  --success: #{$text-success-color};
+  --error: #{$text-error-color};
+  --warning: #{$text-warning-color};
+  --info: #{$text-info-color};
+
+  // Border colors
+  --border-light: #{$border-light};
+  --border-medium: #{$border-medium};
+  --border-dark: #{$border-dark};
+  --border-focus: #{$border-focus};
+
+  // Interactive states
+  --hover-bg: #{$interactive-hover-bg};
+  --active-bg: #{$interactive-active-bg};
+  --focus-ring: #{$interactive-focus-ring};
+  --focus-ring-offset: #{$interactive-focus-ring-offset};
+
+  // Surface colors
+  --surface-elevated: #{$surface-elevated};
+  --surface-raised: #{$surface-raised};
+  --surface-overlay: #{$surface-overlay};
+
+  // Shadows
+  --shadow-xs: #{$shadow-xs};
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-xl: #{$shadow-xl};
+  --shadow-2xl: #{$shadow-2xl};
+  --shadow-inner: #{$shadow-inner};
+  --shadow-primary: #{$shadow-primary};
+  --shadow-primary-lg: #{$shadow-primary-lg};
+
+  // Transitions
+  --transition-fast: #{$transition-fast};
+  --transition-normal: #{$transition-normal};
+  --transition-slow: #{$transition-slow};
+  --transition-bounce: #{$transition-bounce};
+  --transition-smooth: #{$transition-smooth};
+
+  // Typography
+  --font-family-sans: #{$font-family-sans};
+  --font-family-logo: #{$font-family-logo};
+  --font-size-xs: #{$text-xs};
+  --font-size-sm: #{$text-sm};
+  --font-size-base: #{$text-base};
+  --font-size-lg: #{$text-lg};
+  --font-size-xl: #{$text-xl};
+  --font-size-2xl: #{$text-2xl};
+  --font-size-3xl: #{$text-3xl};
+  --font-size-4xl: #{$text-4xl};
+  --font-size-5xl: #{$text-5xl};
+  --font-size-6xl: #{$text-6xl};
+  --line-height-none: #{$leading-none};
+  --line-height-tight: #{$leading-tight};
+  --line-height-snug: #{$leading-snug};
+  --line-height-normal: #{$leading-normal};
+  --line-height-relaxed: #{$leading-relaxed};
+  --line-height-loose: #{$leading-loose};
+  --letter-spacing-tighter: #{$tracking-tighter};
+  --letter-spacing-tight: #{$tracking-tight};
+  --letter-spacing-normal: #{$tracking-normal};
+  --letter-spacing-wide: #{$tracking-wide};
+  --letter-spacing-wider: #{$tracking-wider};
+  --letter-spacing-widest: #{$tracking-widest};
 }
 
 html,
 body {
   max-width: 100vw;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+// Page transition animations
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Apply fade-in to main content
+main {
+  animation: pageEnter $transition-slow ease-out;
+
+  // Add padding-bottom on mobile for fixed bottom bar
+  @include media-sm {
+    padding-bottom: 5rem;
+  }
 }
 
 body {
   color: var(--text-primary);
   background: var(--background-secondary);
   font-family: $font-family-sans;
+  font-size: $text-base;
+  font-weight: $font-normal;
+  line-height: $leading-relaxed; // Better readability
+  letter-spacing: $tracking-normal;
+
+  // Enhanced font rendering for sharper text
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-smooth: always;
+  text-rendering: geometricPrecision; // Sharper edges than optimizeLegibility
+  // Note: transform removed to prevent breaking fixed positioning
+  backface-visibility: hidden; // Improve rendering performance
+}
+
+// Typography hierarchy improvements
+h1, h2, h3, h4, h5, h6 {
+  font-weight: $font-bold;
+  line-height: $leading-tight;
+  letter-spacing: $tracking-tight;
+  color: var(--text-primary);
+  margin: 0;
+  // Enhanced rendering for headings
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+  font-size: $text-5xl-fluid;
+  @include media-md {
+    font-size: $text-4xl;
+  }
+  @include media-sm {
+    font-size: $text-3xl;
+  }
+}
+
+h2 {
+  font-size: $text-4xl-fluid;
+  @include media-md {
+    font-size: $text-3xl;
+  }
+  @include media-sm {
+    font-size: $text-2xl;
+  }
+}
+
+h3 {
+  font-size: $text-3xl-fluid;
+  @include media-md {
+    font-size: $text-2xl;
+  }
+  @include media-sm {
+    font-size: $text-xl;
+  }
+}
+
+h4 {
+  font-size: $text-2xl-fluid;
+  @include media-sm {
+    font-size: $text-xl;
+  }
+}
+
+h5 {
+  font-size: $text-xl-fluid;
+  @include media-sm {
+    font-size: $text-lg;
+  }
+}
+
+h6 {
+  font-size: $text-lg-fluid;
+  @include media-sm {
+    font-size: $text-base;
+  }
+}
+
+p {
+  margin: 0;
+  line-height: $leading-relaxed;
+  color: var(--text-primary);
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Better text rendering for small text
+small,
+.text-sm,
+.text-xs {
+  font-size: $text-sm;
+  line-height: $leading-normal;
+  letter-spacing: $tracking-wide;
+  font-weight: $font-medium; // Slightly bolder for better readability
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Improved list styling
+ul, ol {
+  margin: 0;
+  padding-left: 1.5rem;
+  line-height: $leading-relaxed;
+}
+
+li {
+  margin-bottom: 0.5rem;
+  line-height: $leading-relaxed;
 }
 
 * {
@@ -26,7 +263,41 @@ body {
   margin: 0;
 }
 
-a {
-  color: inherit;
+// Global link styles - only apply to general links, not navigation
+a:not([class*="link"]):not([class*="nav"]):not([class*="category"]) {
+  color: var(--link);
   text-decoration: none;
+  transition: color var(--transition-fast);
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+
+  &:hover {
+    color: var(--link-hover);
+  }
+
+  &:visited {
+    color: var(--link-visited);
+  }
+
+  &:active {
+    color: var(--link-active);
+  }
+}
+
+// Focus styles for accessibility
+*:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+// Selection styles
+::selection {
+  background-color: var(--primary-100);
+  color: var(--primary-900);
+}
+
+::-moz-selection {
+  background-color: var(--primary-100);
+  color: var(--primary-900);
 }

@@ -5,6 +5,7 @@
 
 .productListContainer {
   padding-bottom: $spacing-10;
+  @include animate-fade-in($transition-slow);
 }
 
 .title {
@@ -24,6 +25,15 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr); // Desktop (1368px+): 5 kolon
   gap: $spacing-6;
+
+  // Stagger animation for product cards
+  :global(.productCard) {
+    @for $i from 1 through 20 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.05}s;
+      }
+    }
+  }
 
   // 1280px ve altı: 4 kolon
   @include media-xl {

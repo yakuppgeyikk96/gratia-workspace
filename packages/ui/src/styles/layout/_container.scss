@@ -1,8 +1,16 @@
 @use "../../styles/core/breakpoints.scss" as *;
+@use "../../styles/core/spacing.scss" as *;
 
+// Container max-widths - Modern, consistent sizing
 $container-max-width: 1440px;
-$container-padding: 1.5rem;
-$container-padding-mobile: 1rem;
+$container-max-width-wide: 1600px;
+$container-max-width-narrow: 800px;
+$container-max-width-xl: 1280px;
+
+// Container padding - Using spacing system
+$container-padding: $spacing-6; // 24px
+$container-padding-mobile: $spacing-4; // 16px
+$container-padding-tablet: $spacing-5; // 20px
 
 @mixin container(
   $max-width: $container-max-width,
@@ -12,13 +20,16 @@ $container-padding-mobile: 1rem;
   width: 100%;
   max-width: $max-width;
   margin: 0 auto;
+  padding-inline: $padding;
 
-  @media screen and (max-width: 1440px) {
-    padding-inline: $container-padding;
+  // Tablet padding
+  @include media-md {
+    padding-inline: $container-padding-tablet;
   }
 
-  @media screen and (max-width: $breakpoint-sm) {
-    padding-inline: $container-padding-mobile;
+  // Mobile padding
+  @include media-sm {
+    padding-inline: $padding-mobile;
   }
 }
 
@@ -27,13 +38,24 @@ $container-padding-mobile: 1rem;
 }
 
 @mixin container-narrow {
-  @include container(800px);
+  @include container($container-max-width-narrow);
 }
 
 @mixin container-wide {
-  @include container(1400px);
+  @include container($container-max-width-wide);
+}
+
+@mixin container-xl {
+  @include container($container-max-width-xl);
 }
 
 @mixin container-fluid {
-  @include container(100%);
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding-inline: $container-padding;
+
+  @include media-sm {
+    padding-inline: $container-padding-mobile;
+  }
 }

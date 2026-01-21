@@ -16,8 +16,19 @@
   @include p(6);
   background-color: $bg-color;
   @include border($border-1, $border-light);
-  @include rounded($radius-lg);
-  box-shadow: $shadow-sm;
+  @include rounded($radius-xl);
+  box-shadow: $shadow-md;
+  transition:
+    box-shadow $transition-smooth,
+    border-color $transition-smooth;
+  position: relative;
+  overflow: hidden;
+
+  // Subtle hover effect
+  &:hover {
+    box-shadow: $shadow-lg;
+    border-color: $border-medium;
+  }
 }
 
 .title {
