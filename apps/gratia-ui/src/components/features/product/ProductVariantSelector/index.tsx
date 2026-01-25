@@ -1,8 +1,8 @@
 "use client";
 
 import { VariantSelectableProduct } from "@/types/Product.types";
-import { usePathname } from "next/navigation";
 import ProductColorSelector from "./ProductColorSelector";
+import ProductGenericSelector from "./ProductGenericSelector";
 import ProductSizeSelector from "./ProductSizeSelector";
 import styles from "./ProductVariantSelector.module.scss";
 import { useProductVariants } from "./useProductVariants";
@@ -21,19 +21,16 @@ export default function ProductVariantSelector({
   variants,
   currency = "USD",
 }: ProductVariantSelectorProps) {
-  const pathname = usePathname();
-  const currentSlug = pathname.split("/").pop() || "";
-
+  const currentSlug = currentProduct.slug;
   const currentVariantValue = getVariantValue(currentProduct, variantType);
   const label = getVariantLabel(variantType);
 
   const filteredVariants = useProductVariants({
     variantType,
     variants,
-    currentSlug,
+    currentProduct,
   });
 
-  // If no variants to show or only one product (current product), don't render
   if (filteredVariants.length <= 1) {
     return null;
   }
@@ -51,11 +48,17 @@ export default function ProductVariantSelector({
           variants={filteredVariants}
           currentSlug={currentSlug}
         />
-      ) : (
+      ) : variantType === "color" ? (
         <ProductColorSelector
           variants={filteredVariants}
           currentSlug={currentSlug}
           currency={currency}
+        />
+      ) : (
+        <ProductGenericSelector
+          variants={filteredVariants}
+          currentSlug={currentSlug}
+          variantType={variantType}
         />
       )}
     </div>

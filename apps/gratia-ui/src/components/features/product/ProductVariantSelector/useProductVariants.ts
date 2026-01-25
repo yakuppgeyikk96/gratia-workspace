@@ -5,40 +5,69 @@ import { VariantType } from "./utils";
 interface UseProductVariantsProps {
   variantType: VariantType;
   variants: VariantSelectableProduct[];
-  currentSlug: string;
+  currentProduct: VariantSelectableProduct;
 }
+
+/**
+ * Calculates a similarity score between two products based on their attributes.
+ * Higher score means more shared attributes (excluding the variant type being selected).
+ */
+const calculateMatchScore = (
+  baseAttributes: Record<string, unknown>,
+  candidateAttributes: Record<string, unknown>,
+  variantTypeToIgnore: string,
+): number => {
+  let score = 0;
+
+  for (const key in baseAttributes) {
+    if (key === variantTypeToIgnore) continue;
+    if (baseAttributes[key] === candidateAttributes[key]) {
+      score++;
+    }
+  }
+
+  return score;
+};
 
 export function useProductVariants({
   variantType,
   variants,
-  currentSlug,
+  currentProduct,
 }: UseProductVariantsProps) {
   return useMemo(() => {
-    if (variantType === "size") {
-      // Get unique size values
-      const uniqueSizes = Array.from(
-        new Set(
-          variants
-            .map((p) => p.attributes.size)
-            .filter((size): size is string => typeof size === "string" && !!size)
-        )
+    // 1. Get unique values for this variant type (e.g., ["128GB", "256GB"])
+    const uniqueValues = Array.from(
+      new Set(
+        variants
+          .map((p) => p.attributes[variantType])
+          .filter(
+            (val): val is string | number =>
+              (typeof val === "string" || typeof val === "number") && !!val,
+          ),
+      ),
+    );
+
+    // 2. Find the best matching variant for each unique value
+    return uniqueValues.map((value) => {
+      // Find all variants that have this specific attribute value
+      const candidates = variants.filter(
+        (p) => p.attributes[variantType] === value,
       );
 
-      // For each unique size, find the first product with that size
-      return uniqueSizes.map((size) => {
-        const matchingProduct =
-          variants.find(
-            (p) => p.attributes.size === size && p.slug === currentSlug
-          ) ||
-          variants.find((p) => p.attributes.size === size);
-        return matchingProduct!;
-      }).filter(Boolean);
-    } else {
-      // For color: show all variants with images, remove duplicates
-      return variants.filter(
-        (product, index, self) =>
-          index === self.findIndex((p) => p.id === product.id)
-      );
-    }
-  }, [variants, variantType, currentSlug]);
+      // Select the candidate most similar to the current product
+      // This preserves other user selections (e.g., keeping "Purple" when switching "Storage")
+      return candidates.reduce(
+        (best, candidate) => {
+          const score = calculateMatchScore(
+            currentProduct.attributes,
+            candidate.attributes,
+            variantType,
+          );
+
+          return score > best.score ? { variant: candidate, score } : best;
+        },
+        { variant: candidates[0], score: -1 },
+      ).variant;
+    });
+  }, [variants, variantType, currentProduct]);
 }

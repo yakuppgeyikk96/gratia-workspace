@@ -2,16 +2,17 @@ import ProductDetailInfoCard from "@/components/features/product/ProductDetailIn
 import { ProductDetailResponse } from "@/types/Product.types";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
+import ProductSpecifications from "../ProductSpecifications";
 import styles from "./ProductDetailPage.module.scss";
 
 const ProductDetailImageGallery = dynamic(
   () =>
     import("@/components/features/product/ProductDetailImageGallery").then(
-      (mod) => mod.default
+      (mod) => mod.default,
     ),
   {
     ssr: true,
-  }
+  },
 );
 
 interface ProductDetailPageProps {
@@ -41,6 +42,10 @@ export default function ProductDetailPage({
           productData={productData}
           isLoggedIn={isLoggedIn}
         />
+      </div>
+
+      <div className={styles.productSpecificationsContainer}>
+        <ProductSpecifications attributes={productData.attributes} />
       </div>
     </div>
   );

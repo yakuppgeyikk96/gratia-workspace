@@ -305,7 +305,7 @@ export function useCart(isLoggedIn: boolean) {
         queryClient.invalidateQueries({ queryKey: [CART_QUERY_KEY] });
         addToast({
           title: "",
-          description: "Ürün sepetten kaldırıldı",
+          description: "Product removed from cart.",
           variant: "success",
           duration: TOAST_DURATION,
         });
@@ -415,15 +415,15 @@ export function useCart(isLoggedIn: boolean) {
 
         if (skippedCount > 0) {
           addToast({
-            title: "Sepet Birleştirildi",
-            description: `${addedCount + updatedCount} ürün eklendi, ${skippedCount} ürün atlandı`,
+            title: "Cart Merged",
+            description: `${addedCount + updatedCount} products added to your cart, ${skippedCount} products skipped`,
             variant: "warning",
             duration: TOAST_DURATION,
           });
         } else if (addedCount + updatedCount > 0) {
           addToast({
-            title: "Sepet Birleştirildi",
-            description: `${addedCount + updatedCount} ürün sepetinize eklendi`,
+            title: "Cart Merged",
+            description: `${addedCount + updatedCount} product added to your cart`,
             variant: "success",
             duration: TOAST_DURATION,
           });

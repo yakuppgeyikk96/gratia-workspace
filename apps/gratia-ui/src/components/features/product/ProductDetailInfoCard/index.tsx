@@ -15,10 +15,9 @@ export default function ProductDetailInfoCard({
 }: ProductDetailInfoCardProps) {
   const availableOptions = productData.availableOptions;
 
-  // Get variant types that have multiple options (size, color)
+  // Get variant types that have multiple options
   const variantTypes = Object.keys(availableOptions).filter(
-    (key) =>
-      (key === "size" || key === "color") && availableOptions[key].length > 1
+    (key) => availableOptions[key].length > 1,
   );
 
   return (
@@ -35,7 +34,7 @@ export default function ProductDetailInfoCard({
       />
 
       {variantTypes.map((variantKey) => {
-        const variantType = variantKey as "size" | "color";
+        const variantType = variantKey;
         const currentValue = productData.attributes[variantKey];
 
         if (!currentValue) {

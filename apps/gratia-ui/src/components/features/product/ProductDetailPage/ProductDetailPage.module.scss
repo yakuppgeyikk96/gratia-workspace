@@ -60,3 +60,16 @@
     @include col-span-5;
   }
 }
+
+.productSpecificationsContainer {
+  @include col-span-1;
+  margin-top: 2rem;
+
+  @include responsive(sm) {
+    @include col-span-5;
+  }
+
+  @include responsive(md) {
+    @include col-span-12;
+  }
+}
