@@ -14,12 +14,6 @@ const TOAST_DURATION = 3000;
 
 export default function CartSummary() {
   const {
-    items,
-    totalItems,
-    totalPrice,
-    subtotal,
-    discount,
-    uniqueItems,
     unavailableCount,
     getAvailableItems,
   } = useCartContext();
@@ -27,7 +21,6 @@ export default function CartSummary() {
   const { addToast } = useToastContext();
   const router = useRouter();
 
-  const hasDiscount = discount > 0;
   const hasUnavailableItems = unavailableCount > 0;
   const availableItems = getAvailableItems();
   const canCheckout = availableItems.length > 0;

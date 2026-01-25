@@ -14,7 +14,6 @@ export default function TopHeaderLinkItem({
     <li className={styles.topHeaderLinkItem}>
       <Link
         href={href}
-        prefetch={false}
         target="_blank"
         rel="noopener noreferrer"
       >

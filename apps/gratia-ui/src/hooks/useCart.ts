@@ -525,7 +525,7 @@ export function useCart(isLoggedIn: boolean) {
     if (isLoggedIn && sessionId && localItems.length > 0) {
       handleMergeCart();
     }
-  }, [isLoggedIn]); // Only run on login state change
+  }, [isLoggedIn, sessionId, localItems.length, handleMergeCart]); // Only run on login state change
 
   // ============================================================================
   // Return

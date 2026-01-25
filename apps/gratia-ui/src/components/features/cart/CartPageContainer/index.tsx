@@ -7,10 +7,9 @@ import {
 import LoadingSpinner from "@gratia/ui/components/LoadingSpinner";
 import { lazy, Suspense } from "react";
 import CartIsEmpty from "../CartIsEmpty";
-import CartWarningBanner from "../CartWarningBanner";
 import styles from "./CartPageContainer.module.scss";
 
-const CartListV2 = lazy(() => import("@/components/features/cart/CartList"));
+const CartList = lazy(() => import("@/components/features/cart/CartList"));
 const CartSummary = lazy(
   () => import("@/components/features/cart/CartSummary"),
 );
@@ -20,9 +19,7 @@ const CartSummary = lazy(
 // ============================================================================
 
 function CartPageContent() {
-  const { items, warnings, isLoading, hasWarnings } = useCartContext();
-
-  console.log(items);
+  const { items, isLoading } = useCartContext();
 
   if (isLoading) {
     return (
@@ -38,18 +35,11 @@ function CartPageContent() {
 
   return (
     <div className={styles.cartPageContainer}>
-      {/* Warning Banner at the top */}
-      {hasWarnings && (
-        <div className={styles.warningBanner}>
-          <CartWarningBanner warnings={warnings} />
-        </div>
-      )}
-
       {/* Cart content */}
       <div className={styles.cartContent}>
         <div className={styles.cartList}>
           <Suspense fallback={<LoadingSpinner />}>
-            <CartListV2 />
+            <CartList />
           </Suspense>
         </div>
         <div className={styles.cartSummary}>

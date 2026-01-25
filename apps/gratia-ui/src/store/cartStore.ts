@@ -97,15 +97,6 @@ const generateSessionId = (): string => {
   return `guest_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
 };
 
-const createEmptySummary = (): CartSummary => ({
-  totalItems: 0,
-  uniqueItems: 0,
-  subtotal: "0",
-  discount: "0",
-  total: "0",
-  unavailableCount: 0,
-});
-
 // ============================================================================
 // Store Implementation
 // ============================================================================

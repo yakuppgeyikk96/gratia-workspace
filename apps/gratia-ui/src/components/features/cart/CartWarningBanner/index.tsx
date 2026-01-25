@@ -1,6 +1,6 @@
 "use client";
 
-import { CartWarning, CartWarningType } from "@/types/Cart.types";
+import { CartWarning } from "@/types/Cart.types";
 import { useMemo, useState } from "react";
 import styles from "./CartWarningBanner.module.scss";
 
@@ -120,23 +120,6 @@ function groupWarnings(warnings: CartWarning[]): GroupedWarnings {
       inactive: [],
     },
   );
-}
-
-function getWarningVariant(
-  type: CartWarningType,
-): "error" | "warning" | "info" {
-  switch (type) {
-    case "out_of_stock":
-    case "inactive":
-      return "error";
-    case "price_increased":
-    case "low_stock":
-      return "warning";
-    case "price_decreased":
-      return "info";
-    default:
-      return "warning";
-  }
 }
 
 // ============================================================================

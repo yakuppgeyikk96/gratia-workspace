@@ -188,7 +188,6 @@ interface CartInitializerProps {
 export function CartInitializer({ isLoggedIn }: CartInitializerProps) {
   const { refetchCart } = useCart(isLoggedIn);
   const isHydrated = useCartStore((state) => state.isHydrated);
-  const localItems = useCartStore((state) => state.localItems);
 
   useEffect(() => {
     // Wait for store hydration before fetching

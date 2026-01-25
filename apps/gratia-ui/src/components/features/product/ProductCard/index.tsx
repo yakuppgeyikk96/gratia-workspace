@@ -51,7 +51,6 @@ export default function ProductCard({
       <Link
         href={`/products/${product.slug}`}
         className={styles.infoLink}
-        prefetch={false}
       >
         <ProductCardInfo
           name={product.name ?? ""}

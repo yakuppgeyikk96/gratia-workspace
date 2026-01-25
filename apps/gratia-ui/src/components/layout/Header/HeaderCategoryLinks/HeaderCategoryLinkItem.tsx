@@ -24,7 +24,6 @@ export default function HeaderCategoryLinkItem({
         href={href}
         className={linkClass}
         onClick={onClick}
-        prefetch={false}
       >
         {children}
       </Link>

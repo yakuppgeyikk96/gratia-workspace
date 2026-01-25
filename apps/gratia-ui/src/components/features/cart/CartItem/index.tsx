@@ -4,6 +4,7 @@ import QuantitySelector from "@/components/common/QuantitySelector";
 import { useCartContext } from "@/components/providers/CartProvider";
 import { CartItem as CartItemType } from "@/types/Cart.types";
 import LoadingSpinner from "@gratia/ui/components/LoadingSpinner/";
+import Image from "next/image";
 import { memo, useCallback } from "react";
 import styles from "./CartItem.module.scss";
 
@@ -31,7 +32,7 @@ function CartItemImage({ images, productName, status }: CartItemImageProps) {
     <div
       className={`${styles.imageContainer} ${isUnavailable ? styles.unavailable : ""}`}
     >
-      <img src={imageUrl} alt={productName} className={styles.image} />
+      <Image src={imageUrl} alt={productName} className={styles.image} width={100} height={100} />
       {isUnavailable && (
         <div className={styles.unavailableOverlay}>
           <span>
