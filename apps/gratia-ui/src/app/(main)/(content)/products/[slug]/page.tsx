@@ -31,6 +31,8 @@ export async function generateMetadata({
 
   const { data, success } = await getCachedProduct(slug);
 
+  console.log(data);
+
   if (!success || !data) {
     return {
       title: "Product Not Found",
