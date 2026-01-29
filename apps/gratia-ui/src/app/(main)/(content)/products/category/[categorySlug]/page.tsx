@@ -1,4 +1,5 @@
-import { getProductsByCategory } from "@/actions/product";
+import { getFilterOptions, getProductsByCategory } from "@/actions/product";
+import FilterOptionsSync from "@/components/features/product/FilterOptionsSync";
 import ProductList from "@/components/features/product/ProductList";
 
 interface CategoryProductsPageProps {
@@ -16,16 +17,25 @@ export default async function CategoryProductsPage({
   const pageNumber = page ? parseInt(page, 10) : 1;
   const validPage = isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber;
 
-  const { data } = await getProductsByCategory(categorySlug, {
-    page: validPage,
-    limit: 12,
-  });
+  const [productsRes, filtersRes] = await Promise.all([
+    getProductsByCategory(categorySlug, {
+      page: validPage,
+      limit: 12,
+    }),
+    getFilterOptions(categorySlug),
+  ]);
+
+  const data = productsRes?.data;
+  const categoryFilters = filtersRes?.data;
 
   return (
-    <ProductList
-      products={data?.products ?? []}
-      title=""
-      pagination={data?.pagination}
-    />
+    <>
+      <FilterOptionsSync options={categoryFilters} />
+      <ProductList
+        products={data?.products ?? []}
+        title=""
+        pagination={data?.pagination}
+      />
+    </>
   );
 }

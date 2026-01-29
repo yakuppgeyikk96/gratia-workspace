@@ -1,0 +1,45 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: $spacing-10;
+}
+
+.filterBar {
+  flex-shrink: 0;
+  margin-bottom: $spacing-4;
+
+  @include media-lg-up {
+    display: none;
+  }
+}
+
+.mainRow {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: $spacing-6;
+
+  @include media-lg-up {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.sidebar {
+  display: none;
+
+  @include media-lg-up {
+    display: block;
+    flex-shrink: 0;
+    width: 280px;
+  }
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}

@@ -1,0 +1,23 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+
+.productFilters {
+  flex-shrink: 0;
+  width: 280px;
+  padding: $spacing-4;
+  background: $bg-color;
+  border-radius: $radius-md;
+}
+
+.placeholder {
+  margin: 0;
+  font-size: 1rem;
+  color: $text-primary-color;
+}
+
+.meta {
+  font-size: 0.875rem;
+  color: $text-muted-color;
+}

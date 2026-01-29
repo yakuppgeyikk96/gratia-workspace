@@ -5,10 +5,15 @@ import {
   getProductDetail,
   getProductList,
 } from "./product.service";
-import { parseProductFilters, parseProductListQuery } from "./utils/filter.utils";
+import {
+  parseProductFilters,
+  parseProductListQuery,
+} from "./utils/filter.utils";
 
 // Helper function to ensure string type from params
-const ensureString = (value: string | string[] | undefined): string | undefined => {
+const ensureString = (
+  value: string | string[] | undefined,
+): string | undefined => {
   if (typeof value === "string") return value;
   if (Array.isArray(value) && value.length > 0) return value[0];
   return undefined;
@@ -65,7 +70,9 @@ export const getProducts = async (req: Request, res: Response) => {
 export const getProductsByCategory = async (req: Request, res: Response) => {
   try {
     const categorySlug = ensureString(req.params.categorySlug);
-    const baseOptions = parseProductListQuery(req.query as Record<string, unknown>);
+    const baseOptions = parseProductListQuery(
+      req.query as Record<string, unknown>,
+    );
     const filters = parseProductFilters(req.query as Record<string, unknown>);
 
     const options = { ...baseOptions, categorySlug };
@@ -92,7 +99,9 @@ export const getProductsByCategory = async (req: Request, res: Response) => {
 export const getProductsByCollection = async (req: Request, res: Response) => {
   try {
     const collectionSlug = ensureString(req.params.collectionSlug);
-    const baseOptions = parseProductListQuery(req.query as Record<string, unknown>);
+    const baseOptions = parseProductListQuery(
+      req.query as Record<string, unknown>,
+    );
     const filters = parseProductFilters(req.query as Record<string, unknown>);
 
     const options = { ...baseOptions, collectionSlug };
@@ -134,7 +143,10 @@ export const getFilters = async (req: Request, res: Response) => {
     const categorySlug = ensureStringFromQuery(req.query.categorySlug);
     const collectionSlug = ensureStringFromQuery(req.query.collectionSlug);
 
-    const result = await getFilterOptionsForProducts(categorySlug, collectionSlug);
+    const result = await getFilterOptionsForProducts(
+      categorySlug,
+      collectionSlug,
+    );
 
     res.json({
       success: true,

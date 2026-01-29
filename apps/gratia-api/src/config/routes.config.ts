@@ -9,6 +9,7 @@ import locationRoutes from "../modules/location/location.routes";
 import navigationRoutes from "../modules/navigation/navigation.routes";
 import orderRoutes from "../modules/order/order.routes";
 import { productRoutes } from "../modules/product";
+import seedRoutes from "../modules/seed/seed.routes";
 import vendorRoutes from "../modules/vendor/vendor.routes";
 
 const basePath = "/api";
@@ -23,6 +24,7 @@ export const routesConfig = (app: Express) => {
   router.use("/vendors", vendorRoutes);
   router.use("/brands", brandRoutes);
   router.use("/navigation", navigationRoutes);
+  router.use("/seed", seedRoutes);
 
   // Public routes (authenticated and guest users)
   router.use("/checkout", checkoutRoutes);
