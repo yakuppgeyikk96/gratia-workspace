@@ -16,7 +16,7 @@ interface FilterDrawerProps {
 export default function FilterDrawer({
   isOpen,
   onClose,
-  title = "Filtreler",
+  title = "Filters",
   children,
 }: FilterDrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
@@ -56,7 +56,7 @@ export default function FilterDrawer({
         <div className={styles.header}>
           <h2 className={styles.title}>{title}</h2>
           <IconButton
-            ariaLabel="Kapat"
+            ariaLabel="Close"
             onClick={onClose}
             icon={<IconClose size={20} />}
           />

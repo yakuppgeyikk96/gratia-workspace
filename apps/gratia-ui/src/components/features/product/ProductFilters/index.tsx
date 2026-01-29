@@ -1,6 +1,7 @@
 "use client";
 
 import { useProductFilterStore } from "@/store/productFilterStore";
+import BrandFilter from "./BrandFilter";
 import styles from "./ProductFilters.module.scss";
 
 export default function ProductFilters() {
@@ -8,15 +9,7 @@ export default function ProductFilters() {
 
   return (
     <div className={styles.productFilters}>
-      <p className={styles.placeholder}>
-        Hello Filters
-        {filterOptions && (
-          <span className={styles.meta}>
-            {" "}
-            ({filterOptions.brands.length} marka, fiyat {filterOptions.priceRange.min}–{filterOptions.priceRange.max})
-          </span>
-        )}
-      </p>
+      <BrandFilter brands={filterOptions?.brands} />
     </div>
   );
 }

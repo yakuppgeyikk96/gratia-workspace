@@ -22,7 +22,7 @@ export default function ProductsLayoutClient({
         <ProductsFilterBar />
       </div>
       <div className={styles.mainRow}>
-        <aside className={styles.sidebar} aria-label="Filtreler">
+        <aside className={styles.sidebar} aria-label="Filters">
           <ProductFilters />
         </aside>
         <div className={styles.content}>{children}</div>
@@ -30,7 +30,7 @@ export default function ProductsLayoutClient({
       <FilterDrawer
         isOpen={filterDrawerOpen}
         onClose={closeFilterDrawer}
-        title="Filtreler"
+        title="Filters"
       >
         <ProductFilters />
       </FilterDrawer>

@@ -43,3 +43,5 @@ storybook-static
 drizzle
 
 apps/gratia-mobile
+
+.pnpm-store/

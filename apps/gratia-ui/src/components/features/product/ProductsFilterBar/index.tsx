@@ -13,10 +13,10 @@ export default function ProductsFilterBar() {
         type="button"
         className={styles.trigger}
         onClick={openFilterDrawer}
-        aria-label="Filtreleri aç"
+        aria-label="Open filters"
       >
         <IconColumnsGap size={22} />
-        <span className={styles.triggerLabel}>Filtreler</span>
+        <span className={styles.triggerLabel}>Filters</span>
       </button>
     </div>
   );
