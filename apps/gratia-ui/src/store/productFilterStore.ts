@@ -1,12 +1,19 @@
 import type { FilterOptionsResponse } from "@/types/Product.types";
 import { create } from "zustand";
 
+export interface AttributeRangeValue {
+  min: number | null;
+  max: number | null;
+}
+
 interface ProductFilterState {
   filterDrawerOpen: boolean;
   filterOptions: FilterOptionsResponse | null;
   selectedBrandSlugs: string[];
   minPrice: number | null;
   maxPrice: number | null;
+  selectedAttributes: Record<string, string[]>;
+  selectedAttributeRanges: Record<string, AttributeRangeValue>;
 }
 
 interface ProductFilterActions {
@@ -18,6 +25,9 @@ interface ProductFilterActions {
   toggleBrand: (slug: string) => void;
   setMinPrice: (value: number | null) => void;
   setMaxPrice: (value: number | null) => void;
+  setSelectedAttributes: (key: string, values: string[]) => void;
+  toggleAttribute: (key: string, value: string) => void;
+  setAttributeRange: (key: string, min: number | null, max: number | null) => void;
 }
 
 type ProductFilterStore = ProductFilterState & ProductFilterActions;
@@ -28,6 +38,8 @@ export const useProductFilterStore = create<ProductFilterStore>()((set, get) => 
   selectedBrandSlugs: [],
   minPrice: null,
   maxPrice: null,
+  selectedAttributes: {},
+  selectedAttributeRanges: {},
 
   setFilterDrawerOpen: (open) => set({ filterDrawerOpen: open }),
   openFilterDrawer: () => set({ filterDrawerOpen: true }),
@@ -43,4 +55,26 @@ export const useProductFilterStore = create<ProductFilterStore>()((set, get) => 
   },
   setMinPrice: (value) => set({ minPrice: value }),
   setMaxPrice: (value) => set({ maxPrice: value }),
+  setSelectedAttributes: (key, values) => {
+    set((state) => ({
+      selectedAttributes: { ...state.selectedAttributes, [key]: values },
+    }));
+  },
+  toggleAttribute: (key, value) => {
+    const current = get().selectedAttributes[key] ?? [];
+    const next = current.includes(value)
+      ? current.filter((v) => v !== value)
+      : [...current, value];
+    set((state) => ({
+      selectedAttributes: { ...state.selectedAttributes, [key]: next },
+    }));
+  },
+  setAttributeRange: (key, min, max) => {
+    set((state) => ({
+      selectedAttributeRanges: {
+        ...state.selectedAttributeRanges,
+        [key]: { min, max },
+      },
+    }));
+  },
 }));
