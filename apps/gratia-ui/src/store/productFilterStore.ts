@@ -14,6 +14,9 @@ interface ProductFilterState {
   maxPrice: number | null;
   selectedAttributes: Record<string, string[]>;
   selectedAttributeRanges: Record<string, AttributeRangeValue>;
+  selectedCategorySlug: string | null;
+  isCollectionContext: boolean;
+  collectionSlug: string | null;
 }
 
 interface ProductFilterActions {
@@ -28,6 +31,10 @@ interface ProductFilterActions {
   setSelectedAttributes: (key: string, values: string[]) => void;
   toggleAttribute: (key: string, value: string) => void;
   setAttributeRange: (key: string, min: number | null, max: number | null) => void;
+  setSelectedCategorySlug: (slug: string | null) => void;
+  setIsCollectionContext: (value: boolean) => void;
+  setCollectionSlug: (slug: string | null) => void;
+  selectCategory: (slug: string | null) => void;
 }
 
 type ProductFilterStore = ProductFilterState & ProductFilterActions;
@@ -40,6 +47,9 @@ export const useProductFilterStore = create<ProductFilterStore>()((set, get) => 
   maxPrice: null,
   selectedAttributes: {},
   selectedAttributeRanges: {},
+  selectedCategorySlug: null,
+  isCollectionContext: false,
+  collectionSlug: null,
 
   setFilterDrawerOpen: (open) => set({ filterDrawerOpen: open }),
   openFilterDrawer: () => set({ filterDrawerOpen: true }),
@@ -77,4 +87,13 @@ export const useProductFilterStore = create<ProductFilterStore>()((set, get) => 
       },
     }));
   },
+  setSelectedCategorySlug: (slug) => set({ selectedCategorySlug: slug }),
+  setIsCollectionContext: (value) => set({ isCollectionContext: value }),
+  setCollectionSlug: (slug) => set({ collectionSlug: slug }),
+  selectCategory: (slug) =>
+    set({
+      selectedCategorySlug: slug,
+      selectedAttributes: {},
+      selectedAttributeRanges: {},
+    }),
 }));

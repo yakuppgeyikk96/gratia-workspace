@@ -33,7 +33,7 @@ export default async function CollectionProductsPage({
 
   return (
     <>
-      <FilterOptionsSync options={collectionFilters} />
+      <FilterOptionsSync options={collectionFilters} collectionSlug={collectionSlug} />
       <ProductList
         products={data?.products ?? []}
         title=""

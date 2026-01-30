@@ -1,4 +1,4 @@
-import { and, asc, eq, sql } from "drizzle-orm";
+import { aliasedTable, and, asc, eq, sql } from "drizzle-orm";
 import { db } from "../../config/postgres.config";
 import { brands } from "../../db/schema/brand.schema";
 import { categories } from "../../db/schema/category.schema";
@@ -166,6 +166,10 @@ interface RawFilterData {
   brandName: string | null;
   brandSlug: string | null;
   attributes: Record<string, any>;
+  categoryName: string | null;
+  categorySlug: string | null;
+  parentCategoryName: string | null;
+  parentCategorySlug: string | null;
 }
 
 /**
@@ -183,6 +187,7 @@ export const getFilterOptions = async (
   collectionSlug?: string
 ): Promise<RawFilterData[]> => {
   const whereCondition = buildBaseConditions(categorySlug, collectionSlug);
+  const parentCategories = aliasedTable(categories, "parent_categories");
 
   const result = await db
     .select({
@@ -191,9 +196,15 @@ export const getFilterOptions = async (
       brandName: brands.name,
       brandSlug: brands.slug,
       attributes: products.attributes,
+      categoryName: categories.name,
+      categorySlug: categories.slug,
+      parentCategoryName: parentCategories.name,
+      parentCategorySlug: parentCategories.slug,
     })
     .from(products)
     .leftJoin(brands, eq(products.brandId, brands.id))
+    .leftJoin(categories, eq(products.categoryId, categories.id))
+    .leftJoin(parentCategories, eq(categories.parentId, parentCategories.id))
     .where(whereCondition);
 
   return result;

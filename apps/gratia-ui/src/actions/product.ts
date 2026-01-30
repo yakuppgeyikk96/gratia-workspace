@@ -67,11 +67,16 @@ export async function getFilterOptions(
   categorySlug?: string,
   collectionSlug?: string
 ): Promise<IApiResponse<FilterOptionsResponse>> {
+  if (collectionSlug) {
+    const params = categorySlug
+      ? `?categorySlug=${encodeURIComponent(categorySlug)}`
+      : "";
+    return await apiClient.get(
+      `/products/collection/${collectionSlug}/filters${params}`
+    );
+  }
   if (categorySlug) {
     return await apiClient.get(`/products/category/${categorySlug}/filters`);
-  }
-  if (collectionSlug) {
-    return await apiClient.get(`/products/collection/${collectionSlug}/filters`);
   }
   return await apiClient.get("/products/filters");
 }

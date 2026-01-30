@@ -30,7 +30,7 @@ export default async function CategoryProductsPage({
 
   return (
     <>
-      <FilterOptionsSync options={categoryFilters} />
+      <FilterOptionsSync options={categoryFilters} parentCategorySlug={categorySlug} />
       <ProductList
         products={data?.products ?? []}
         title=""

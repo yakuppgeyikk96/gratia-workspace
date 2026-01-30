@@ -18,6 +18,7 @@ import type {
   FilterOptionsResponse,
   FilterOption,
   AttributeFilterOption,
+  CategoryFilterOption,
   ProductDetailResponse,
   ProductListItem,
 } from "./types";
@@ -100,6 +101,7 @@ export const getFilterOptionsForProducts = async (
       priceRange: { min: 0, max: 0 },
       brands: [],
       attributes: [],
+      categories: [],
     };
   }
 
@@ -107,6 +109,7 @@ export const getFilterOptionsForProducts = async (
   let minPrice = Infinity;
   let maxPrice = -Infinity;
   const brandCounts = new Map<string, { id: number; name: string; slug: string; count: number }>();
+  const categoryCounts = new Map<string, { name: string; slug: string; count: number; parentSlug: string | null; parentName: string | null }>();
   const attributeValues = new Map<string, Map<string, number>>();
 
   for (const row of rawData) {
@@ -126,6 +129,22 @@ export const getFilterOptionsForProducts = async (
           name: row.brandName!,
           slug: row.brandSlug,
           count: 1,
+        });
+      }
+    }
+
+    // Category counts
+    if (row.categorySlug) {
+      const existingCat = categoryCounts.get(row.categorySlug);
+      if (existingCat) {
+        existingCat.count++;
+      } else {
+        categoryCounts.set(row.categorySlug, {
+          name: row.categoryName ?? row.categorySlug,
+          slug: row.categorySlug,
+          count: 1,
+          parentSlug: row.parentCategorySlug ?? null,
+          parentName: row.parentCategoryName ?? null,
         });
       }
     }
@@ -152,6 +171,11 @@ export const getFilterOptionsForProducts = async (
     .map((b) => ({ value: b.slug, count: b.count }))
     .sort((a, b) => b.count - a.count);
 
+  // Build category options
+  const categories: CategoryFilterOption[] = Array.from(categoryCounts.values())
+    .map((c) => ({ value: c.slug, label: c.name, count: c.count, parentSlug: c.parentSlug, parentLabel: c.parentName }))
+    .sort((a, b) => b.count - a.count);
+
   // Build attribute options (prepared for future use)
   const attributes: AttributeFilterOption[] = Array.from(attributeValues.entries())
     .map(([key, valueMap]) => ({
@@ -171,6 +195,7 @@ export const getFilterOptionsForProducts = async (
     },
     brands,
     attributes,
+    categories,
   };
 };
 

@@ -237,10 +237,19 @@ export interface AttributeFilterOption {
   values: FilterOption[];
 }
 
+export interface CategoryFilterOption {
+  value: string;
+  label: string;
+  count: number;
+  parentSlug: string | null;
+  parentLabel: string | null;
+}
+
 export interface FilterOptionsResponse {
   priceRange: PriceRange;
   brands: FilterOption[];
   attributes: AttributeFilterOption[];
+  categories: CategoryFilterOption[];
 }
 
 // ============================================================================

@@ -193,8 +193,9 @@ export const getFiltersByCategory = async (req: Request, res: Response) => {
 export const getFiltersByCollection = async (req: Request, res: Response) => {
   try {
     const collectionSlug = ensureString(req.params.collectionSlug);
+    const categorySlug = ensureStringFromQuery(req.query.categorySlug);
 
-    const result = await getFilterOptionsForProducts(undefined, collectionSlug);
+    const result = await getFilterOptionsForProducts(categorySlug, collectionSlug);
 
     res.json({
       success: true,

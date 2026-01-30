@@ -289,14 +289,22 @@ const collectionData = [
 ];
 
 // Product data for each leaf category (level 2) - minimum 5 products each
-const categoryProducts: Record<string, { brandSlug: string; name: string; description: string; price: number; attributes: Record<string, string>; collectionSlugs: string[] }[]> = {
+const categoryProducts: Record<string, { brandSlug: string; name: string; description: string; price: number; attributes: Record<string, string>; collectionSlugs: string[]; variantGroupId?: string }[]> = {
   // ELECTRONICS
   "electronics#computers#laptops": [
     { brandSlug: "apple", name: "MacBook Pro 16-inch M3 Max", description: "The most powerful MacBook Pro with M3 Max chip", price: 3499, attributes: { processor: "M3 Max", ram: "36GB", storage: "1TB" }, collectionSlugs: ["new-arrivals", "featured"] },
-    { brandSlug: "apple", name: "MacBook Air 15-inch M3", description: "Impossibly thin with M3 chip", price: 1299, attributes: { processor: "M3", ram: "8GB", storage: "256GB" }, collectionSlugs: ["best-sellers"] },
+    { brandSlug: "apple", name: "MacBook Air 15-inch M3", description: "Impossibly thin with M3 chip", price: 1299, attributes: { processor: "M3", ram: "8GB", storage: "256GB", color: "Default" }, collectionSlugs: ["best-sellers"], variantGroupId: "macbook-air-15-m3" },
     { brandSlug: "dell", name: "Dell XPS 15 OLED", description: "Stunning 15.6-inch OLED display", price: 1799, attributes: { processor: "Intel Core Ultra 7", ram: "16GB", storage: "512GB" }, collectionSlugs: ["best-sellers", "featured"] },
     { brandSlug: "hp", name: "HP Spectre x360 14", description: "Premium 2-in-1 convertible laptop", price: 1449, attributes: { processor: "Intel Core Ultra 7", ram: "16GB", storage: "512GB" }, collectionSlugs: ["new-arrivals"] },
     { brandSlug: "dell", name: "Dell Inspiron 16", description: "Versatile 16-inch laptop", price: 899, attributes: { processor: "Intel Core i7", ram: "16GB", storage: "512GB" }, collectionSlugs: ["flash-sale"] },
+    // MacBook Air M3 variants (color)
+    { brandSlug: "apple", name: "MacBook Air 15-inch M3 - Midnight", description: "Impossibly thin with M3 chip in Midnight", price: 1299, attributes: { processor: "M3", ram: "8GB", storage: "256GB", color: "Midnight" }, collectionSlugs: ["best-sellers"], variantGroupId: "macbook-air-15-m3" },
+    { brandSlug: "apple", name: "MacBook Air 15-inch M3 - Starlight", description: "Impossibly thin with M3 chip in Starlight", price: 1299, attributes: { processor: "M3", ram: "8GB", storage: "256GB", color: "Starlight" }, collectionSlugs: ["best-sellers"], variantGroupId: "macbook-air-15-m3" },
+    { brandSlug: "apple", name: "MacBook Air 15-inch M3 - Space Gray", description: "Impossibly thin with M3 chip in Space Gray", price: 1299, attributes: { processor: "M3", ram: "8GB", storage: "256GB", color: "Space Gray" }, collectionSlugs: ["best-sellers"], variantGroupId: "macbook-air-15-m3" },
+    { brandSlug: "apple", name: "MacBook Air 15-inch M3 - Silver", description: "Impossibly thin with M3 chip in Silver", price: 1299, attributes: { processor: "M3", ram: "8GB", storage: "256GB", color: "Silver" }, collectionSlugs: [], variantGroupId: "macbook-air-15-m3" },
+    // MacBook Air M3 storage variants
+    { brandSlug: "apple", name: "MacBook Air 15-inch M3 512GB", description: "Impossibly thin with M3 chip and 512GB", price: 1499, attributes: { processor: "M3", ram: "8GB", storage: "512GB", color: "Midnight" }, collectionSlugs: ["new-arrivals"], variantGroupId: "macbook-air-15-m3" },
+    { brandSlug: "apple", name: "MacBook Air 15-inch M3 16GB/512GB", description: "M3 chip with 16GB unified memory", price: 1699, attributes: { processor: "M3", ram: "16GB", storage: "512GB", color: "Midnight" }, collectionSlugs: ["new-arrivals"], variantGroupId: "macbook-air-15-m3" },
   ],
   "electronics#computers#desktops": [
     { brandSlug: "apple", name: "Mac Studio M2 Ultra", description: "Extraordinary power for extraordinary work", price: 3999, attributes: { processor: "M2 Ultra", ram: "64GB", storage: "1TB" }, collectionSlugs: ["featured"] },
@@ -306,11 +314,17 @@ const categoryProducts: Record<string, { brandSlug: string; name: string; descri
     { brandSlug: "dell", name: "Alienware Aurora R16", description: "Ultimate gaming desktop", price: 2499, attributes: { processor: "Intel Core i9", ram: "32GB", gpu: "RTX 4080" }, collectionSlugs: ["new-arrivals", "featured"] },
   ],
   "electronics#computers#tablets": [
-    { brandSlug: "apple", name: "iPad Pro 12.9-inch M4", description: "Your next computer is not a computer", price: 1099, attributes: { chip: "M4", display: "12.9-inch Liquid Retina XDR", storage: "256GB" }, collectionSlugs: ["new-arrivals", "featured"] },
+    { brandSlug: "apple", name: "iPad Pro 12.9-inch M4", description: "Your next computer is not a computer", price: 1099, attributes: { chip: "M4", display: "12.9-inch Liquid Retina XDR", storage: "256GB", connectivity: "Wi-Fi" }, collectionSlugs: ["new-arrivals", "featured"], variantGroupId: "ipad-pro-12-9-m4" },
     { brandSlug: "apple", name: "iPad Air 11-inch M2", description: "Powerful. Colorful. Wonderful", price: 599, attributes: { chip: "M2", display: "11-inch Liquid Retina", storage: "128GB" }, collectionSlugs: ["best-sellers"] },
     { brandSlug: "samsung", name: "Galaxy Tab S9 Ultra", description: "The ultimate Android tablet", price: 1199, attributes: { processor: "Snapdragon 8 Gen 2", display: "14.6-inch AMOLED", storage: "256GB" }, collectionSlugs: ["featured"] },
     { brandSlug: "samsung", name: "Galaxy Tab S9", description: "Premium Android tablet", price: 799, attributes: { processor: "Snapdragon 8 Gen 2", display: "11-inch AMOLED", storage: "128GB" }, collectionSlugs: ["best-sellers"] },
     { brandSlug: "microsoft", name: "Surface Pro 9", description: "The tablet that can replace your laptop", price: 999, attributes: { processor: "Intel Core i5", display: "13-inch PixelSense", storage: "256GB" }, collectionSlugs: ["new-arrivals"] },
+    // iPad Pro 12.9 storage + connectivity variants
+    { brandSlug: "apple", name: "iPad Pro 12.9-inch M4 512GB Wi-Fi", description: "Pro tablet with 512GB Wi-Fi", price: 1299, attributes: { chip: "M4", display: "12.9-inch Liquid Retina XDR", storage: "512GB", connectivity: "Wi-Fi" }, collectionSlugs: ["featured"], variantGroupId: "ipad-pro-12-9-m4" },
+    { brandSlug: "apple", name: "iPad Pro 12.9-inch M4 1TB Wi-Fi", description: "Pro tablet with 1TB Wi-Fi", price: 1699, attributes: { chip: "M4", display: "12.9-inch Liquid Retina XDR", storage: "1TB", connectivity: "Wi-Fi" }, collectionSlugs: ["featured"], variantGroupId: "ipad-pro-12-9-m4" },
+    { brandSlug: "apple", name: "iPad Pro 12.9-inch M4 256GB Wi-Fi + Cellular", description: "Pro tablet with Cellular", price: 1299, attributes: { chip: "M4", display: "12.9-inch Liquid Retina XDR", storage: "256GB", connectivity: "Wi-Fi + Cellular" }, collectionSlugs: ["new-arrivals"], variantGroupId: "ipad-pro-12-9-m4" },
+    { brandSlug: "apple", name: "iPad Pro 12.9-inch M4 512GB Wi-Fi + Cellular", description: "Pro tablet with 512GB Cellular", price: 1499, attributes: { chip: "M4", display: "12.9-inch Liquid Retina XDR", storage: "512GB", connectivity: "Wi-Fi + Cellular" }, collectionSlugs: ["new-arrivals"], variantGroupId: "ipad-pro-12-9-m4" },
+    { brandSlug: "apple", name: "iPad Pro 12.9-inch M4 2TB Wi-Fi", description: "Pro tablet with 2TB storage", price: 2499, attributes: { chip: "M4", display: "12.9-inch Liquid Retina XDR", storage: "2TB", connectivity: "Wi-Fi" }, collectionSlugs: ["featured"], variantGroupId: "ipad-pro-12-9-m4" },
   ],
   "electronics#computers#monitors": [
     { brandSlug: "apple", name: "Studio Display 27-inch", description: "A spectacular 27-inch 5K Retina display", price: 1599, attributes: { resolution: "5K", size: "27-inch", panel: "IPS" }, collectionSlugs: ["featured"] },
@@ -320,11 +334,24 @@ const categoryProducts: Record<string, { brandSlug: string; name: string; descri
     { brandSlug: "hp", name: "HP Z27k G3 4K USB-C", description: "Professional 4K display", price: 549, attributes: { resolution: "4K", size: "27-inch", colorAccuracy: "99% sRGB" }, collectionSlugs: ["best-sellers"] },
   ],
   "electronics#phones#smartphones": [
-    { brandSlug: "apple", name: "iPhone 15 Pro Max", description: "Titanium design. A17 Pro chip. 48MP camera", price: 1199, attributes: { screen: "6.7-inch", processor: "A17 Pro", camera: "48MP" }, collectionSlugs: ["new-arrivals", "best-sellers", "featured"] },
+    { brandSlug: "apple", name: "iPhone 15 Pro Max", description: "Titanium design. A17 Pro chip. 48MP camera", price: 1199, attributes: { screen: "6.7-inch", processor: "A17 Pro", camera: "48MP", color: "Natural Titanium", storage: "256GB" }, collectionSlugs: ["new-arrivals", "best-sellers", "featured"], variantGroupId: "iphone-15-pro-max" },
     { brandSlug: "apple", name: "iPhone 15", description: "Dynamic Island. 48MP camera. USB-C", price: 799, attributes: { screen: "6.1-inch", processor: "A16 Bionic", camera: "48MP" }, collectionSlugs: ["best-sellers"] },
-    { brandSlug: "samsung", name: "Galaxy S24 Ultra", description: "Galaxy AI is here. Titanium frame", price: 1299, attributes: { screen: "6.8-inch", processor: "Snapdragon 8 Gen 3", camera: "200MP" }, collectionSlugs: ["new-arrivals", "featured"] },
+    { brandSlug: "samsung", name: "Galaxy S24 Ultra", description: "Galaxy AI is here. Titanium frame", price: 1299, attributes: { screen: "6.8-inch", processor: "Snapdragon 8 Gen 3", camera: "200MP", color: "Titanium Gray", storage: "256GB" }, collectionSlugs: ["new-arrivals", "featured"], variantGroupId: "galaxy-s24-ultra" },
     { brandSlug: "samsung", name: "Galaxy Z Fold 5", description: "Unfold your world", price: 1799, attributes: { screen: "7.6-inch foldable", processor: "Snapdragon 8 Gen 2", camera: "50MP" }, collectionSlugs: ["featured"] },
     { brandSlug: "samsung", name: "Galaxy S24", description: "Epic experiences for everyone", price: 799, attributes: { screen: "6.2-inch", processor: "Exynos 2400", camera: "50MP" }, collectionSlugs: ["best-sellers"] },
+    // iPhone 15 Pro Max color + storage variants
+    { brandSlug: "apple", name: "iPhone 15 Pro Max - Blue Titanium 256GB", description: "Titanium design in Blue", price: 1199, attributes: { screen: "6.7-inch", processor: "A17 Pro", camera: "48MP", color: "Blue Titanium", storage: "256GB" }, collectionSlugs: ["new-arrivals"], variantGroupId: "iphone-15-pro-max" },
+    { brandSlug: "apple", name: "iPhone 15 Pro Max - Natural Titanium 256GB", description: "Titanium design in Natural", price: 1199, attributes: { screen: "6.7-inch", processor: "A17 Pro", camera: "48MP", color: "Natural Titanium", storage: "256GB" }, collectionSlugs: ["new-arrivals"], variantGroupId: "iphone-15-pro-max" },
+    { brandSlug: "apple", name: "iPhone 15 Pro Max - White Titanium 256GB", description: "Titanium design in White", price: 1199, attributes: { screen: "6.7-inch", processor: "A17 Pro", camera: "48MP", color: "White Titanium", storage: "256GB" }, collectionSlugs: ["best-sellers"], variantGroupId: "iphone-15-pro-max" },
+    { brandSlug: "apple", name: "iPhone 15 Pro Max - Black Titanium 256GB", description: "Titanium design in Black", price: 1199, attributes: { screen: "6.7-inch", processor: "A17 Pro", camera: "48MP", color: "Black Titanium", storage: "256GB" }, collectionSlugs: ["best-sellers"], variantGroupId: "iphone-15-pro-max" },
+    { brandSlug: "apple", name: "iPhone 15 Pro Max - Natural Titanium 512GB", description: "Titanium with 512GB storage", price: 1399, attributes: { screen: "6.7-inch", processor: "A17 Pro", camera: "48MP", color: "Natural Titanium", storage: "512GB" }, collectionSlugs: ["featured"], variantGroupId: "iphone-15-pro-max" },
+    { brandSlug: "apple", name: "iPhone 15 Pro Max - Natural Titanium 1TB", description: "Titanium with 1TB storage", price: 1599, attributes: { screen: "6.7-inch", processor: "A17 Pro", camera: "48MP", color: "Natural Titanium", storage: "1TB" }, collectionSlugs: ["featured"], variantGroupId: "iphone-15-pro-max" },
+    // Galaxy S24 Ultra color variants
+    { brandSlug: "samsung", name: "Galaxy S24 Ultra - Titanium Gray", description: "Galaxy AI with Titanium Gray", price: 1299, attributes: { screen: "6.8-inch", processor: "Snapdragon 8 Gen 3", camera: "200MP", color: "Titanium Gray" }, collectionSlugs: ["new-arrivals"], variantGroupId: "galaxy-s24-ultra" },
+    { brandSlug: "samsung", name: "Galaxy S24 Ultra - Titanium Black", description: "Galaxy AI with Titanium Black", price: 1299, attributes: { screen: "6.8-inch", processor: "Snapdragon 8 Gen 3", camera: "200MP", color: "Titanium Black" }, collectionSlugs: ["new-arrivals"], variantGroupId: "galaxy-s24-ultra" },
+    { brandSlug: "samsung", name: "Galaxy S24 Ultra - Titanium Violet", description: "Galaxy AI with Titanium Violet", price: 1299, attributes: { screen: "6.8-inch", processor: "Snapdragon 8 Gen 3", camera: "200MP", color: "Titanium Violet" }, collectionSlugs: ["featured"], variantGroupId: "galaxy-s24-ultra" },
+    { brandSlug: "samsung", name: "Galaxy S24 Ultra - Titanium Yellow", description: "Galaxy AI with Titanium Yellow", price: 1299, attributes: { screen: "6.8-inch", processor: "Snapdragon 8 Gen 3", camera: "200MP", color: "Titanium Yellow" }, collectionSlugs: [], variantGroupId: "galaxy-s24-ultra" },
+    { brandSlug: "samsung", name: "Galaxy S24 Ultra 512GB - Titanium Black", description: "Galaxy AI with 512GB storage", price: 1419, attributes: { screen: "6.8-inch", processor: "Snapdragon 8 Gen 3", camera: "200MP", color: "Titanium Black", storage: "512GB" }, collectionSlugs: ["featured"], variantGroupId: "galaxy-s24-ultra" },
   ],
   "electronics#phones#phone-accessories": [
     { brandSlug: "apple", name: "MagSafe Charger", description: "Perfectly aligned wireless charging", price: 39, attributes: { type: "Wireless Charger", power: "15W", compatibility: "iPhone 12+" }, collectionSlugs: ["best-sellers"] },
@@ -334,11 +361,15 @@ const categoryProducts: Record<string, { brandSlug: string; name: string; descri
     { brandSlug: "logitech", name: "Wireless Charging Stand", description: "Stand and charge simultaneously", price: 69, attributes: { type: "Wireless Stand", power: "15W", compatibility: "Universal" }, collectionSlugs: ["summer-collection"] },
   ],
   "electronics#audio#headphones": [
-    { brandSlug: "sony", name: "WH-1000XM5", description: "Industry-leading noise canceling", price: 399, attributes: { type: "Over-ear", battery: "30 hours", noiseCanceling: "Yes" }, collectionSlugs: ["best-sellers", "featured"] },
+    { brandSlug: "sony", name: "WH-1000XM5", description: "Industry-leading noise canceling", price: 399, attributes: { type: "Over-ear", battery: "30 hours", noiseCanceling: "Yes", color: "Black" }, collectionSlugs: ["best-sellers", "featured"], variantGroupId: "sony-wh1000xm5" },
     { brandSlug: "bose", name: "QuietComfort Ultra", description: "World-class noise cancellation", price: 429, attributes: { type: "Over-ear", battery: "24 hours", noiseCanceling: "Yes" }, collectionSlugs: ["new-arrivals", "best-sellers"] },
     { brandSlug: "apple", name: "AirPods Max", description: "High-fidelity audio", price: 549, attributes: { type: "Over-ear", battery: "20 hours", noiseCanceling: "Yes" }, collectionSlugs: ["featured"] },
     { brandSlug: "sony", name: "WH-1000XM4", description: "Premium noise canceling headphones", price: 299, attributes: { type: "Over-ear", battery: "30 hours", noiseCanceling: "Yes" }, collectionSlugs: ["flash-sale"] },
     { brandSlug: "bose", name: "Headphones 700", description: "Sleek design with powerful audio", price: 379, attributes: { type: "Over-ear", battery: "20 hours", noiseCanceling: "Yes" }, collectionSlugs: ["best-sellers"] },
+    // Sony WH-1000XM5 color variants
+    { brandSlug: "sony", name: "WH-1000XM5 - Black", description: "Industry-leading noise canceling in Black", price: 399, attributes: { type: "Over-ear", battery: "30 hours", noiseCanceling: "Yes", color: "Black" }, collectionSlugs: ["best-sellers"], variantGroupId: "sony-wh1000xm5" },
+    { brandSlug: "sony", name: "WH-1000XM5 - Silver", description: "Industry-leading noise canceling in Silver", price: 399, attributes: { type: "Over-ear", battery: "30 hours", noiseCanceling: "Yes", color: "Silver" }, collectionSlugs: ["best-sellers"], variantGroupId: "sony-wh1000xm5" },
+    { brandSlug: "sony", name: "WH-1000XM5 - Midnight Blue", description: "Industry-leading noise canceling in Midnight Blue", price: 399, attributes: { type: "Over-ear", battery: "30 hours", noiseCanceling: "Yes", color: "Midnight Blue" }, collectionSlugs: ["new-arrivals"], variantGroupId: "sony-wh1000xm5" },
   ],
   "electronics#audio#speakers": [
     { brandSlug: "bose", name: "SoundLink Flex", description: "Portable Bluetooth speaker", price: 149, attributes: { type: "Portable", battery: "12 hours", waterproof: "IP67" }, collectionSlugs: ["best-sellers", "summer-collection"] },
@@ -399,11 +430,21 @@ const categoryProducts: Record<string, { brandSlug: string; name: string; descri
 
   // FASHION
   "fashion#mens-clothing#mens-tshirts": [
-    { brandSlug: "nike", name: "Dri-FIT Training T-Shirt", description: "Sweat-wicking technology", price: 35, attributes: { material: "Polyester", fit: "Regular", technology: "Dri-FIT" }, collectionSlugs: ["summer-collection"] },
+    { brandSlug: "nike", name: "Dri-FIT Training T-Shirt", description: "Sweat-wicking technology", price: 35, attributes: { material: "Polyester", fit: "Regular", technology: "Dri-FIT", color: "Gray", size: "M" }, collectionSlugs: ["summer-collection"], variantGroupId: "nike-dri-fit-tee" },
     { brandSlug: "zara", name: "Premium Cotton Basic T-Shirt", description: "Essential wardrobe staple", price: 25, attributes: { material: "100% Cotton", fit: "Slim", neckline: "Crew" }, collectionSlugs: ["flash-sale", "best-sellers"] },
     { brandSlug: "hm", name: "Regular Fit Crew-neck T-shirt", description: "Soft cotton jersey", price: 12, attributes: { material: "Cotton", fit: "Regular", neckline: "Crew" }, collectionSlugs: ["flash-sale"] },
     { brandSlug: "adidas", name: "Essentials 3-Stripes Tee", description: "Classic 3-stripes design", price: 30, attributes: { material: "Cotton", fit: "Regular", style: "Sporty" }, collectionSlugs: ["best-sellers"] },
     { brandSlug: "puma", name: "Essential Logo Tee", description: "Comfortable everyday tee", price: 28, attributes: { material: "Cotton", fit: "Regular", style: "Casual" }, collectionSlugs: ["summer-collection"] },
+    // Nike Dri-FIT T-Shirt color + size variants
+    { brandSlug: "nike", name: "Dri-FIT Training T-Shirt - Black/S", description: "Sweat-wicking technology in Black", price: 35, attributes: { material: "Polyester", fit: "Regular", technology: "Dri-FIT", color: "Black", size: "S" }, collectionSlugs: ["summer-collection"], variantGroupId: "nike-dri-fit-tee" },
+    { brandSlug: "nike", name: "Dri-FIT Training T-Shirt - Black/M", description: "Sweat-wicking technology in Black", price: 35, attributes: { material: "Polyester", fit: "Regular", technology: "Dri-FIT", color: "Black", size: "M" }, collectionSlugs: ["summer-collection"], variantGroupId: "nike-dri-fit-tee" },
+    { brandSlug: "nike", name: "Dri-FIT Training T-Shirt - Black/L", description: "Sweat-wicking technology in Black", price: 35, attributes: { material: "Polyester", fit: "Regular", technology: "Dri-FIT", color: "Black", size: "L" }, collectionSlugs: ["summer-collection"], variantGroupId: "nike-dri-fit-tee" },
+    { brandSlug: "nike", name: "Dri-FIT Training T-Shirt - Black/XL", description: "Sweat-wicking technology in Black", price: 35, attributes: { material: "Polyester", fit: "Regular", technology: "Dri-FIT", color: "Black", size: "XL" }, collectionSlugs: ["summer-collection"], variantGroupId: "nike-dri-fit-tee" },
+    { brandSlug: "nike", name: "Dri-FIT Training T-Shirt - White/S", description: "Sweat-wicking technology in White", price: 35, attributes: { material: "Polyester", fit: "Regular", technology: "Dri-FIT", color: "White", size: "S" }, collectionSlugs: ["summer-collection"], variantGroupId: "nike-dri-fit-tee" },
+    { brandSlug: "nike", name: "Dri-FIT Training T-Shirt - White/M", description: "Sweat-wicking technology in White", price: 35, attributes: { material: "Polyester", fit: "Regular", technology: "Dri-FIT", color: "White", size: "M" }, collectionSlugs: ["best-sellers"], variantGroupId: "nike-dri-fit-tee" },
+    { brandSlug: "nike", name: "Dri-FIT Training T-Shirt - White/L", description: "Sweat-wicking technology in White", price: 35, attributes: { material: "Polyester", fit: "Regular", technology: "Dri-FIT", color: "White", size: "L" }, collectionSlugs: ["best-sellers"], variantGroupId: "nike-dri-fit-tee" },
+    { brandSlug: "nike", name: "Dri-FIT Training T-Shirt - Navy/M", description: "Sweat-wicking technology in Navy", price: 35, attributes: { material: "Polyester", fit: "Regular", technology: "Dri-FIT", color: "Navy", size: "M" }, collectionSlugs: ["new-arrivals"], variantGroupId: "nike-dri-fit-tee" },
+    { brandSlug: "nike", name: "Dri-FIT Training T-Shirt - Navy/L", description: "Sweat-wicking technology in Navy", price: 35, attributes: { material: "Polyester", fit: "Regular", technology: "Dri-FIT", color: "Navy", size: "L" }, collectionSlugs: ["new-arrivals"], variantGroupId: "nike-dri-fit-tee" },
   ],
   "fashion#mens-clothing#mens-shirts": [
     { brandSlug: "zara", name: "Oxford Shirt", description: "Classic Oxford weave shirt", price: 49, attributes: { material: "Cotton", fit: "Slim", collar: "Button-down" }, collectionSlugs: ["best-sellers"] },
@@ -413,25 +454,49 @@ const categoryProducts: Record<string, { brandSlug: string; name: string; descri
     { brandSlug: "zara", name: "Printed Viscose Shirt", description: "Flowy viscose fabric", price: 45, attributes: { material: "Viscose", fit: "Relaxed", style: "Resort" }, collectionSlugs: ["summer-collection", "new-arrivals"] },
   ],
   "fashion#mens-clothing#mens-jeans": [
-    { brandSlug: "levis", name: "501 Original Fit Jeans", description: "The original jean since 1873", price: 89, attributes: { fit: "Original", rise: "Mid", wash: "Medium indigo" }, collectionSlugs: ["best-sellers", "featured"] },
+    { brandSlug: "levis", name: "501 Original Fit Jeans", description: "The original jean since 1873", price: 89, attributes: { fit: "Original", rise: "Mid", wash: "Medium indigo", waist: "32", length: "32" }, collectionSlugs: ["best-sellers", "featured"], variantGroupId: "levis-501-original" },
     { brandSlug: "levis", name: "511 Slim Fit Jeans", description: "Modern slim fit", price: 79, attributes: { fit: "Slim", rise: "Mid", stretch: "Yes" }, collectionSlugs: ["best-sellers"] },
     { brandSlug: "zara", name: "Skinny Fit Jeans", description: "Super stretch skinny", price: 49, attributes: { fit: "Skinny", rise: "Mid", stretch: "High" }, collectionSlugs: ["flash-sale"] },
     { brandSlug: "hm", name: "Regular Tapered Jeans", description: "Comfortable tapered leg", price: 39, attributes: { fit: "Tapered", rise: "Regular", wash: "Black" }, collectionSlugs: ["new-arrivals"] },
     { brandSlug: "levis", name: "505 Regular Fit Jeans", description: "Classic straight leg", price: 69, attributes: { fit: "Regular", rise: "Mid", wash: "Dark blue" }, collectionSlugs: ["best-sellers"] },
+    // Levi's 501 wash + size variants
+    { brandSlug: "levis", name: "501 Original Fit - Dark Wash 30x32", description: "The original jean in Dark Wash", price: 89, attributes: { fit: "Original", rise: "Mid", wash: "Dark Wash", waist: "30", length: "32" }, collectionSlugs: ["best-sellers"], variantGroupId: "levis-501-original" },
+    { brandSlug: "levis", name: "501 Original Fit - Dark Wash 32x32", description: "The original jean in Dark Wash", price: 89, attributes: { fit: "Original", rise: "Mid", wash: "Dark Wash", waist: "32", length: "32" }, collectionSlugs: ["best-sellers"], variantGroupId: "levis-501-original" },
+    { brandSlug: "levis", name: "501 Original Fit - Dark Wash 34x32", description: "The original jean in Dark Wash", price: 89, attributes: { fit: "Original", rise: "Mid", wash: "Dark Wash", waist: "34", length: "32" }, collectionSlugs: ["best-sellers"], variantGroupId: "levis-501-original" },
+    { brandSlug: "levis", name: "501 Original Fit - Light Wash 30x32", description: "The original jean in Light Wash", price: 89, attributes: { fit: "Original", rise: "Mid", wash: "Light Wash", waist: "30", length: "32" }, collectionSlugs: ["summer-collection"], variantGroupId: "levis-501-original" },
+    { brandSlug: "levis", name: "501 Original Fit - Light Wash 32x32", description: "The original jean in Light Wash", price: 89, attributes: { fit: "Original", rise: "Mid", wash: "Light Wash", waist: "32", length: "32" }, collectionSlugs: ["summer-collection"], variantGroupId: "levis-501-original" },
+    { brandSlug: "levis", name: "501 Original Fit - Black 32x32", description: "The original jean in Black", price: 89, attributes: { fit: "Original", rise: "Mid", wash: "Black", waist: "32", length: "32" }, collectionSlugs: ["new-arrivals"], variantGroupId: "levis-501-original" },
+    { brandSlug: "levis", name: "501 Original Fit - Black 34x34", description: "The original jean in Black", price: 89, attributes: { fit: "Original", rise: "Mid", wash: "Black", waist: "34", length: "34" }, collectionSlugs: ["new-arrivals"], variantGroupId: "levis-501-original" },
+    { brandSlug: "levis", name: "501 Original Fit - Stonewash 32x30", description: "The original jean in Stonewash", price: 89, attributes: { fit: "Original", rise: "Mid", wash: "Stonewash", waist: "32", length: "30" }, collectionSlugs: ["flash-sale"], variantGroupId: "levis-501-original" },
   ],
   "fashion#mens-clothing#mens-jackets": [
-    { brandSlug: "the-north-face", name: "1996 Retro Nuptse Jacket", description: "Iconic puffer with 700-fill down", price: 330, attributes: { fill: "700-fill goose down", waterproof: "DWR", warmth: "High" }, collectionSlugs: ["new-arrivals", "featured"] },
+    { brandSlug: "the-north-face", name: "1996 Retro Nuptse Jacket", description: "Iconic puffer with 700-fill down", price: 330, attributes: { fill: "700-fill goose down", waterproof: "DWR", warmth: "High", color: "TNF Black", size: "M" }, collectionSlugs: ["new-arrivals", "featured"], variantGroupId: "tnf-1996-nuptse" },
     { brandSlug: "nike", name: "Windrunner Jacket", description: "Classic wind-resistant jacket", price: 110, attributes: { material: "Polyester", waterproof: "Water-resistant", style: "Athletic" }, collectionSlugs: ["best-sellers"] },
     { brandSlug: "levis", name: "Trucker Jacket", description: "The original denim jacket", price: 98, attributes: { material: "Denim", fit: "Classic", style: "Western" }, collectionSlugs: ["best-sellers", "featured"] },
     { brandSlug: "zara", name: "Faux Leather Biker Jacket", description: "Edgy biker style", price: 89, attributes: { material: "Faux leather", fit: "Slim", style: "Biker" }, collectionSlugs: ["new-arrivals"] },
     { brandSlug: "the-north-face", name: "Thermoball Eco Jacket", description: "Lightweight insulated jacket", price: 220, attributes: { fill: "ThermoBall Eco", waterproof: "DWR", packable: "Yes" }, collectionSlugs: ["flash-sale"] },
+    // The North Face 1996 Retro Nuptse color + size variants
+    { brandSlug: "the-north-face", name: "1996 Retro Nuptse - Black/S", description: "Iconic puffer in Black", price: 330, attributes: { fill: "700-fill goose down", waterproof: "DWR", warmth: "High", color: "TNF Black", size: "S" }, collectionSlugs: ["new-arrivals"], variantGroupId: "tnf-1996-nuptse" },
+    { brandSlug: "the-north-face", name: "1996 Retro Nuptse - Black/M", description: "Iconic puffer in Black", price: 330, attributes: { fill: "700-fill goose down", waterproof: "DWR", warmth: "High", color: "TNF Black", size: "M" }, collectionSlugs: ["best-sellers"], variantGroupId: "tnf-1996-nuptse" },
+    { brandSlug: "the-north-face", name: "1996 Retro Nuptse - Black/L", description: "Iconic puffer in Black", price: 330, attributes: { fill: "700-fill goose down", waterproof: "DWR", warmth: "High", color: "TNF Black", size: "L" }, collectionSlugs: ["best-sellers"], variantGroupId: "tnf-1996-nuptse" },
+    { brandSlug: "the-north-face", name: "1996 Retro Nuptse - Black/XL", description: "Iconic puffer in Black", price: 330, attributes: { fill: "700-fill goose down", waterproof: "DWR", warmth: "High", color: "TNF Black", size: "XL" }, collectionSlugs: ["featured"], variantGroupId: "tnf-1996-nuptse" },
+    { brandSlug: "the-north-face", name: "1996 Retro Nuptse - Summit Navy/M", description: "Iconic puffer in Summit Navy", price: 330, attributes: { fill: "700-fill goose down", waterproof: "DWR", warmth: "High", color: "Summit Navy", size: "M" }, collectionSlugs: ["new-arrivals"], variantGroupId: "tnf-1996-nuptse" },
+    { brandSlug: "the-north-face", name: "1996 Retro Nuptse - Summit Navy/L", description: "Iconic puffer in Summit Navy", price: 330, attributes: { fill: "700-fill goose down", waterproof: "DWR", warmth: "High", color: "Summit Navy", size: "L" }, collectionSlugs: ["new-arrivals"], variantGroupId: "tnf-1996-nuptse" },
+    { brandSlug: "the-north-face", name: "1996 Retro Nuptse - Recycled TNF Black/M", description: "Eco-friendly Nuptse in Black", price: 350, attributes: { fill: "700-fill recycled down", waterproof: "DWR", warmth: "High", color: "Recycled TNF Black", size: "M" }, collectionSlugs: ["featured"], variantGroupId: "tnf-1996-nuptse" },
   ],
   "fashion#womens-clothing#dresses": [
-    { brandSlug: "zara", name: "Satin Midi Dress", description: "Elegant satin midi dress", price: 89, attributes: { material: "Satin", length: "Midi", style: "Evening" }, collectionSlugs: ["new-arrivals", "featured"] },
+    { brandSlug: "zara", name: "Satin Midi Dress", description: "Elegant satin midi dress", price: 89, attributes: { material: "Satin", length: "Midi", style: "Evening", color: "Navy", size: "M" }, collectionSlugs: ["new-arrivals", "featured"], variantGroupId: "zara-satin-midi-dress" },
     { brandSlug: "hm", name: "Jersey Wrap Dress", description: "Flattering wrap style", price: 49, attributes: { material: "Jersey", length: "Midi", style: "Casual" }, collectionSlugs: ["best-sellers"] },
     { brandSlug: "zara", name: "Floral Print Maxi Dress", description: "Flowy floral print", price: 79, attributes: { material: "Viscose", length: "Maxi", style: "Bohemian" }, collectionSlugs: ["summer-collection"] },
     { brandSlug: "hm", name: "Ribbed Bodycon Dress", description: "Figure-hugging silhouette", price: 34, attributes: { material: "Ribbed jersey", length: "Mini", style: "Party" }, collectionSlugs: ["flash-sale"] },
     { brandSlug: "zara", name: "Linen Blend Shirt Dress", description: "Relaxed summer dress", price: 69, attributes: { material: "Linen blend", length: "Midi", style: "Casual" }, collectionSlugs: ["summer-collection", "new-arrivals"] },
+    // Zara Satin Midi Dress color + size variants
+    { brandSlug: "zara", name: "Satin Midi Dress - Black/S", description: "Elegant satin midi in Black", price: 89, attributes: { material: "Satin", length: "Midi", style: "Evening", color: "Black", size: "S" }, collectionSlugs: ["new-arrivals"], variantGroupId: "zara-satin-midi-dress" },
+    { brandSlug: "zara", name: "Satin Midi Dress - Black/M", description: "Elegant satin midi in Black", price: 89, attributes: { material: "Satin", length: "Midi", style: "Evening", color: "Black", size: "M" }, collectionSlugs: ["new-arrivals"], variantGroupId: "zara-satin-midi-dress" },
+    { brandSlug: "zara", name: "Satin Midi Dress - Black/L", description: "Elegant satin midi in Black", price: 89, attributes: { material: "Satin", length: "Midi", style: "Evening", color: "Black", size: "L" }, collectionSlugs: ["best-sellers"], variantGroupId: "zara-satin-midi-dress" },
+    { brandSlug: "zara", name: "Satin Midi Dress - Burgundy/S", description: "Elegant satin midi in Burgundy", price: 89, attributes: { material: "Satin", length: "Midi", style: "Evening", color: "Burgundy", size: "S" }, collectionSlugs: ["featured"], variantGroupId: "zara-satin-midi-dress" },
+    { brandSlug: "zara", name: "Satin Midi Dress - Burgundy/M", description: "Elegant satin midi in Burgundy", price: 89, attributes: { material: "Satin", length: "Midi", style: "Evening", color: "Burgundy", size: "M" }, collectionSlugs: ["featured"], variantGroupId: "zara-satin-midi-dress" },
+    { brandSlug: "zara", name: "Satin Midi Dress - Emerald/M", description: "Elegant satin midi in Emerald", price: 89, attributes: { material: "Satin", length: "Midi", style: "Evening", color: "Emerald", size: "M" }, collectionSlugs: ["new-arrivals"], variantGroupId: "zara-satin-midi-dress" },
   ],
   "fashion#womens-clothing#blouses": [
     { brandSlug: "zara", name: "Satin V-Neck Blouse", description: "Elegant satin blouse", price: 59, attributes: { material: "Satin", neckline: "V-neck", style: "Office" }, collectionSlugs: ["best-sellers"] },
@@ -455,11 +520,22 @@ const categoryProducts: Record<string, { brandSlug: string; name: string; descri
     { brandSlug: "hm", name: "Puffer Jacket", description: "Warm quilted puffer", price: 79, attributes: { fill: "Recycled padding", waterproof: "Water-repellent", packable: "Yes" }, collectionSlugs: ["flash-sale"] },
   ],
   "fashion#shoes#sneakers": [
-    { brandSlug: "nike", name: "Air Max 90", description: "Iconic Air Max silhouette", price: 130, attributes: { material: "Leather/Mesh", sole: "Air Max", style: "Retro" }, collectionSlugs: ["best-sellers"] },
-    { brandSlug: "nike", name: "Air Jordan 1 Retro High OG", description: "The shoe that started it all", price: 180, attributes: { material: "Leather", sole: "Rubber", style: "Basketball" }, collectionSlugs: ["new-arrivals", "featured"] },
+    { brandSlug: "nike", name: "Air Max 90", description: "Iconic Air Max silhouette", price: 130, attributes: { material: "Leather/Mesh", sole: "Air Max", style: "Retro", color: "White/Red" }, collectionSlugs: ["best-sellers"], variantGroupId: "nike-air-max-90" },
+    { brandSlug: "nike", name: "Air Jordan 1 Retro High OG", description: "The shoe that started it all", price: 180, attributes: { material: "Leather", sole: "Rubber", style: "Basketball", colorway: "Default", color: "White/Black" }, collectionSlugs: ["new-arrivals", "featured"], variantGroupId: "air-jordan-1-retro-high-og" },
     { brandSlug: "adidas", name: "Ultraboost 24", description: "Responsive BOOST midsole", price: 190, attributes: { material: "Primeknit", technology: "BOOST", style: "Running" }, collectionSlugs: ["best-sellers", "summer-collection"] },
     { brandSlug: "adidas", name: "Stan Smith", description: "Clean classic design", price: 100, attributes: { material: "Leather", sole: "Rubber", style: "Classic" }, collectionSlugs: ["flash-sale"] },
     { brandSlug: "puma", name: "Suede Classic XXI", description: "Iconic suede sneaker", price: 75, attributes: { material: "Suede", sole: "Rubber", style: "Classic" }, collectionSlugs: ["best-sellers"] },
+    // Air Jordan 1 Retro High OG colorway variants
+    { brandSlug: "nike", name: "Air Jordan 1 Retro High OG - Chicago", description: "The iconic Chicago colorway", price: 180, attributes: { material: "Leather", sole: "Rubber", style: "Basketball", colorway: "Chicago", color: "Red/White/Black" }, collectionSlugs: ["featured"], variantGroupId: "air-jordan-1-retro-high-og" },
+    { brandSlug: "nike", name: "Air Jordan 1 Retro High OG - Royal Blue", description: "Classic Royal Blue colorway", price: 180, attributes: { material: "Leather", sole: "Rubber", style: "Basketball", colorway: "Royal Blue", color: "Blue/Black/White" }, collectionSlugs: ["new-arrivals"], variantGroupId: "air-jordan-1-retro-high-og" },
+    { brandSlug: "nike", name: "Air Jordan 1 Retro High OG - Shadow", description: "Neutral Shadow colorway", price: 180, attributes: { material: "Leather", sole: "Rubber", style: "Basketball", colorway: "Shadow", color: "Black/Grey" }, collectionSlugs: ["best-sellers"], variantGroupId: "air-jordan-1-retro-high-og" },
+    { brandSlug: "nike", name: "Air Jordan 1 Retro High OG - Bred", description: "Legendary Bred colorway", price: 180, attributes: { material: "Leather", sole: "Rubber", style: "Basketball", colorway: "Bred", color: "Black/Red" }, collectionSlugs: ["featured"], variantGroupId: "air-jordan-1-retro-high-og" },
+    { brandSlug: "nike", name: "Air Jordan 1 Retro High OG - UNC", description: "University Blue colorway", price: 180, attributes: { material: "Leather", sole: "Rubber", style: "Basketball", colorway: "UNC", color: "Blue/White" }, collectionSlugs: ["new-arrivals"], variantGroupId: "air-jordan-1-retro-high-og" },
+    // Nike Air Max 90 color variants
+    { brandSlug: "nike", name: "Air Max 90 - White/Black", description: "Air Max 90 in White/Black", price: 130, attributes: { material: "Leather/Mesh", sole: "Air Max", style: "Retro", color: "White/Black" }, collectionSlugs: ["best-sellers"], variantGroupId: "nike-air-max-90" },
+    { brandSlug: "nike", name: "Air Max 90 - Infrared", description: "Air Max 90 in iconic Infrared", price: 130, attributes: { material: "Leather/Mesh", sole: "Air Max", style: "Retro", color: "Infrared" }, collectionSlugs: ["featured"], variantGroupId: "nike-air-max-90" },
+    { brandSlug: "nike", name: "Air Max 90 - Triple Black", description: "Air Max 90 in Triple Black", price: 130, attributes: { material: "Leather/Mesh", sole: "Air Max", style: "Retro", color: "Triple Black" }, collectionSlugs: ["best-sellers"], variantGroupId: "nike-air-max-90" },
+    { brandSlug: "nike", name: "Air Max 90 - Navy/Red", description: "Air Max 90 in Navy/Red", price: 130, attributes: { material: "Leather/Mesh", sole: "Air Max", style: "Retro", color: "Navy/Red" }, collectionSlugs: ["new-arrivals"], variantGroupId: "nike-air-max-90" },
   ],
   "fashion#shoes#boots": [
     { brandSlug: "timberland", name: "6-Inch Premium Boot", description: "Iconic waterproof boot", price: 198, attributes: { material: "Nubuck leather", waterproof: "Yes", sole: "Rubber lug" }, collectionSlugs: ["best-sellers", "featured"] },
@@ -513,11 +589,16 @@ const categoryProducts: Record<string, { brandSlug: string; name: string; descri
 
   // HOME & LIVING
   "home-living#furniture#living-room-furniture": [
-    { brandSlug: "ikea", name: "KIVIK Sofa", description: "Generous seating with memory foam", price: 799, attributes: { seating: "3-seat", material: "Fabric", style: "Modern" }, collectionSlugs: ["best-sellers"] },
+    { brandSlug: "ikea", name: "KIVIK Sofa", description: "Generous seating with memory foam", price: 799, attributes: { seating: "3-seat", material: "Fabric", style: "Modern", color: "Hillared Anthracite" }, collectionSlugs: ["best-sellers"], variantGroupId: "ikea-kivik-sofa" },
     { brandSlug: "ikea", name: "KALLAX Shelf Unit", description: "Versatile storage solution", price: 79, attributes: { compartments: "16", material: "Particleboard", style: "Modern" }, collectionSlugs: ["best-sellers", "featured"] },
     { brandSlug: "ikea", name: "LACK Coffee Table", description: "Simple and practical", price: 29, attributes: { dimensions: "90x55cm", material: "Particleboard", style: "Minimalist" }, collectionSlugs: ["flash-sale"] },
     { brandSlug: "ikea", name: "POÄNG Armchair", description: "Bent wood comfort", price: 129, attributes: { material: "Bentwood/Fabric", style: "Scandinavian", cushion: "Included" }, collectionSlugs: ["best-sellers"] },
     { brandSlug: "ikea", name: "BILLY Bookcase", description: "Timeless bookcase design", price: 59, attributes: { shelves: "5", material: "Particleboard", style: "Classic" }, collectionSlugs: ["best-sellers", "featured"] },
+    // IKEA KIVIK Sofa color variants
+    { brandSlug: "ikea", name: "KIVIK Sofa - Orrsta Light Gray", description: "Generous seating in Light Gray", price: 799, attributes: { seating: "3-seat", material: "Fabric", style: "Modern", color: "Orrsta Light Gray" }, collectionSlugs: ["best-sellers"], variantGroupId: "ikea-kivik-sofa" },
+    { brandSlug: "ikea", name: "KIVIK Sofa - Tibbleby Beige", description: "Generous seating in Beige", price: 799, attributes: { seating: "3-seat", material: "Fabric", style: "Modern", color: "Tibbleby Beige" }, collectionSlugs: ["best-sellers"], variantGroupId: "ikea-kivik-sofa" },
+    { brandSlug: "ikea", name: "KIVIK Sofa - Kelinge Dark Turquoise", description: "Generous seating in Dark Turquoise", price: 799, attributes: { seating: "3-seat", material: "Fabric", style: "Modern", color: "Kelinge Dark Turquoise" }, collectionSlugs: ["new-arrivals"], variantGroupId: "ikea-kivik-sofa" },
+    { brandSlug: "ikea", name: "KIVIK Sofa - Grann/Bomstad Dark Brown", description: "Generous seating in Leather", price: 1199, attributes: { seating: "3-seat", material: "Leather", style: "Modern", color: "Grann/Bomstad Dark Brown" }, collectionSlugs: ["featured"], variantGroupId: "ikea-kivik-sofa" },
   ],
   "home-living#furniture#bedroom-furniture": [
     { brandSlug: "ikea", name: "MALM Bed Frame", description: "Clean simple lines", price: 249, attributes: { size: "Queen", material: "Particleboard", storage: "Optional" }, collectionSlugs: ["best-sellers"] },
@@ -541,11 +622,17 @@ const categoryProducts: Record<string, { brandSlug: string; name: string; descri
     { brandSlug: "ikea", name: "IKEA 365+ Cookware Set", description: "Stainless steel 5-piece", price: 99, attributes: { material: "Stainless steel", pieces: "5", induction: "Compatible" }, collectionSlugs: ["best-sellers"] },
   ],
   "home-living#kitchen#kitchen-appliances": [
-    { brandSlug: "kitchenaid", name: "Artisan Stand Mixer", description: "Iconic tilt-head mixer", price: 449, attributes: { capacity: "5Qt", power: "325W", attachments: "Multiple" }, collectionSlugs: ["featured", "best-sellers"] },
+    { brandSlug: "kitchenaid", name: "Artisan Stand Mixer", description: "Iconic tilt-head mixer", price: 449, attributes: { capacity: "5Qt", power: "325W", attachments: "Multiple", color: "Silver Metallic" }, collectionSlugs: ["featured", "best-sellers"], variantGroupId: "kitchenaid-artisan-mixer" },
     { brandSlug: "samsung", name: "Bespoke French Door Refrigerator", description: "Customizable colors", price: 3299, attributes: { capacity: "29 cu. ft.", features: "Family Hub", energyRating: "A++" }, collectionSlugs: ["featured"] },
     { brandSlug: "kitchenaid", name: "Food Processor 13-Cup", description: "Powerful food processing", price: 249, attributes: { capacity: "13 cups", power: "720W", blades: "Multiple" }, collectionSlugs: ["best-sellers"] },
     { brandSlug: "philips", name: "Air Fryer XXL", description: "Healthy cooking technology", price: 299, attributes: { capacity: "3lb", technology: "Rapid Air", presets: "5" }, collectionSlugs: ["new-arrivals", "best-sellers"] },
     { brandSlug: "kitchenaid", name: "Blender K400", description: "Variable speed blender", price: 199, attributes: { capacity: "56oz", speeds: "Variable", blades: "Asymmetric" }, collectionSlugs: ["flash-sale"] },
+    // KitchenAid Artisan Stand Mixer color variants
+    { brandSlug: "kitchenaid", name: "Artisan Stand Mixer - Empire Red", description: "Iconic mixer in Empire Red", price: 449, attributes: { capacity: "5Qt", power: "325W", attachments: "Multiple", color: "Empire Red" }, collectionSlugs: ["featured"], variantGroupId: "kitchenaid-artisan-mixer" },
+    { brandSlug: "kitchenaid", name: "Artisan Stand Mixer - Onyx Black", description: "Iconic mixer in Onyx Black", price: 449, attributes: { capacity: "5Qt", power: "325W", attachments: "Multiple", color: "Onyx Black" }, collectionSlugs: ["best-sellers"], variantGroupId: "kitchenaid-artisan-mixer" },
+    { brandSlug: "kitchenaid", name: "Artisan Stand Mixer - Pistachio", description: "Iconic mixer in Pistachio", price: 449, attributes: { capacity: "5Qt", power: "325W", attachments: "Multiple", color: "Pistachio" }, collectionSlugs: ["new-arrivals"], variantGroupId: "kitchenaid-artisan-mixer" },
+    { brandSlug: "kitchenaid", name: "Artisan Stand Mixer - Matte White", description: "Iconic mixer in Matte White", price: 449, attributes: { capacity: "5Qt", power: "325W", attachments: "Multiple", color: "Matte White" }, collectionSlugs: ["best-sellers"], variantGroupId: "kitchenaid-artisan-mixer" },
+    { brandSlug: "kitchenaid", name: "Artisan Stand Mixer - Blue Velvet", description: "Iconic mixer in Blue Velvet", price: 449, attributes: { capacity: "5Qt", power: "325W", attachments: "Multiple", color: "Blue Velvet" }, collectionSlugs: ["new-arrivals"], variantGroupId: "kitchenaid-artisan-mixer" },
   ],
   "home-living#kitchen#utensils": [
     { brandSlug: "le-creuset", name: "Silicone Utensil Set", description: "Heat-resistant silicone", price: 85, attributes: { pieces: "5", material: "Silicone", heatResistant: "482°F" }, collectionSlugs: ["best-sellers"] },
@@ -882,7 +969,7 @@ async function createProducts(
         brandId,
         vendorId,
         categoryPath,
-        productGroupId: slug,
+        productGroupId: product.variantGroupId ?? slug,
         images: [
           getPicsumImage(`product-${slug}-1`, 1000, 1000),
           getPicsumImage(`product-${slug}-2`, 1000, 1000),
