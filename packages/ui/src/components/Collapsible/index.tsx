@@ -29,7 +29,7 @@ export default function Collapsible({
       >
         <span className={styles.triggerContent}>{trigger}</span>
         <span className={styles.chevron} aria-hidden>
-          <IconChevronDown size={16} color="currentColor" />
+          <IconChevronDown size={12} color="currentColor" />
         </span>
       </CollapsiblePrimitive.Trigger>
       <CollapsiblePrimitive.Content className={styles.content}>

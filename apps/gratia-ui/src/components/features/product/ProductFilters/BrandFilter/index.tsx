@@ -21,22 +21,17 @@ export default function BrandFilter({ brands }: BrandFilterProps) {
   if (!brands?.length) return null;
 
   return (
-    <section className={styles.brandFilter} aria-labelledby="brand-filter-heading">
-      <h3 id="brand-filter-heading" className={styles.heading}>
-        Brand
-      </h3>
-      <ul className={styles.list} role="list">
-        {brands.map((brand) => (
-          <li key={brand.value} className={styles.item}>
-            <Checkbox
-              size="sm"
-              label={formatBrandLabel(brand.value, brand.count)}
-              checked={selectedBrandSlugs.includes(brand.value)}
-              onValueChange={() => toggleBrand(brand.value)}
-            />
-          </li>
-        ))}
-      </ul>
-    </section>
+    <ul className={styles.list} role="list">
+      {brands.map((brand) => (
+        <li key={brand.value} className={styles.item}>
+          <Checkbox
+            size="sm"
+            label={formatBrandLabel(brand.value, brand.count)}
+            checked={selectedBrandSlugs.includes(brand.value)}
+            onValueChange={() => toggleBrand(brand.value)}
+          />
+        </li>
+      ))}
+    </ul>
   );
 }
