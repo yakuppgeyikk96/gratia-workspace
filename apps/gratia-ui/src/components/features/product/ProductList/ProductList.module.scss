@@ -23,7 +23,7 @@
 
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); // Desktop (1368px+): 5 kolon
+  grid-template-columns: repeat(4, 1fr);
   gap: $spacing-6;
 
   // Stagger animation for product cards
@@ -37,7 +37,7 @@
 
   // 1280px ve altı: 4 kolon
   @include media-xl {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: $spacing-5;
   }
 

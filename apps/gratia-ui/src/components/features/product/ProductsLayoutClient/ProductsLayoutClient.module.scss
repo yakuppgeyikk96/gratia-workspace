@@ -1,9 +1,10 @@
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
 
 .wrapper {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
   padding-bottom: $spacing-10;
 }
 
@@ -17,15 +18,14 @@
 }
 
 .mainRow {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
   flex: 1;
   min-width: 0;
   gap: $spacing-6;
 
   @include media-lg-up {
-    flex-direction: row;
-    align-items: flex-start;
+    @include flex-row;
+    @include align-start;
   }
 }
 
@@ -36,6 +36,10 @@
     display: block;
     flex-shrink: 0;
     width: 280px;
+    max-height: 150vh;
+    overflow-y: auto;
+    position: sticky;
+    top: $spacing-6;
   }
 }
 
