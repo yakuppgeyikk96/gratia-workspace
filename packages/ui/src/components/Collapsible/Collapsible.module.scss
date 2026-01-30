@@ -1,0 +1,64 @@
+@use "../../styles/core/_colors.scss" as *;
+@use "../../styles/core/_spacing.scss" as *;
+@use "../../styles/core/_variables.scss" as *;
+@use "../../styles/core/_border.scss" as *;
+@use "../../styles/layout/_flex.scss" as *;
+
+.root {
+  width: 100%;
+}
+
+.trigger {
+  @include flex(row, space-between, center, nowrap, $spacing-2);
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  background: transparent;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  text-align: left;
+  transition: background-color $transition-normal;
+
+  &:hover:not(:disabled) {
+    background: $interactive-hover-bg;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $interactive-focus-ring;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    color: $text-muted-color;
+  }
+}
+
+.triggerContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: $text-muted-color;
+  transition: transform $transition-normal;
+}
+
+.trigger[data-state="open"] .chevron {
+  transform: rotate(180deg);
+}
+
+.content {
+  overflow: hidden;
+  transition: height $transition-normal;
+}
+
+.contentInner {
+  padding: $spacing-2 $spacing-3 $spacing-4;
+  padding-top: 0;
+}

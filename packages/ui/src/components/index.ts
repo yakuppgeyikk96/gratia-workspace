@@ -1,6 +1,8 @@
 export { default as Badge } from "./Badge";
 export { default as Button } from "./Button";
 export { default as Checkbox } from "./Checkbox";
+export { default as Collapsible } from "./Collapsible";
+export type { CollapsibleProps } from "./Collapsible";
 export { default as Container } from "./Container";
 export { default as Divider } from "./Divider";
 export { default as Drawer } from "./Drawer";
@@ -22,7 +24,8 @@ export { Toast, ToastContainer, ToastProvider } from "./Toast";
 export type { ToastProps, ToastVariant } from "./Toast";
 export {
   ToastProvider as ToastContextProvider,
-  useToastContext,
+  useToastContext
 } from "./Toast/ToastContext";
 export { useToast } from "./Toast/useToast";
 export type { ToastMessage } from "./Toast/useToast";
+
