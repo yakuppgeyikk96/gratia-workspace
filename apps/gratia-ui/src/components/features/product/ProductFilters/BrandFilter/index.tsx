@@ -1,6 +1,6 @@
 "use client";
 
-import { useProductFilterStore } from "@/store/productFilterStore";
+import { useProductFilters } from "@/hooks/useProductFilters";
 import type { FilterOption } from "@/types/Product.types";
 import Checkbox from "@gratia/ui/components/Checkbox";
 import styles from "./BrandFilter.module.scss";
@@ -15,8 +15,7 @@ function formatBrandLabel(value: string, count: number): string {
 }
 
 export default function BrandFilter({ brands }: BrandFilterProps) {
-  const selectedBrandSlugs = useProductFilterStore((s) => s.selectedBrandSlugs);
-  const toggleBrand = useProductFilterStore((s) => s.toggleBrand);
+  const { filters, toggleArrayFilter } = useProductFilters();
 
   if (!brands?.length) return null;
 
@@ -27,8 +26,8 @@ export default function BrandFilter({ brands }: BrandFilterProps) {
           <Checkbox
             size="sm"
             label={formatBrandLabel(brand.value, brand.count)}
-            checked={selectedBrandSlugs.includes(brand.value)}
-            onValueChange={() => toggleBrand(brand.value)}
+            checked={filters.brandSlugs.includes(brand.value)}
+            onValueChange={() => toggleArrayFilter("brandSlugs", brand.value)}
           />
         </li>
       ))}

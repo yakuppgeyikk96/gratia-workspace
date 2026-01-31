@@ -5,7 +5,6 @@
 
 .wrapper {
   @include flex-column;
-  padding-bottom: $spacing-10;
 }
 
 .filterBar {
@@ -35,8 +34,8 @@
   @include media-lg-up {
     display: block;
     flex-shrink: 0;
-    width: 280px;
-    max-height: 150vh;
+    width: 20rem;
+    max-height: calc(100vh - 15rem);
     overflow-y: auto;
     position: sticky;
     top: $spacing-6;
@@ -46,4 +45,14 @@
 .content {
   flex: 1;
   min-width: 0;
+
+  height: calc(100vh - 15rem);
+  overflow-y: auto;
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE, Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
 }

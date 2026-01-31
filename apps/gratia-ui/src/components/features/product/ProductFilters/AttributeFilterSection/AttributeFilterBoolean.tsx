@@ -1,6 +1,6 @@
 "use client";
 
-import { useProductFilterStore } from "@/store/productFilterStore";
+import { useProductFilters } from "@/hooks/useProductFilters";
 import type { FilterOption } from "@/types/Product.types";
 import Checkbox from "@gratia/ui/components/Checkbox";
 import styles from "./AttributeFilterSection.module.scss";
@@ -14,9 +14,8 @@ export default function AttributeFilterBoolean({
   attributeKey,
   values,
 }: AttributeFilterBooleanProps) {
-  const selectedValues =
-    useProductFilterStore((s) => s.selectedAttributes[attributeKey]) ?? [];
-  const toggleAttribute = useProductFilterStore((s) => s.toggleAttribute);
+  const { filters, toggleArrayFilter } = useProductFilters();
+  const selectedValues = filters.attributes[attributeKey] ?? [];
 
   if (!values.length) return null;
 
@@ -35,7 +34,7 @@ export default function AttributeFilterBoolean({
               size="sm"
               label={label}
               checked={selectedValues.includes(opt.value)}
-              onValueChange={() => toggleAttribute(attributeKey, opt.value)}
+              onValueChange={() => toggleArrayFilter(attributeKey, opt.value)}
             />
           </li>
         );

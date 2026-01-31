@@ -32,7 +32,7 @@ export default function AttributeFilterSection({
   };
 
   return (
-    <Collapsible trigger={label} defaultOpen={false}>
+    <Collapsible trigger={label} defaultOpen>
       {renderContent()}
     </Collapsible>
   );

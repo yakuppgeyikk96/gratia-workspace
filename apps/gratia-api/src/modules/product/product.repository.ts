@@ -1,4 +1,4 @@
-import { aliasedTable, and, asc, eq, sql } from "drizzle-orm";
+import { aliasedTable, and, asc, desc, eq, gte, inArray, lte, sql, SQL } from "drizzle-orm";
 import { db } from "../../config/postgres.config";
 import { brands } from "../../db/schema/brand.schema";
 import { categories } from "../../db/schema/category.schema";
@@ -9,9 +9,12 @@ import type {
   ProductListQueryOptions,
   ProductVariant,
   ProductWithRelations,
+  SortOption,
 } from "./types";
 import {
   buildBaseConditions,
+  buildCategoryPathCondition,
+  buildCollectionCondition,
   buildOrderByClause,
   buildPriceConditions,
 } from "./utils/query-builder.utils";
@@ -26,15 +29,63 @@ interface FindProductsResult {
 }
 
 /**
+ * Build filter conditions using Drizzle query builder
+ */
+const buildFilterConditionsForQuery = (
+  categorySlug?: string,
+  collectionSlug?: string,
+  filters?: ProductFilters
+): SQL | undefined => {
+  const conditions: (SQL | undefined)[] = [eq(products.isActive, true)];
+
+  // Category filter
+  if (categorySlug) {
+    conditions.push(buildCategoryPathCondition(categorySlug));
+  }
+
+  // Collection filter
+  if (collectionSlug) {
+    conditions.push(buildCollectionCondition(collectionSlug));
+  }
+
+  // Price filters
+  if (filters) {
+    const priceConditions = buildPriceConditions(filters);
+    conditions.push(...priceConditions);
+  }
+
+  // Brand filter
+  if (filters?.brandSlugs && filters.brandSlugs.length > 0) {
+    conditions.push(inArray(brands.slug, filters.brandSlugs));
+  }
+
+  // Dynamic attribute filters (JSONB)
+  if (filters) {
+    for (const [key, value] of Object.entries(filters)) {
+      if (key === "minPrice" || key === "maxPrice" || key === "brandSlugs") continue;
+
+      if (Array.isArray(value) && value.length > 0) {
+        conditions.push(
+          sql`${products.attributes}->>${key} IN (${sql.join(
+            value.map((v) => sql`${v}`),
+            sql`, `
+          )})`
+        );
+      }
+    }
+  }
+
+  return and(...conditions.filter(Boolean) as SQL[]);
+};
+
+/**
  * Find products with pagination and filtering
  *
- * Uses a single optimized query with:
- * - DISTINCT ON for product group deduplication
- * - LEFT JOINs for brand info (avoids N+1)
- * - Efficient pagination with OFFSET/LIMIT
+ * Uses PostgreSQL DISTINCT ON for deduplication by productGroupId.
+ * This ensures one product per group while maintaining sort order.
  *
  * @param options Query options (categorySlug, collectionSlug, sort, page, limit)
- * @param filters Optional price/attribute filters
+ * @param filters Optional price/attribute/brand filters
  */
 export const findProducts = async (
   options: ProductListQueryOptions,
@@ -43,24 +94,16 @@ export const findProducts = async (
   const { categorySlug, collectionSlug, sort = "newest", page = 1, limit = 12 } = options;
   const offset = (page - 1) * limit;
 
-  // Build WHERE conditions
-  let whereCondition = buildBaseConditions(categorySlug, collectionSlug);
+  // Build WHERE conditions using Drizzle
+  const whereCondition = buildFilterConditionsForQuery(categorySlug, collectionSlug, filters);
 
-  // Add price filters if provided
-  if (filters) {
-    const priceConditions = buildPriceConditions(filters);
-    if (priceConditions.length > 0) {
-      whereCondition = and(whereCondition, ...priceConditions);
-    }
-  }
+  // Build ORDER BY clause
+  const orderByClause = buildOrderByClause(sort);
 
-  // Build ORDER BY - productGroupId must be first for DISTINCT ON
-  const sortClause = buildOrderByClause(sort);
-
-  // Single query: Get distinct products per group with brand info
-  // Uses subquery approach to avoid DISTINCT ON ordering constraint issues
-  const productsQuery = db
-    .select({
+  // Main query: Use selectDistinctOn for deduplication
+  // PostgreSQL DISTINCT ON requires the distinct column to be first in ORDER BY
+  const productRows = await db
+    .selectDistinctOn([products.productGroupId], {
       id: products.id,
       name: products.name,
       slug: products.slug,
@@ -78,39 +121,21 @@ export const findProducts = async (
     .from(products)
     .leftJoin(brands, eq(products.brandId, brands.id))
     .where(whereCondition)
-    .orderBy(asc(products.productGroupId), sortClause)
-    .limit(limit * 3); // Fetch extra to handle group deduplication
+    .orderBy(products.productGroupId, orderByClause)
+    .offset(offset)
+    .limit(limit);
 
-  // Count query: Get total distinct product groups
-  const countQuery = db
+  // Count query: Count distinct product groups
+  const countResult = await db
     .select({
       count: sql<number>`COUNT(DISTINCT ${products.productGroupId})`,
     })
     .from(products)
+    .leftJoin(brands, eq(products.brandId, brands.id))
     .where(whereCondition);
 
-  // Execute both queries in parallel
-  const [productRows, countResult] = await Promise.all([productsQuery, countQuery]);
-
-  // Deduplicate by productGroupId in memory (O(n) with Map)
-  const seenGroups = new Map<string, typeof productRows[0]>();
-  for (const row of productRows) {
-    if (!seenGroups.has(row.productGroupId)) {
-      seenGroups.set(row.productGroupId, row);
-    }
-  }
-
-  // Convert to array and apply pagination
-  const uniqueProducts = Array.from(seenGroups.values());
-
-  // Sort the unique products according to the sort option
-  const sortedProducts = sortUniqueProducts(uniqueProducts, sort);
-
-  // Apply pagination
-  const paginatedProducts = sortedProducts.slice(offset, offset + limit);
-
   // Map to response format
-  const mappedProducts: ProductListItem[] = paginatedProducts.map((row) => ({
+  const mappedProducts: ProductListItem[] = productRows.map((row) => ({
     id: row.id,
     name: row.name,
     slug: row.slug,
@@ -134,38 +159,17 @@ export const findProducts = async (
   return { products: mappedProducts, total };
 };
 
-/**
- * Sort unique products based on sort option
- */
-const sortUniqueProducts = <T extends { price: string; name: string; createdAt: Date }>(
-  products: T[],
-  sort: string
-): T[] => {
-  const sorted = [...products];
-
-  switch (sort) {
-    case "price-low":
-      return sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    case "price-high":
-      return sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-    case "name":
-      return sorted.sort((a, b) => a.name.localeCompare(b.name));
-    case "newest":
-    default:
-      return sorted.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  }
-};
-
 // ============================================================================
 // Filter Options Repository
 // ============================================================================
 
-interface RawFilterData {
+export interface RawFilterData {
+  productGroupId: string;
   price: string;
   brandId: number | null;
   brandName: string | null;
   brandSlug: string | null;
-  attributes: Record<string, any>;
+  attributes: Record<string, unknown>;
   categoryName: string | null;
   categorySlug: string | null;
   parentCategoryName: string | null;
@@ -175,12 +179,8 @@ interface RawFilterData {
 /**
  * Get filter options for products matching criteria
  *
- * Fetches minimal data needed for building filters:
- * - Price range (min/max)
- * - Available brands with counts
- * - Available attribute values with counts (for future use)
- *
- * Uses a single query with brand JOIN.
+ * Uses DISTINCT ON productGroupId to ensure one product per group,
+ * avoiding variant duplication in filter counts.
  */
 export const getFilterOptions = async (
   categorySlug?: string,
@@ -190,7 +190,8 @@ export const getFilterOptions = async (
   const parentCategories = aliasedTable(categories, "parent_categories");
 
   const result = await db
-    .select({
+    .selectDistinctOn([products.productGroupId], {
+      productGroupId: products.productGroupId,
       price: products.price,
       brandId: brands.id,
       brandName: brands.name,
@@ -205,7 +206,8 @@ export const getFilterOptions = async (
     .leftJoin(brands, eq(products.brandId, brands.id))
     .leftJoin(categories, eq(products.categoryId, categories.id))
     .leftJoin(parentCategories, eq(categories.parentId, parentCategories.id))
-    .where(whereCondition);
+    .where(whereCondition)
+    .orderBy(products.productGroupId, desc(products.createdAt));
 
   return result;
 };
@@ -277,7 +279,7 @@ export const findProductBySlug = async (
     discountedPrice: row.discountedPrice,
     stock: row.stock,
     images: row.images as string[],
-    attributes: row.attributes as Record<string, any>,
+    attributes: row.attributes as Record<string, unknown>,
     productGroupId: row.productGroupId,
     categoryId: row.categoryId,
     brandId: row.brandId,
@@ -293,18 +295,18 @@ export const findProductBySlug = async (
     updatedAt: row.updatedAt,
     category: row.categoryIdJoin
       ? {
-          id: row.categoryIdJoin,
-          name: row.categoryName!,
-          slug: row.categorySlug!,
-        }
+        id: row.categoryIdJoin,
+        name: row.categoryName!,
+        slug: row.categorySlug!,
+      }
       : null,
     brand: row.brandIdJoin
       ? {
-          id: row.brandIdJoin,
-          name: row.brandName!,
-          slug: row.brandSlug!,
-          logo: row.brandLogo,
-        }
+        id: row.brandIdJoin,
+        name: row.brandName!,
+        slug: row.brandSlug!,
+        logo: row.brandLogo,
+      }
       : null,
   };
 };
@@ -345,7 +347,7 @@ export const findVariantsByGroupId = async (
     discountedPrice: row.discountedPrice,
     stock: row.stock,
     images: row.images as string[],
-    attributes: row.attributes as Record<string, any>,
+    attributes: row.attributes as Record<string, unknown>,
     isActive: row.isActive,
   }));
 };
@@ -395,10 +397,10 @@ export const findFeaturedProducts = async (
     productGroupId: row.productGroupId,
     brand: row.brandId
       ? {
-          id: row.brandId,
-          name: row.brandName!,
-          slug: row.brandSlug!,
-        }
+        id: row.brandId,
+        name: row.brandName!,
+        slug: row.brandSlug!,
+      }
       : null,
   }));
 };
@@ -412,9 +414,7 @@ export const findFeaturedProducts = async (
  * Avoids N+1 query problem when fetching cart items
  * Returns products in the same order as input IDs (when possible)
  */
-export const findProductsByIds = async (
-  ids: number[]
-): Promise<Product[]> => {
+export const findProductsByIds = async (ids: number[]): Promise<Product[]> => {
   if (ids.length === 0) {
     return [];
   }
@@ -422,9 +422,7 @@ export const findProductsByIds = async (
   const result = await db
     .select()
     .from(products)
-    .where(
-      sql`${products.id} = ANY(${sql.raw(`ARRAY[${ids.join(",")}]`)})`,
-    );
+    .where(sql`${products.id} = ANY(${sql.raw(`ARRAY[${ids.join(",")}]`)})`);
 
   // Create a map for O(1) lookup
   const productMap = new Map(result.map((p) => [p.id, p]));
@@ -432,7 +430,7 @@ export const findProductsByIds = async (
   // Return products in the same order as input IDs (preserve order when fetching for cart)
   return ids
     .map((id) => productMap.get(id))
-    .filter((p): p is typeof result[0] => p !== undefined);
+    .filter((p): p is (typeof result)[0] => p !== undefined);
 };
 
 /**
@@ -440,9 +438,7 @@ export const findProductsByIds = async (
  * Avoids N+1 query problem when validating checkout items
  * Used for guest checkout cart validation
  */
-export const findProductsBySkus = async (
-  skus: string[]
-): Promise<Product[]> => {
+export const findProductsBySkus = async (skus: string[]): Promise<Product[]> => {
   if (skus.length === 0) {
     return [];
   }
@@ -451,6 +447,6 @@ export const findProductsBySkus = async (
     .select()
     .from(products)
     .where(
-      sql`${products.sku} = ANY(${sql.raw(`ARRAY[${skus.map((s) => `'${s}'`).join(",")}]`)})`,
+      sql`${products.sku} = ANY(${sql.raw(`ARRAY[${skus.map((s) => `'${s}'`).join(",")}]`)})`
     );
 };

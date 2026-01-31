@@ -1,11 +1,7 @@
 import { Router, type IRouter } from "express";
 import {
   getProducts,
-  getProductsByCategory,
-  getProductsByCollection,
   getFilters,
-  getFiltersByCategory,
-  getFiltersByCollection,
   getProductBySlug,
   getFeatured,
 } from "./product.controller";
@@ -13,41 +9,19 @@ import {
 const router: IRouter = Router();
 
 // ============================================================================
-// Product List Routes
+// Product Routes
 // ============================================================================
 
 // GET /api/v2/products - Main product listing with query params
+// Supports: categorySlug, collectionSlug, sort, page, limit, filters[...]
 router.get("/", getProducts);
 
 // GET /api/v2/products/featured - Featured products
 router.get("/featured", getFeatured);
 
-// GET /api/v2/products/filters - Filter options for all products
+// GET /api/v2/products/filters - Filter options
+// Supports: categorySlug, collectionSlug query params
 router.get("/filters", getFilters);
-
-// ============================================================================
-// Category Routes
-// ============================================================================
-
-// GET /api/v2/products/category/:categorySlug - Products by category
-router.get("/category/:categorySlug", getProductsByCategory);
-
-// GET /api/v2/products/category/:categorySlug/filters - Filter options for category
-router.get("/category/:categorySlug/filters", getFiltersByCategory);
-
-// ============================================================================
-// Collection Routes
-// ============================================================================
-
-// GET /api/v2/products/collection/:collectionSlug - Products by collection
-router.get("/collection/:collectionSlug", getProductsByCollection);
-
-// GET /api/v2/products/collection/:collectionSlug/filters - Filter options for collection
-router.get("/collection/:collectionSlug/filters", getFiltersByCollection);
-
-// ============================================================================
-// Product Detail Route
-// ============================================================================
 
 // GET /api/v2/products/:slug - Product detail with variants
 // Note: This must be last to avoid catching other routes
