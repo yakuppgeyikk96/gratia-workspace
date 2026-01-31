@@ -1,0 +1,72 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.skeleton {
+  @include flex-shrink(0);
+  padding-block: $spacing-4;
+  padding-inline: $spacing-4;
+  background: $bg-color;
+  @include rounded($radius-md);
+}
+
+.section {
+  margin-bottom: $spacing-4;
+}
+
+.sectionHeading {
+  height: 1.25rem;
+  width: 5rem;
+  margin-bottom: $spacing-2;
+  @include animate-shimmer(2s);
+  @include rounded($radius-sm);
+}
+
+.priceInputs {
+  @include flex(row, flex-start, center, nowrap, $spacing-2);
+  margin-top: $spacing-2;
+}
+
+.priceInput {
+  flex: 1;
+  height: 2.25rem;
+  @include animate-shimmer(2s);
+  @include rounded($radius-sm);
+}
+
+.collapsibleTrigger {
+  height: 2.5rem;
+  margin-bottom: $spacing-2;
+  @include animate-shimmer(2s);
+  @include rounded($radius-sm);
+}
+
+.collapsibleItems {
+  padding-left: $spacing-2;
+}
+
+.collapsibleItem {
+  height: 1.5rem;
+  width: 70%;
+  margin-bottom: $spacing-2;
+  @include animate-shimmer(2s);
+  @include rounded($radius-sm);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.attributeItem {
+  height: 1.25rem;
+  width: 60%;
+  margin-bottom: $spacing-2;
+  @include animate-shimmer(2s);
+  @include rounded($radius-sm);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}

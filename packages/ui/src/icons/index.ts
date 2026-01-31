@@ -17,6 +17,7 @@ export { default as IconDash } from "./IconDash";
 export { default as IconHeart } from "./IconHeart";
 export { default as IconHome } from "./IconHome";
 export { default as IconInstagram } from "./IconInstagram";
+export { default as IconListFilter } from "./IconListFilter";
 export { default as IconMenuUp } from "./IconMenuUp";
 export { default as IconPassword } from "./IconPassword";
 export { default as IconPerson } from "./IconPerson";
@@ -29,3 +30,4 @@ export { default as IconTranslate } from "./IconTranslate";
 export { default as IconVisibility } from "./IconVisibility";
 export { default as IconWhatsapp } from "./IconWhatsapp";
 export { default as IconX } from "./IconX";
+

@@ -8,6 +8,7 @@ import AttributeFilterSection from "./AttributeFilterSection";
 import BrandFilter from "./BrandFilter";
 import CategoryFilter from "./CategoryFilter";
 import PriceRangeFilter from "./PriceRangeFilter";
+import ProductFiltersSkeleton from "./ProductFiltersSkeleton";
 import styles from "./ProductFilters.module.scss";
 
 export default function ProductFilters() {
@@ -16,6 +17,10 @@ export default function ProductFilters() {
     (s) => s.selectedCategorySlug,
   );
   const { hasAppliedFilters, applyFilters, clearFilters } = useProductFilters();
+
+  if (filterOptions === null) {
+    return <ProductFiltersSkeleton />;
+  }
 
   const categories = filterOptions?.categories;
   const showCategoryFilter = categories && categories.length > 1;

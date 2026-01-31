@@ -1,3 +1,4 @@
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 @use "@gratia/ui/styles/core/_colors.scss" as *;
 @use "@gratia/ui/styles/core/_spacing.scss" as *;
 @use "@gratia/ui/styles/core/_variables.scss" as *;
@@ -36,6 +37,10 @@ $panel-z: 1001;
   flex-direction: column;
   outline: none;
   animation: slideIn 0.25s ease-out;
+
+  @include media-sm {
+    max-height: calc(100vh - 5rem);
+  }
 }
 
 @keyframes slideIn {
@@ -65,6 +70,7 @@ $panel-z: 1001;
 
 .body {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: $spacing-4;
 }

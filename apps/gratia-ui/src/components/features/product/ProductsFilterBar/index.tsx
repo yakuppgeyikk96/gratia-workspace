@@ -1,7 +1,7 @@
 "use client";
 
 import { useProductFilterStore } from "@/store/productFilterStore";
-import IconColumnsGap from "@gratia/ui/icons/IconColumnsGap";
+import IconListFilter from "@gratia/ui/icons/IconListFilter";
 import styles from "./ProductsFilterBar.module.scss";
 
 export default function ProductsFilterBar() {
@@ -15,7 +15,7 @@ export default function ProductsFilterBar() {
         onClick={openFilterDrawer}
         aria-label="Open filters"
       >
-        <IconColumnsGap size={22} />
+        <IconListFilter size={22} />
         <span className={styles.triggerLabel}>Filters</span>
       </button>
     </div>
