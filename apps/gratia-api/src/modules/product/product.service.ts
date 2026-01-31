@@ -1,26 +1,31 @@
 import {
-  findProducts,
-  getFilterOptions,
-  findProductBySlug,
-  findVariantsByGroupId,
-  findFeaturedProducts,
-} from "./product.repository";
+  getAttributeLabel,
+  getAttributeSortOrder,
+} from "./constants/common-attributes";
 import {
-  getCachedCategoryProducts,
-  getCachedCollectionProducts,
   cacheCategoryProducts,
   cacheCollectionProducts,
+  getCachedCategoryProducts,
+  getCachedCollectionProducts,
 } from "./product.cache";
+import {
+  findFeaturedProducts,
+  findProductBySlug,
+  findProducts,
+  findVariantsByGroupId,
+  getFilterOptions,
+  type RawFilterData,
+} from "./product.repository";
 import type {
-  ProductListQueryOptions,
-  ProductListResponse,
-  ProductFilters,
-  FilterOptionsResponse,
-  FilterOption,
   AttributeFilterOption,
   CategoryFilterOption,
+  FilterOption,
+  FilterOptionsResponse,
   ProductDetailResponse,
+  ProductFilters,
   ProductListItem,
+  ProductListQueryOptions,
+  ProductListResponse,
 } from "./types";
 
 // ============================================================================
@@ -77,22 +82,69 @@ export const getProductList = async (
 };
 
 // ============================================================================
-// Filter Options Service
+// Filter Options Service (Faceted Search)
 // ============================================================================
 
 /**
- * Build filter options from raw product data
+ * Check which filters a product fails to match
+ * Returns a Set of filter keys that the product doesn't pass
+ */
+const getFailedFilters = (
+  row: RawFilterData,
+  filters: ProductFilters | undefined
+): Set<string> => {
+  const failed = new Set<string>();
+  if (!filters) return failed;
+
+  // Price filter check
+  const price = parseFloat(row.price);
+  if (
+    (filters.minPrice !== undefined && price < filters.minPrice) ||
+    (filters.maxPrice !== undefined && price > filters.maxPrice)
+  ) {
+    failed.add("price");
+  }
+
+  // Brand filter check
+  if (filters.brandSlugs?.length) {
+    if (!row.brandSlug || !filters.brandSlugs.includes(row.brandSlug)) {
+      failed.add("brand");
+    }
+  }
+
+  // Attribute filter checks
+  for (const [key, values] of Object.entries(filters)) {
+    if (key === "minPrice" || key === "maxPrice" || key === "brandSlugs") continue;
+    if (Array.isArray(values) && values.length > 0) {
+      const attrValue = row.attributes?.[key];
+      if (attrValue === undefined || attrValue === null || !values.includes(String(attrValue))) {
+        failed.add(key);
+      }
+    }
+  }
+
+  return failed;
+};
+
+/**
+ * Check if product should be counted for a specific filter
+ * Faceted search: count if ONLY the specified filter failed (or none failed)
+ */
+const shouldCountFor = (failedFilters: Set<string>, filterKey: string): boolean => {
+  return failedFilters.size === 0 || (failedFilters.size === 1 && failedFilters.has(filterKey));
+};
+
+/**
+ * Build filter options with faceted counts in a single pass
  *
- * Processes products to extract:
- * - Price range (min/max)
- * - Brand options with counts
- * - Attribute options with counts (prepared for future use)
- *
- * Time complexity: O(n) where n = number of products
+ * Faceted search: each filter's counts include products that match
+ * all OTHER filters (but not necessarily that filter itself).
+ * This ensures selected filter values don't show 0 count.
  */
 export const getFilterOptionsForProducts = async (
   categorySlug?: string,
-  collectionSlug?: string
+  collectionSlug?: string,
+  activeFilters?: ProductFilters
 ): Promise<FilterOptionsResponse> => {
   const rawData = await getFilterOptions(categorySlug, collectionSlug);
 
@@ -105,21 +157,37 @@ export const getFilterOptionsForProducts = async (
     };
   }
 
-  // Process data in single pass O(n)
+  // Accumulators for single-pass calculation
   let minPrice = Infinity;
   let maxPrice = -Infinity;
+
   const brandCounts = new Map<string, { id: number; name: string; slug: string; count: number }>();
   const categoryCounts = new Map<string, { name: string; slug: string; count: number; parentSlug: string | null; parentName: string | null }>();
   const attributeValues = new Map<string, Map<string, number>>();
 
-  for (const row of rawData) {
-    // Price range
-    const price = parseFloat(row.price);
-    if (price < minPrice) minPrice = price;
-    if (price > maxPrice) maxPrice = price;
+  // Get all attribute keys from active filters to track their faceted counts
+  const activeAttributeKeys = new Set<string>();
+  if (activeFilters) {
+    for (const key of Object.keys(activeFilters)) {
+      if (key !== "minPrice" && key !== "maxPrice" && key !== "brandSlugs") {
+        activeAttributeKeys.add(key);
+      }
+    }
+  }
 
-    // Brand counts
-    if (row.brandId && row.brandSlug) {
+  // Single pass through all products
+  for (const row of rawData) {
+    const price = parseFloat(row.price);
+    const failedFilters = getFailedFilters(row, activeFilters);
+
+    // Price range: Include if only "price" filter failed (faceted)
+    if (shouldCountFor(failedFilters, "price")) {
+      if (price < minPrice) minPrice = price;
+      if (price > maxPrice) maxPrice = price;
+    }
+
+    // Brand count: Include if only "brand" filter failed (faceted)
+    if (shouldCountFor(failedFilters, "brand") && row.brandId && row.brandSlug) {
       const existing = brandCounts.get(row.brandSlug);
       if (existing) {
         existing.count++;
@@ -133,11 +201,11 @@ export const getFilterOptionsForProducts = async (
       }
     }
 
-    // Category counts
-    if (row.categorySlug) {
-      const existingCat = categoryCounts.get(row.categorySlug);
-      if (existingCat) {
-        existingCat.count++;
+    // Category count: Include only if ALL filters pass
+    if (failedFilters.size === 0 && row.categorySlug) {
+      const existing = categoryCounts.get(row.categorySlug);
+      if (existing) {
+        existing.count++;
       } else {
         categoryCounts.set(row.categorySlug, {
           name: row.categoryName ?? row.categorySlug,
@@ -149,44 +217,58 @@ export const getFilterOptionsForProducts = async (
       }
     }
 
-    // Attribute values (for future attribute filtering)
+    // Attribute counts: For each attribute, include if only THAT attribute failed (faceted)
     if (row.attributes && typeof row.attributes === "object") {
-      for (const [key, value] of Object.entries(row.attributes)) {
-        if (value === null || value === undefined) continue;
+      for (const [attrKey, attrValue] of Object.entries(row.attributes)) {
+        if (attrValue === undefined || attrValue === null) continue;
 
-        const stringValue = String(value);
-        let keyMap = attributeValues.get(key);
-        if (!keyMap) {
-          keyMap = new Map<string, number>();
-          attributeValues.set(key, keyMap);
+        // Check if this row should count for this attribute (faceted)
+        if (shouldCountFor(failedFilters, attrKey)) {
+          let valueMap = attributeValues.get(attrKey);
+          if (!valueMap) {
+            valueMap = new Map<string, number>();
+            attributeValues.set(attrKey, valueMap);
+          }
+          const stringValue = String(attrValue);
+          valueMap.set(stringValue, (valueMap.get(stringValue) ?? 0) + 1);
         }
-
-        keyMap.set(stringValue, (keyMap.get(stringValue) ?? 0) + 1);
       }
     }
   }
 
-  // Build brand options
+  // Build response arrays
   const brands: FilterOption[] = Array.from(brandCounts.values())
     .map((b) => ({ value: b.slug, count: b.count }))
     .sort((a, b) => b.count - a.count);
 
-  // Build category options
   const categories: CategoryFilterOption[] = Array.from(categoryCounts.values())
-    .map((c) => ({ value: c.slug, label: c.name, count: c.count, parentSlug: c.parentSlug, parentLabel: c.parentName }))
+    .map((c) => ({
+      value: c.slug,
+      label: c.name,
+      count: c.count,
+      parentSlug: c.parentSlug,
+      parentLabel: c.parentName,
+    }))
     .sort((a, b) => b.count - a.count);
 
-  // Build attribute options (prepared for future use)
   const attributes: AttributeFilterOption[] = Array.from(attributeValues.entries())
     .map(([key, valueMap]) => ({
       key,
-      label: formatAttributeLabel(key),
+      label: getAttributeLabel(key),
       type: "enum" as const,
       values: Array.from(valueMap.entries())
         .map(([value, count]) => ({ value, count }))
         .sort((a, b) => b.count - a.count),
     }))
-    .filter((attr) => attr.values.length > 1); // Only include if there are multiple options
+    .filter((attr) => attr.values.length > 1)
+    .sort((a, b) => {
+      const orderA = getAttributeSortOrder(a.key);
+      const orderB = getAttributeSortOrder(b.key);
+      if (orderA !== orderB) return orderA - orderB;
+      const countA = a.values.reduce((sum, v) => sum + v.count, 0);
+      const countB = b.values.reduce((sum, v) => sum + v.count, 0);
+      return countB - countA;
+    });
 
   return {
     priceRange: {
@@ -197,17 +279,6 @@ export const getFilterOptionsForProducts = async (
     attributes,
     categories,
   };
-};
-
-/**
- * Format attribute key to human-readable label
- */
-const formatAttributeLabel = (key: string): string => {
-  return key
-    .replace(/([A-Z])/g, " $1")
-    .replace(/[_-]/g, " ")
-    .trim()
-    .replace(/^\w/, (c) => c.toUpperCase());
 };
 
 // ============================================================================
@@ -265,7 +336,7 @@ export const getProductDetail = async (
  * Time complexity: O(v * a) where v = variants, a = attributes per variant
  */
 const buildAvailableOptions = (
-  variants: { attributes: Record<string, any> }[]
+  variants: { attributes: Record<string, unknown> }[]
 ): Record<string, string[]> => {
   const optionsMap = new Map<string, Set<string>>();
 

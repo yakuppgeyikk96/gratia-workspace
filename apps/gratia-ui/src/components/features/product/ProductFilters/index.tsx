@@ -1,6 +1,8 @@
 "use client";
 
+import { useProductFilters } from "@/hooks/useProductFilters";
 import { useProductFilterStore } from "@/store/productFilterStore";
+import Button from "@gratia/ui/components/Button";
 import Collapsible from "@gratia/ui/components/Collapsible";
 import AttributeFilterSection from "./AttributeFilterSection";
 import BrandFilter from "./BrandFilter";
@@ -13,6 +15,7 @@ export default function ProductFilters() {
   const selectedCategorySlug = useProductFilterStore(
     (s) => s.selectedCategorySlug,
   );
+  const { hasAppliedFilters, applyFilters, clearFilters } = useProductFilters();
 
   const categories = filterOptions?.categories;
   const showCategoryFilter = categories && categories.length > 1;
@@ -27,7 +30,7 @@ export default function ProductFilters() {
         </Collapsible>
       ) : null}
       {filterOptions?.brands?.length ? (
-        <Collapsible trigger="Brand" defaultOpen={false}>
+        <Collapsible trigger="Brand" defaultOpen>
           <BrandFilter brands={filterOptions.brands} />
         </Collapsible>
       ) : null}
@@ -35,6 +38,22 @@ export default function ProductFilters() {
         filterOptions?.attributes?.map((attr) => (
           <AttributeFilterSection key={attr.key} attribute={attr} />
         ))}
+
+      {/* Filter Actions */}
+      <div className={styles.actions}>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={applyFilters}
+        >
+          Apply Filters
+        </Button>
+        {hasAppliedFilters && (
+          <Button variant="ghost" size="sm" onClick={clearFilters}>
+            Clear All
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

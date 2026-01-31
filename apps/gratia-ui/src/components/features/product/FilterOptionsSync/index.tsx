@@ -1,6 +1,5 @@
 "use client";
 
-import { getFilterOptions } from "@/actions/product";
 import { useProductFilterStore } from "@/store/productFilterStore";
 import type { FilterOptionsResponse } from "@/types/Product.types";
 import { useEffect } from "react";
@@ -29,9 +28,7 @@ export default function FilterOptionsSync({
     (s) => s.setIsCollectionContext
   );
   const setCollectionSlug = useProductFilterStore((s) => s.setCollectionSlug);
-  const selectedCategorySlug = useProductFilterStore(
-    (s) => s.selectedCategorySlug
-  );
+  const setParentCategorySlug = useProductFilterStore((s) => s.setParentCategorySlug);
   const selectCategory = useProductFilterStore((s) => s.selectCategory);
 
   // Sync initial options and collection context
@@ -39,39 +36,15 @@ export default function FilterOptionsSync({
     setFilterOptions(options ?? null);
     setIsCollectionContext(!!collectionSlug);
     setCollectionSlug(collectionSlug ?? null);
+    setParentCategorySlug(parentCategorySlug ?? null);
     return () => {
       setFilterOptions(null);
       setIsCollectionContext(false);
       setCollectionSlug(null);
+      setParentCategorySlug(null);
       selectCategory(null);
     };
-  }, [options, collectionSlug, setFilterOptions, setIsCollectionContext, setCollectionSlug, selectCategory]);
-
-  // Re-fetch filters when category changes within a collection or broad category
-  useEffect(() => {
-    if (!collectionSlug && !parentCategorySlug) return;
-
-    if (selectedCategorySlug === null) {
-      // Reset to original filters
-      setFilterOptions(options ?? null);
-      return;
-    }
-
-    let cancelled = false;
-    const fetchPromise = collectionSlug
-      ? getFilterOptions(selectedCategorySlug, collectionSlug)
-      : getFilterOptions(selectedCategorySlug);
-
-    fetchPromise.then((res) => {
-      if (!cancelled && res?.data) {
-        setFilterOptions(res.data);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedCategorySlug, collectionSlug, parentCategorySlug, options, setFilterOptions]);
+  }, [options, collectionSlug, parentCategorySlug, setFilterOptions, setIsCollectionContext, setCollectionSlug, setParentCategorySlug, selectCategory]);
 
   return null;
 }

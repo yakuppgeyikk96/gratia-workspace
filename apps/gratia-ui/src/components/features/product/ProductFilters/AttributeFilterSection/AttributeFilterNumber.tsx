@@ -1,8 +1,8 @@
 "use client";
 
-import { useProductFilterStore } from "@/store/productFilterStore";
+import { useProductFilters } from "@/hooks/useProductFilters";
 import type { FilterOption } from "@/types/Product.types";
-import Input from "@gratia/ui/components/Input";
+import Checkbox from "@gratia/ui/components/Checkbox";
 import styles from "./AttributeFilterSection.module.scss";
 
 interface AttributeFilterNumberProps {
@@ -10,93 +10,39 @@ interface AttributeFilterNumberProps {
   values: FilterOption[];
 }
 
-function getNumericRange(values: FilterOption[]): { min: number; max: number } | null {
-  if (!values.length) return null;
-  const numbers = values
-    .map((v) => Number(v.value))
-    .filter((n) => !Number.isNaN(n));
-  if (!numbers.length) return null;
-  return {
-    min: Math.min(...numbers),
-    max: Math.max(...numbers),
-  };
+function formatValueLabel(value: string, count: number): string {
+  return `${value} (${count})`;
 }
 
 export default function AttributeFilterNumber({
   attributeKey,
   values,
 }: AttributeFilterNumberProps) {
-  const range = getNumericRange(values);
-  const selectedRange =
-    useProductFilterStore((s) => s.selectedAttributeRanges[attributeKey]) ?? {
-      min: null,
-      max: null,
-    };
-  const setAttributeRange = useProductFilterStore((s) => s.setAttributeRange);
+  const { filters, toggleArrayFilter } = useProductFilters();
+  const selectedValues = filters.attributes[attributeKey] ?? [];
 
-  if (!range || range.min >= range.max) return null;
+  if (!values.length) return null;
 
-  const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    if (raw === "") {
-      setAttributeRange(attributeKey, null, selectedRange.max);
-      return;
-    }
-    const num = Number(raw);
-    if (!Number.isNaN(num)) setAttributeRange(attributeKey, num, selectedRange.max);
-  };
-
-  const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    if (raw === "") {
-      setAttributeRange(attributeKey, selectedRange.min, null);
-      return;
-    }
-    const num = Number(raw);
-    if (!Number.isNaN(num)) setAttributeRange(attributeKey, selectedRange.min, num);
-  };
+  // Sort values numerically
+  const sortedValues = [...values].sort((a, b) => {
+    const numA = Number(a.value);
+    const numB = Number(b.value);
+    if (isNaN(numA) || isNaN(numB)) return a.value.localeCompare(b.value);
+    return numA - numB;
+  });
 
   return (
-    <div className={styles.inputs}>
-      <div className={styles.inputGroup}>
-        <label htmlFor={`attr-${attributeKey}-min`} className={styles.label}>
-          Min
-        </label>
-        <Input
-          id={`attr-${attributeKey}-min`}
-          type="number"
-          min={range.min}
-          max={range.max}
-          step={1}
-          size="sm"
-          variant="outlined"
-          placeholder={String(range.min)}
-          value={selectedRange.min !== null ? selectedRange.min : ""}
-          onChange={handleMinChange}
-          className={styles.input}
-          aria-label={`Minimum ${attributeKey}`}
-        />
-      </div>
-      <span className={styles.separator}>–</span>
-      <div className={styles.inputGroup}>
-        <label htmlFor={`attr-${attributeKey}-max`} className={styles.label}>
-          Max
-        </label>
-        <Input
-          id={`attr-${attributeKey}-max`}
-          type="number"
-          min={range.min}
-          max={range.max}
-          step={1}
-          size="sm"
-          variant="outlined"
-          placeholder={String(range.max)}
-          value={selectedRange.max !== null ? selectedRange.max : ""}
-          onChange={handleMaxChange}
-          className={styles.input}
-          aria-label={`Maximum ${attributeKey}`}
-        />
-      </div>
-    </div>
+    <ul className={styles.list} role="list">
+      {sortedValues.map((opt) => (
+        <li key={opt.value} className={styles.item}>
+          <Checkbox
+            size="sm"
+            label={formatValueLabel(opt.value, opt.count)}
+            checked={selectedValues.includes(opt.value)}
+            onValueChange={() => toggleArrayFilter(attributeKey, opt.value)}
+          />
+        </li>
+      ))}
+    </ul>
   );
 }

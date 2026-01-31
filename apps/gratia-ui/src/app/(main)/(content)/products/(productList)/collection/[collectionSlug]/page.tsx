@@ -1,13 +1,16 @@
-import {
-  getFilterOptions,
-  getProductsByCollection,
-} from "@/actions/product";
+import { getFilterOptions, getProducts } from "@/actions/product";
 import FilterOptionsSync from "@/components/features/product/FilterOptionsSync";
 import ProductList from "@/components/features/product/ProductList";
+import {
+  parseFiltersFromSearchParams,
+  parsePageFromSearchParams,
+  parseSortFromSearchParams,
+} from "@/lib/filterUtils";
+import { SortOptions } from "@/types/Product.types";
 
 interface CollectionProductsPageProps {
   params: Promise<{ collectionSlug: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export default async function CollectionProductsPage({
@@ -15,17 +18,26 @@ export default async function CollectionProductsPage({
   searchParams,
 }: CollectionProductsPageProps) {
   const { collectionSlug } = await params;
-  const { page } = await searchParams;
+  const resolvedSearchParams = await searchParams;
 
-  const pageNumber = page ? parseInt(page, 10) : 1;
-  const validPage = isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber;
+  // Parse query parameters
+  const page = parsePageFromSearchParams(resolvedSearchParams);
+  const sort = parseSortFromSearchParams(resolvedSearchParams) as SortOptions | undefined;
+  const filters = parseFiltersFromSearchParams(resolvedSearchParams);
 
+  // Fetch products and filters in parallel
+  // Pass filters to getFilterOptions for faceted search counts
   const [productsRes, filtersRes] = await Promise.all([
-    getProductsByCollection(collectionSlug, {
-      page: validPage,
-      limit: 12,
-    }),
-    getFilterOptions(undefined, collectionSlug),
+    getProducts(
+      {
+        collectionSlug,
+        page,
+        limit: 12,
+        sort,
+      },
+      filters
+    ),
+    getFilterOptions(undefined, collectionSlug, filters),
   ]);
 
   const data = productsRes?.data;

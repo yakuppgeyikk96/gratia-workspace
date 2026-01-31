@@ -154,7 +154,7 @@ export const AllColors: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Tüm renklerin karşılaştırması",
+        story: "Comparing all color variants",
       },
     },
   },
