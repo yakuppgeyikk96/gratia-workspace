@@ -4,6 +4,7 @@ import express from "express";
 import helmet from "helmet";
 import { connectRedis, routesConfig, validateEnvironment } from "./config";
 import { testPostgresConnection } from "./config/postgres.config";
+import { startOrderCleanupJob } from "./modules/order/order-cleanup.service";
 import stripeWebhookRoutes from "./modules/webhooks/stripe.routes";
 import { requestLogger } from "./shared/middlewares/request-logger.middleware";
 import {
@@ -94,6 +95,9 @@ app.get("/api/test-postgres", async (_req, res) => {
 });
 
 routesConfig(app);
+
+// Start scheduled jobs
+startOrderCleanupJob();
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "0.0.0.0";

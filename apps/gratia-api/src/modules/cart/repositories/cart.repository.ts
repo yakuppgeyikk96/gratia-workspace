@@ -1,4 +1,4 @@
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "../../../config/postgres.config";
 import {
   type Cart,
@@ -404,14 +404,15 @@ export const decreaseProductStock = async (
 ): Promise<void> => {
   if (items.length === 0) return;
 
-  // Use transaction for atomicity
+  // Use transaction with pessimistic locking for atomicity
   await db.transaction(async (tx) => {
     for (const item of items) {
-      const [product] = await tx
-        .select({ stock: products.stock })
-        .from(products)
-        .where(eq(products.sku, item.sku))
-        .limit(1);
+      // SELECT ... FOR UPDATE to prevent concurrent reads from seeing stale stock
+      const result = await tx.execute<{ stock: number }>(
+        sql`SELECT stock FROM products WHERE sku = ${item.sku} LIMIT 1 FOR UPDATE`
+      );
+
+      const product = result[0];
 
       if (!product) {
         throw new Error(`Product not found: ${item.sku}`);

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, lt } from "drizzle-orm";
 import { db } from "../../config/postgres.config";
 import {
   type Address,
@@ -155,4 +155,24 @@ export const updateOrderPaymentStatus = async (
     .returning();
 
   return updatedOrder || null;
+};
+
+/**
+ * Find orders with PENDING payment status older than given minutes
+ * Used by cleanup job to detect abandoned/orphan orders
+ */
+export const findPendingOrdersOlderThan = async (
+  minutes: number
+): Promise<Order[]> => {
+  const cutoffDate = new Date(Date.now() - minutes * 60 * 1000);
+
+  return await db
+    .select()
+    .from(orders)
+    .where(
+      and(
+        eq(orders.paymentStatus, PaymentStatus.PENDING),
+        lt(orders.createdAt, cutoffDate)
+      )
+    );
 };

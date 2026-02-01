@@ -11,6 +11,13 @@ import { generateOrderNumber } from "../order/order.helpers";
 import { updateOrderPaymentIntentId } from "../order/order.repository";
 import { createOrderFromSession } from "../order/order.service";
 import {
+  reserveStockForCheckout,
+  releaseStockReservation,
+  commitStockReservation,
+  checkStockAvailability,
+  getReservationStatus,
+} from "../cart";
+import {
   calculateShippingCost,
   getAvailableShippingMethodsService,
   validateShippingMethodService,
@@ -53,6 +60,14 @@ export const createCheckoutSessionService = async (
 
   // Calculate initial pricing
   const pricing = calculateInitialPricing(cartSnapshot);
+
+  // Generate session token first so we can use it for stock reservation
+  // Reserve stock in Redis (locks stock for other checkout sessions)
+  const stockItems = items.map((item) => ({
+    sku: item.sku,
+    quantity: item.quantity,
+  }));
+  await reserveStockForCheckout(sessionToken, stockItems);
 
   // Create checkout session
   const session: CheckoutSession = {
@@ -282,6 +297,29 @@ export const completeCheckoutService = async (
       CHECKOUT_MESSAGES.CASH_ON_DELIVERY_NOT_SUPPORTED,
       ErrorCode.BAD_REQUEST
     );
+  }
+
+  // Re-validate stock and ensure reservation is still active
+  // Stock lock TTL (15min) may have expired before session TTL (20min)
+  const stockItems = session.cartSnapshot.items.map((item) => ({
+    sku: item.sku,
+    quantity: item.quantity,
+  }));
+
+  const reservationStatus = await getReservationStatus(sessionToken);
+  if (reservationStatus.length === 0) {
+    // Locks expired - re-reserve stock before proceeding
+    await reserveStockForCheckout(sessionToken, stockItems);
+  } else {
+    // Locks exist - verify stock is still sufficient
+    const availability = await checkStockAvailability(stockItems);
+    if (!availability.available) {
+      const failedSkus = availability.failures.map((f) => f.sku).join(", ");
+      throw new AppError(
+        `Insufficient stock for: ${failedSkus}`,
+        ErrorCode.CONFLICT
+      );
+    }
   }
 
   const completedSession: CheckoutSession = {

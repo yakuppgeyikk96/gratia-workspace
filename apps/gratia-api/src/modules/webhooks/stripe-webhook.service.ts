@@ -1,6 +1,7 @@
 import type Stripe from "stripe";
-import { PaymentStatus } from "../../db/schema/order.schema";
+import { PaymentStatus, type OrderItem } from "../../db/schema/order.schema";
 import { sendMail } from "../../shared/services";
+import { commitStockReservation, releaseStockReservation } from "../cart";
 import {
   findOrderByPaymentIntentId,
   updateOrderPaymentStatus,
@@ -25,8 +26,29 @@ const getPaymentIntentIdFromEvent = (event: Stripe.Event): string | null => {
   return null;
 };
 
+const getSessionTokenFromEvent = (event: Stripe.Event): string => {
+  if (
+    event.type === "payment_intent.succeeded" ||
+    event.type === "payment_intent.payment_failed" ||
+    event.type === "payment_intent.canceled"
+  ) {
+    const pi = event.data.object as Stripe.PaymentIntent;
+    return pi.metadata?.sessionToken || "";
+  }
+
+  if (event.type === "charge.refunded") {
+    const charge = event.data.object as Stripe.Charge;
+    const pi = charge.payment_intent;
+    if (typeof pi === "object" && pi?.metadata) {
+      return pi.metadata.sessionToken || "";
+    }
+  }
+
+  return "";
+};
+
 export const handleStripeWebhookEvent = async (
-  event: Stripe.Event
+  event: Stripe.Event,
 ): Promise<void> => {
   const paymentIntentId = getPaymentIntentIdFromEvent(event);
 
@@ -44,7 +66,7 @@ export const handleStripeWebhookEvent = async (
       paymentIntentId,
       "event:",
       event.id,
-      event.type
+      event.type,
     );
     return;
   }
@@ -76,6 +98,39 @@ export const handleStripeWebhookEvent = async (
 
   await updateOrderPaymentStatus(order.id, nextStatus);
 
+  // Handle stock based on payment outcome
+  if (nextStatus === PaymentStatus.PAID) {
+    // Commit stock reservation: decrease DB stock and release Redis locks
+    const sessionToken = getSessionTokenFromEvent(event);
+    const orderItems = order.items as OrderItem[];
+    const stockItems = orderItems.map((item) => ({
+      sku: item.sku,
+      quantity: item.quantity,
+    }));
+
+    try {
+      await commitStockReservation(sessionToken, stockItems);
+    } catch (err) {
+      console.error(
+        "[stripe-webhook] Failed to commit stock reservation for order:",
+        order.orderNumber,
+        err,
+      );
+    }
+  } else if (nextStatus === PaymentStatus.FAILED) {
+    // Release stock locks so other customers can purchase
+    const sessionToken = getSessionTokenFromEvent(event);
+    try {
+      await releaseStockReservation(sessionToken);
+    } catch (err) {
+      console.error(
+        "[stripe-webhook] Failed to release stock reservation for order:",
+        order.orderNumber,
+        err,
+      );
+    }
+  }
+
   // Send confirmation email once payment is marked as PAID
   if (nextStatus === PaymentStatus.PAID) {
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
@@ -101,4 +156,3 @@ export const handleStripeWebhookEvent = async (
     });
   }
 };
-
