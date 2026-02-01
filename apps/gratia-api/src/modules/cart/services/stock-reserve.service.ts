@@ -127,16 +127,10 @@ export const releaseStockReservation = async (
 ): Promise<void> => {
   const client = getRedisClient();
   const pattern = CART_REDIS_KEYS.STOCK_LOCK_PATTERN(sessionId);
-  console.log("[stock-reserve] releaseStockReservation called with sessionId:", sessionId);
-  console.log("[stock-reserve] Looking for keys with pattern:", pattern);
   const keys = await client.keys(pattern);
-  console.log("[stock-reserve] Found keys to delete:", keys);
 
   if (keys.length > 0) {
     await client.del(keys);
-    console.log("[stock-reserve] Deleted keys:", keys);
-  } else {
-    console.log("[stock-reserve] No keys found to delete");
   }
 };
 
