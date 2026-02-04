@@ -26,6 +26,7 @@ export default function HeroBackground({
   useEmblaAutoplay({
     emblaApi,
     interval: autoplayInterval,
+    initialDelay: autoplayInterval * 2,
     enabled: images.length > 1,
   });
 
@@ -60,10 +61,10 @@ export default function HeroBackground({
                 src={imageSrc}
                 alt={`${imageAlt} - Slide ${index + 1}`}
                 fill
-                priority={index === 0}
+                priority={index <= 1}
                 className={styles.backgroundImage}
                 sizes="50vw"
-                fetchPriority={index === 0 ? "high" : "auto"}
+                fetchPriority={index <= 1 ? "high" : "auto"}
               />
             </div>
           ))}

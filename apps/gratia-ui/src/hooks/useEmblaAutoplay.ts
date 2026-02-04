@@ -6,15 +6,18 @@ type EmblaApi = ReturnType<typeof useEmblaCarousel>[1];
 interface UseEmblaAutoplayOptions {
   emblaApi: EmblaApi;
   interval: number;
+  initialDelay?: number;
   enabled: boolean;
 }
 
 export function useEmblaAutoplay({
   emblaApi,
   interval,
+  initialDelay,
   enabled,
 }: UseEmblaAutoplayOptions) {
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
+  const initialDelayRef = useRef<NodeJS.Timeout | null>(null);
 
   const autoplay = useCallback(() => {
     if (!emblaApi) return;
@@ -37,13 +40,21 @@ export function useEmblaAutoplay({
     };
 
     const stopAutoplay = () => {
+      if (initialDelayRef.current) {
+        clearTimeout(initialDelayRef.current);
+        initialDelayRef.current = null;
+      }
       if (autoplayRef.current) {
         clearInterval(autoplayRef.current);
         autoplayRef.current = null;
       }
     };
 
-    startAutoplay();
+    if (initialDelay && initialDelay > 0) {
+      initialDelayRef.current = setTimeout(startAutoplay, initialDelay);
+    } else {
+      startAutoplay();
+    }
 
     const emblaNode = emblaApi.rootNode();
     emblaNode.addEventListener("mouseenter", stopAutoplay);
@@ -54,5 +65,5 @@ export function useEmblaAutoplay({
       emblaNode.removeEventListener("mouseenter", stopAutoplay);
       emblaNode.removeEventListener("mouseleave", startAutoplay);
     };
-  }, [emblaApi, autoplay, interval, enabled]);
+  }, [emblaApi, autoplay, interval, initialDelay, enabled]);
 }
