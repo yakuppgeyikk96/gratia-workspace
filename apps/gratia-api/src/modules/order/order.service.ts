@@ -4,7 +4,39 @@ import {
   generateOrderNumber,
   mapCheckoutSessionToOrder,
 } from "./order.helpers";
-import { createOrder } from "./order.repository";
+import { createOrder, findOrdersByUserIdPaginated } from "./order.repository";
+
+export interface UserOrdersResponse {
+  orders: Order[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export const getUserOrders = async (
+  userId: number,
+  page: number = 1,
+  limit: number = 10
+): Promise<UserOrdersResponse> => {
+  const { orders, total } = await findOrdersByUserIdPaginated(
+    userId,
+    page,
+    limit
+  );
+
+  return {
+    orders,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
 
 export const createOrderFromSession = async (
   session: CheckoutSession,

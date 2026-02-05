@@ -25,13 +25,13 @@ describe("ProductCardActions", () => {
 
     (useCartStore as unknown as Mock).mockImplementation(
       (
-        selector: (state: { getItemCount: (sku: string) => number }) => number
+        selector: (state: { getItemCount: (sku: string) => number }) => number,
       ) => {
         const state = {
           getItemCount: mockGetItemCount,
         };
         return selector(state);
-      }
+      },
     );
   });
 
@@ -41,11 +41,11 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
+          price="100"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       expect(screen.getByText("$100.00")).toBeInTheDocument();
@@ -56,12 +56,12 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
-          discountedPrice={80}
+          price="100"
+          discountedPrice="80"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       expect(screen.getByText("$80.00")).toBeInTheDocument();
@@ -72,12 +72,12 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
-          discountedPrice={80}
+          price="100"
+          discountedPrice="80"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       const prices = screen.getAllByText(/\$[\d.]+/);
@@ -91,12 +91,12 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
-          discountedPrice={120}
+          price="100"
+          discountedPrice="120"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       expect(screen.getByText("$100.00")).toBeInTheDocument();
@@ -110,11 +110,11 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
+          price="100"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       expect(screen.getByLabelText("Add to cart")).toBeInTheDocument();
@@ -125,11 +125,11 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
+          price="100"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       expect(screen.getByText("2")).toBeInTheDocument();
@@ -142,11 +142,11 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
+          price="100"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       expect(mockGetItemCount).toHaveBeenCalledWith("TEST-001");
@@ -160,11 +160,11 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
+          price="100"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       const addButton = screen.getByLabelText("Add to cart");
@@ -180,10 +180,10 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
+          price="100"
           productSku="TEST-001"
           isLoggedIn={false}
-        />
+        />,
       );
 
       const addButton = screen.getByLabelText("Add to cart");
@@ -198,11 +198,11 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
+          price="100"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       const incrementButton = screen.getByLabelText("Increment quantity");
@@ -217,11 +217,11 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
+          price="100"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       const decrementButton = screen.getByLabelText("Decrement quantity");
@@ -236,11 +236,11 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
+          price="100"
           productSku="TEST-001"
           isLoggedIn={true}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       const incrementButton = screen.getByLabelText("Increment quantity");
@@ -256,11 +256,11 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={0}
+          price="0"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       expect(screen.getByText("$0.00")).toBeInTheDocument();
@@ -271,11 +271,11 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={999999.99}
+          price="999999.99"
           productSku="TEST-001"
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       expect(screen.getByText("$999999.99")).toBeInTheDocument();
@@ -286,11 +286,11 @@ describe("ProductCardActions", () => {
 
       render(
         <ProductCardActions
-          price={100}
+          price="100"
           productSku=""
           isLoggedIn={false}
           onAddToCart={mockOnAddToCart}
-        />
+        />,
       );
 
       expect(mockGetItemCount).toHaveBeenCalledWith("");

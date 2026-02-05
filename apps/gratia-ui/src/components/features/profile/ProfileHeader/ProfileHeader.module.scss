@@ -1,0 +1,43 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.header {
+  @include flex(row, flex-start, center);
+  gap: $spacing-4;
+  @include pb(6);
+  @include border-b($border-1, $border-light);
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: $primary-color;
+  color: white;
+  @include flex-center;
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.userInfo {
+  @include flex-column;
+  gap: $spacing-1;
+}
+
+.name {
+  font-size: $text-xl;
+  font-weight: $font-semibold;
+  margin: 0;
+  color: $text-primary-color;
+}
+
+.email {
+  font-size: $text-sm;
+  color: $text-muted-color;
+  margin: 0;
+}

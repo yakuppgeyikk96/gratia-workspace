@@ -1,0 +1,58 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  @include border($border-1, $border-light);
+  @include rounded($radius-lg);
+  @include p(4);
+  background-color: $bg-color;
+  transition: border-color $transition-fast;
+
+  &:hover {
+    border-color: $primary-color;
+  }
+}
+
+.cardHeader {
+  @include flex(row, space-between, center);
+  @include mb(3);
+}
+
+.orderNumber {
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+}
+
+.cardBody {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-2;
+
+  @include responsive(sm) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.detail {
+  @include flex-column;
+  gap: 2px;
+}
+
+.label {
+  font-size: $text-xs;
+  color: $text-muted-color;
+}
+
+.value {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-primary-color;
+}

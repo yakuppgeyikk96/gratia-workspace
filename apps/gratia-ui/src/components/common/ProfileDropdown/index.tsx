@@ -6,6 +6,7 @@ import Button from "@gratia/ui/components/Button";
 import Dropdown, { type DropdownOption } from "@gratia/ui/components/Dropdown";
 import Flex from "@gratia/ui/components/Flex";
 import IconChevronDown from "@gratia/ui/icons/IconChevronDown";
+import IconBox from "@gratia/ui/icons/IconBox";
 import IconPerson from "@gratia/ui/icons/IconPerson";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -18,6 +19,8 @@ export default function ProfileDropdown() {
   const onValueChange = (value: string) => {
     if (value === "profile") {
       router.push("/profile");
+    } else if (value === "my-orders") {
+      router.push("/profile/orders");
     } else if (value === "logout") {
       logoutUser();
       clearCart();
@@ -31,6 +34,11 @@ export default function ProfileDropdown() {
         label: "Profile",
         value: "profile",
         icon: <IconPerson />,
+      },
+      {
+        label: "My Orders",
+        value: "my-orders",
+        icon: <IconBox />,
       },
       {
         label: "Logout",

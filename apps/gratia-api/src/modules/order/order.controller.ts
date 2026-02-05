@@ -4,6 +4,25 @@ import { AuthRequest, StatusCode } from "../../shared/types";
 import { getStringParam } from "../../shared/utils/params.utils";
 import { returnSuccess } from "../../shared/utils/response.utils";
 import { getOrderByNumberOrThrow, requestGuestOrderAccess, validateGuestOrderAccessToken, verifyGuestOrderAccess } from "./order-access.service";
+import { getUserOrders } from "./order.service";
+
+export const getUserOrdersController = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const userId = Number(req.user!.userId);
+
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    const result = await getUserOrders(userId, page, limit);
+
+    returnSuccess(
+      res,
+      result,
+      "Orders retrieved successfully",
+      StatusCode.SUCCESS
+    );
+  }
+);
 
 export const getOrderByOrderNumberController = asyncHandler(
   async (req: AuthRequest, res: Response) => {

@@ -69,3 +69,15 @@ export interface VerifyOrderAccessResponse {
 }
 
 export type VerifyOrderAccessResponseType = IApiResponse<VerifyOrderAccessResponse>;
+
+export interface PaginatedOrders {
+  orders: Order[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export type PaginatedOrdersResponse = IApiResponse<PaginatedOrders>;
