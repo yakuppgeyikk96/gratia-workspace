@@ -1,0 +1,57 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.skeleton {
+  @include py(6);
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+  @include animate-fade-in($transition-slow);
+}
+
+.sectionTitleSkeleton {
+  width: 120px;
+  height: 20px;
+  @include rounded($radius-sm);
+  @include animate-shimmer(2s);
+}
+
+.cardSkeleton {
+  @include border($border-1, $border-light);
+  @include rounded($radius-lg);
+  @include p(4);
+}
+
+.cardHeaderSkeleton {
+  @include flex(row, space-between, center);
+  @include mb(3);
+}
+
+.orderNumberSkeleton {
+  width: 180px;
+  height: 16px;
+  @include rounded($radius-sm);
+  @include animate-shimmer(2s);
+}
+
+.badgeSkeleton {
+  width: 70px;
+  height: 20px;
+  @include rounded($radius-sm);
+  @include animate-shimmer(2s);
+}
+
+.cardBodySkeleton {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-2;
+}
+
+.detailSkeleton {
+  height: 32px;
+  @include rounded($radius-sm);
+  @include animate-shimmer(2s);
+}

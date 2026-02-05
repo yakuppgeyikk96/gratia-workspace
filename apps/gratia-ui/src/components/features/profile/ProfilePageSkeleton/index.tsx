@@ -12,21 +12,7 @@ export default function ProfilePageSkeleton() {
             <div className={styles.emailSkeleton} />
           </div>
         </div>
-        <div className={styles.sectionTitleSkeleton} />
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className={styles.cardSkeleton}>
-            <div className={styles.cardHeaderSkeleton}>
-              <div className={styles.orderNumberSkeleton} />
-              <div className={styles.badgeSkeleton} />
-            </div>
-            <div className={styles.cardBodySkeleton}>
-              <div className={styles.detailSkeleton} />
-              <div className={styles.detailSkeleton} />
-              <div className={styles.detailSkeleton} />
-              <div className={styles.detailSkeleton} />
-            </div>
-          </div>
-        ))}
+        <div className={styles.menuLinkSkeleton} />
       </div>
     </Container>
   );

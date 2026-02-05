@@ -1,22 +1,19 @@
+import Link from "next/link";
 import type { IUser } from "@/types/User.types";
-import type { PaginatedOrders } from "@/types/Order.types";
 import ProfileHeader from "../ProfileHeader";
-import OrderHistoryList from "../OrderHistoryList";
 import styles from "./ProfilePageContent.module.scss";
 
 interface ProfilePageContentProps {
   user: IUser;
-  ordersData: PaginatedOrders | null;
 }
 
-export default function ProfilePageContent({
-  user,
-  ordersData,
-}: ProfilePageContentProps) {
+export default function ProfilePageContent({ user }: ProfilePageContentProps) {
   return (
     <div className={styles.profilePage}>
       <ProfileHeader user={user} />
-      <OrderHistoryList ordersData={ordersData} />
+      <Link href="/profile/orders" className={styles.menuLink}>
+        My Orders
+      </Link>
     </div>
   );
 }
