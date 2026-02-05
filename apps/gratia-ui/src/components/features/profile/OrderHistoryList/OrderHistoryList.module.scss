@@ -1,0 +1,32 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.sectionTitle {
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  margin: 0;
+  color: $text-primary-color;
+}
+
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.emptyState {
+  text-align: center;
+  @include py(8);
+}
+
+.emptyText {
+  color: $text-muted-color;
+  font-size: $text-sm;
+}

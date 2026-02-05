@@ -200,7 +200,7 @@ export interface VariantSelectableProduct {
   id: number;
   slug: string;
   price: string;
-  discountedPrice: string | null;
+  discountedPrice?: string | null;
   images: string[];
   attributes: Record<string, unknown>;
 }

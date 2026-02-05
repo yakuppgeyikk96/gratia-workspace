@@ -1,4 +1,4 @@
-import { and, eq, lt } from "drizzle-orm";
+import { and, desc, eq, lt, sql } from "drizzle-orm";
 import { db } from "../../config/postgres.config";
 import {
   type Address,
@@ -91,6 +91,34 @@ export const findOrdersByUserId = async (userId: number): Promise<Order[]> => {
     .from(orders)
     .where(eq(orders.userId, userId))
     .orderBy(orders.createdAt);
+};
+
+/**
+ * Find orders by user ID with pagination (newest first)
+ */
+export const findOrdersByUserIdPaginated = async (
+  userId: number,
+  page: number = 1,
+  limit: number = 10
+): Promise<{ orders: Order[]; total: number }> => {
+  const offset = (page - 1) * limit;
+
+  const orderRows = await db
+    .select()
+    .from(orders)
+    .where(eq(orders.userId, userId))
+    .orderBy(desc(orders.createdAt))
+    .offset(offset)
+    .limit(limit);
+
+  const countResult = await db
+    .select({ count: sql<number>`COUNT(*)` })
+    .from(orders)
+    .where(eq(orders.userId, userId));
+
+  const total = Number(countResult[0]?.count ?? 0);
+
+  return { orders: orderRows, total };
 };
 
 /**

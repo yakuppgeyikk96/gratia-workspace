@@ -1,17 +1,32 @@
 import { Router } from "express";
-import { optionalAuthMiddleware, validateBody, validateParams } from "../../shared/middlewares";
+import {
+  authMiddleware,
+  optionalAuthMiddleware,
+  validateBody,
+  validateParams,
+  validateQuery,
+} from "../../shared/middlewares";
 import {
   getOrderByOrderNumberController,
+  getUserOrdersController,
   requestOrderAccessController,
   verifyOrderAccessController,
 } from "./order.controller";
 import {
   orderNumberParamsSchema,
   requestOrderAccessSchema,
+  userOrdersQuerySchema,
   verifyOrderAccessSchema,
 } from "./order.validations";
 
 const router: Router = Router();
+
+router.get(
+  "/my-orders",
+  authMiddleware,
+  validateQuery(userOrdersQuerySchema),
+  getUserOrdersController
+);
 
 router.get(
   "/:orderNumber",

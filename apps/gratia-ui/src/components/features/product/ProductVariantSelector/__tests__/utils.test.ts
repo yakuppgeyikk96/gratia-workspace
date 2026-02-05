@@ -14,12 +14,13 @@ describe("getVariantLabel", () => {
 
 describe("getVariantValue", () => {
   const createMockProduct = (overrides?: Partial<Product>): Product => ({
-    _id: "1",
+    id: 1,
     name: "Test Product",
     slug: "test-product",
     sku: "TEST-001",
-    categoryId: "cat-1",
-    price: 100,
+    categoryId: 1,
+    price: "100",
+    discountedPrice: null,
     stock: 10,
     attributes: {},
     images: [],

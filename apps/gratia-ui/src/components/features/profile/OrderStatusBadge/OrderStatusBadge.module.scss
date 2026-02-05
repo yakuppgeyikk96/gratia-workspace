@@ -1,0 +1,54 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+
+.badge {
+  display: inline-block;
+  font-size: $text-xs;
+  font-weight: $font-semibold;
+  padding: 2px $spacing-2;
+  @include rounded($radius-sm);
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.pending {
+  background-color: rgba($text-info-color, 0.1);
+  color: $text-info-color;
+}
+
+.processing {
+  background-color: rgba($primary-color, 0.1);
+  color: $primary-color;
+}
+
+.shipped {
+  background-color: rgba($accent-color, 0.1);
+  color: $accent-color;
+}
+
+.delivered {
+  background-color: rgba($text-success-color, 0.1);
+  color: $text-success-color;
+}
+
+.cancelled {
+  background-color: rgba($text-error-color, 0.1);
+  color: $text-error-color;
+}
+
+.refunded {
+  background-color: rgba($text-warning-color, 0.1);
+  color: $text-warning-color;
+}
+
+.paid {
+  background-color: rgba($text-success-color, 0.1);
+  color: $text-success-color;
+}
+
+.failed {
+  background-color: rgba($text-error-color, 0.1);
+  color: $text-error-color;
+}

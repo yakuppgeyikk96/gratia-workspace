@@ -4,6 +4,8 @@ import { apiClient } from "@/lib/apiClient";
 import type {
   Order,
   OrderResponse,
+  PaginatedOrders,
+  PaginatedOrdersResponse,
   RequestOrderAccessRequest,
   RequestOrderAccessResponseType,
   VerifyOrderAccessRequest,
@@ -14,6 +16,18 @@ import { cookies } from "next/headers";
 import { getAuthHeader } from "./utils";
 
 const API_BASE_ROUTE = "/orders";
+
+export async function getUserOrders(
+  page: number = 1,
+  limit: number = 10
+): Promise<PaginatedOrdersResponse> {
+  const authHeader = await getAuthHeader();
+
+  return await apiClient.get<PaginatedOrders>(
+    `${API_BASE_ROUTE}/my-orders?page=${page}&limit=${limit}`,
+    { headers: authHeader }
+  );
+}
 
 export async function getOrderByNumber(orderNumber: string): Promise<OrderResponse> {
   const cookieStore = await cookies();
