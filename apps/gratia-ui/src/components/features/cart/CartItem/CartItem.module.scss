@@ -5,10 +5,6 @@
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 @use "@gratia/ui/styles/layout/_flex.scss" as *;
 
-// ============================================================================
-// Main Container
-// ============================================================================
-
 .cartItem {
   @include flex(row, flex-start, flex-start);
   @include gap(4);
@@ -25,10 +21,6 @@
     background-color: rgba(0, 0, 0, 0.02);
   }
 }
-
-// ============================================================================
-// Image Section
-// ============================================================================
 
 .imageContainer {
   position: relative;
@@ -57,16 +49,12 @@
   position: absolute;
   inset: 0;
   @include flex(row, center, center);
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(220, 38, 38, 0.75);
   color: white;
   font-size: $text-xs;
   font-weight: $font-semibold;
   text-transform: uppercase;
 }
-
-// ============================================================================
-// Content Section
-// ============================================================================
 
 .content {
   @include flex-column;
@@ -141,10 +129,6 @@
   color: $text-primary-color;
 }
 
-// ============================================================================
-// Status Badges
-// ============================================================================
-
 .statusBadge {
   display: inline-flex;
   align-items: center;
@@ -164,12 +148,24 @@
   &.priceChanged {
     background-color: #dbeafe;
     color: #1e40af;
+    @include flex(row, flex-start, center);
+    @include gap(1);
   }
 }
 
-// ============================================================================
-// Remove Button
-// ============================================================================
+.oldPrice {
+  text-decoration: line-through;
+  color: $text-muted-color;
+}
+
+.priceArrow {
+  color: $text-secondary-color;
+}
+
+.newPrice {
+  font-weight: $font-semibold;
+  color: #1e40af;
+}
 
 .removeButton {
   position: absolute;
@@ -189,10 +185,6 @@
     background-color: rgba(239, 68, 68, 0.1);
   }
 }
-
-// ============================================================================
-// Quantity Section
-// ============================================================================
 
 .quantitySection {
   position: absolute;
@@ -216,10 +208,6 @@
   color: $text-muted-color;
 }
 
-// ============================================================================
-// Unavailable Actions
-// ============================================================================
-
 .unavailableAction {
   @include flex(row, center, center);
 }
@@ -241,10 +229,6 @@
     border-color: rgba(239, 68, 68, 0.5);
   }
 }
-
-// ============================================================================
-// Responsive
-// ============================================================================
 
 @include media-sm {
   .cartItem {

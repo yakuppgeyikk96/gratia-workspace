@@ -79,7 +79,7 @@ export const validateCartItems = async (
     }
 
     // Check stock
-    const status = determineItemStatus(productData, storedItem.quantity);
+    const status = determineItemStatus(productData, storedItem.quantity, storedItem.originalPrice);
     const item = createItemFromProduct(storedItem, productData, status);
     validatedItems.push(item);
 
@@ -158,7 +158,8 @@ export const validateSingleItem = async (
  */
 const determineItemStatus = (
   product: CartProductData,
-  requestedQuantity: number
+  requestedQuantity: number,
+  originalPrice: string
 ): CartItemStatus => {
   if (!product.isActive) {
     return "inactive";
@@ -174,6 +175,11 @@ const determineItemStatus = (
 
   if (product.stock <= CART_LIMITS.LOW_STOCK_THRESHOLD) {
     return "low_stock";
+  }
+
+  const currentPrice = product.discountedPrice || product.price;
+  if (currentPrice !== originalPrice) {
+    return "price_changed";
   }
 
   return "available";

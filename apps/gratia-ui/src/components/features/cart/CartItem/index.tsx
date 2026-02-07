@@ -35,9 +35,7 @@ function CartItemImage({ images, productName, status }: CartItemImageProps) {
       <Image src={imageUrl} alt={productName} className={styles.image} width={100} height={100} />
       {isUnavailable && (
         <div className={styles.unavailableOverlay}>
-          <span>
-            {status === "out_of_stock" ? "Stokta Yok" : "Satışta Değil"}
-          </span>
+          <span>Out of Stock</span>
         </div>
       )}
     </div>
@@ -72,8 +70,9 @@ function CartItemContent({
   const hasDiscount =
     discountedPrice && parseFloat(discountedPrice) < parseFloat(price);
   const isUnavailable = status === "out_of_stock" || status === "inactive";
-  const isPriceChanged = status === "price_changed";
   const isLowStock = status === "low_stock";
+  const isPriceChanged =
+    !isUnavailable && currentPrice !== parseFloat(originalPrice);
 
   // Format attributes for display
   const attributeText = Object.entries(attributes)
@@ -114,12 +113,14 @@ function CartItemContent({
       {/* Status indicators */}
       {isLowStock && (
         <div className={styles.statusBadge + " " + styles.lowStock}>
-          Son {stockAvailable} adet
+          Low Stock
         </div>
       )}
-      {isPriceChanged && originalPrice !== price && (
+      {isPriceChanged && (
         <div className={styles.statusBadge + " " + styles.priceChanged}>
-          Fiyat değişti
+          <span className={styles.oldPrice}>${parseFloat(originalPrice).toFixed(2)}</span>
+          <span className={styles.priceArrow}>→</span>
+          <span className={styles.newPrice}>${currentPrice.toFixed(2)}</span>
         </div>
       )}
     </div>

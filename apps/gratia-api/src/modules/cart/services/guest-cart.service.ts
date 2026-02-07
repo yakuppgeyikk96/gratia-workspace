@@ -39,7 +39,7 @@ export const generateSessionId = (): string => {
  * Returns null if cart doesn't exist
  */
 export const getGuestCart = async (
-  sessionId: string
+  sessionId: string,
 ): Promise<CartResponse | null> => {
   const cartData = await getGuestCartData(sessionId);
 
@@ -54,7 +54,7 @@ export const getGuestCart = async (
     sessionId,
     validationResult,
     cartData.createdAt,
-    cartData.updatedAt
+    cartData.updatedAt,
   );
 };
 
@@ -63,7 +63,7 @@ export const getGuestCart = async (
  * Creates a new cart if session doesn't have one
  */
 export const getOrCreateGuestCart = async (
-  sessionId: string
+  sessionId: string,
 ): Promise<CartResponse> => {
   let cartData = await getGuestCartData(sessionId);
 
@@ -78,7 +78,7 @@ export const getOrCreateGuestCart = async (
     sessionId,
     validationResult,
     cartData.createdAt,
-    cartData.updatedAt
+    cartData.updatedAt,
   );
 };
 
@@ -87,7 +87,7 @@ export const getOrCreateGuestCart = async (
  */
 export const addToGuestCart = async (
   sessionId: string,
-  dto: AddToCartDto
+  dto: AddToCartDto,
 ): Promise<CartResponse> => {
   // Validate product
   const validation = await validateSingleItem(dto.sku, dto.quantity);
@@ -99,7 +99,7 @@ export const addToGuestCart = async (
   const { product } = validation;
 
   // Check stock
-  if (product.stock === 0) {
+  if (product.stock <= 0) {
     throw new AppError(CART_MESSAGES.INSUFFICIENT_STOCK, ErrorCode.BAD_REQUEST);
   }
 
@@ -120,14 +120,14 @@ export const addToGuestCart = async (
   const currentQty = existingItem?.quantity || 0;
   const newQty = Math.min(
     currentQty + dto.quantity,
-    CART_LIMITS.MAX_QUANTITY_PER_ITEM
+    CART_LIMITS.MAX_QUANTITY_PER_ITEM,
   );
 
   // Check if quantity exceeds stock
   if (newQty > product.stock) {
     throw new AppError(
       `${CART_MESSAGES.INSUFFICIENT_STOCK}. Only ${product.stock} available.`,
-      ErrorCode.BAD_REQUEST
+      ErrorCode.BAD_REQUEST,
     );
   }
 
@@ -153,7 +153,7 @@ export const addToGuestCart = async (
     sessionId,
     validationResult,
     cartData.createdAt,
-    cartData.updatedAt
+    cartData.updatedAt,
   );
 };
 
@@ -163,7 +163,7 @@ export const addToGuestCart = async (
 export const updateGuestCartItem = async (
   sessionId: string,
   sku: string,
-  dto: UpdateCartItemDto
+  dto: UpdateCartItemDto,
 ): Promise<CartResponse> => {
   const cartData = await getGuestCartData(sessionId);
 
@@ -190,12 +190,16 @@ export const updateGuestCartItem = async (
   if (dto.quantity > product.stock) {
     throw new AppError(
       `${CART_MESSAGES.INSUFFICIENT_STOCK}. Only ${product.stock} available.`,
-      ErrorCode.BAD_REQUEST
+      ErrorCode.BAD_REQUEST,
     );
   }
 
   // Update item
-  const updatedCartData = updateItemInGuestCartData(cartData, sku, dto.quantity);
+  const updatedCartData = updateItemInGuestCartData(
+    cartData,
+    sku,
+    dto.quantity,
+  );
 
   if (!updatedCartData) {
     throw new AppError(CART_MESSAGES.ITEM_NOT_IN_CART, ErrorCode.NOT_FOUND);
@@ -210,7 +214,7 @@ export const updateGuestCartItem = async (
     sessionId,
     validationResult,
     updatedCartData.createdAt,
-    updatedCartData.updatedAt
+    updatedCartData.updatedAt,
   );
 };
 
@@ -219,7 +223,7 @@ export const updateGuestCartItem = async (
  */
 export const removeFromGuestCart = async (
   sessionId: string,
-  sku: string
+  sku: string,
 ): Promise<CartResponse> => {
   const cartData = await getGuestCartData(sessionId);
 
@@ -243,7 +247,7 @@ export const removeFromGuestCart = async (
     sessionId,
     validationResult,
     updatedCartData.createdAt,
-    updatedCartData.updatedAt
+    updatedCartData.updatedAt,
   );
 };
 
@@ -251,7 +255,7 @@ export const removeFromGuestCart = async (
  * Clear guest cart (remove all items)
  */
 export const clearGuestCart = async (
-  sessionId: string
+  sessionId: string,
 ): Promise<CartResponse> => {
   let cartData = await getGuestCartData(sessionId);
 
@@ -268,7 +272,7 @@ export const clearGuestCart = async (
     sessionId,
     { items: [], warnings: [], summary: createEmptySummary() },
     cartData.createdAt,
-    cartData.updatedAt
+    cartData.updatedAt,
   );
 };
 
@@ -276,7 +280,7 @@ export const clearGuestCart = async (
  * Delete guest cart completely (used after merge)
  */
 export const deleteGuestCartComplete = async (
-  sessionId: string
+  sessionId: string,
 ): Promise<void> => {
   await deleteGuestCart(sessionId);
 };
@@ -285,7 +289,7 @@ export const deleteGuestCartComplete = async (
  * Get raw guest cart data (for merge operations)
  */
 export const getGuestCartItems = async (
-  sessionId: string
+  sessionId: string,
 ): Promise<StoredCartItem[]> => {
   const cartData = await getGuestCartData(sessionId);
   return cartData?.items || [];

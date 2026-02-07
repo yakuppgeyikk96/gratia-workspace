@@ -14,10 +14,6 @@ const CartSummary = lazy(
   () => import("@/components/features/cart/CartSummary"),
 );
 
-// ============================================================================
-// Inner Component (uses context)
-// ============================================================================
-
 function CartPageContent() {
   const { items, isLoading } = useCartContext();
 
@@ -51,10 +47,6 @@ function CartPageContent() {
     </div>
   );
 }
-
-// ============================================================================
-// Main Component (provides context)
-// ============================================================================
 
 interface CartPageContainerProps {
   isLoggedIn: boolean;
