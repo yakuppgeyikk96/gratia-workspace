@@ -9,6 +9,17 @@
   position: sticky;
   top: $spacing-12;
   height: fit-content;
+
+  @include media-sm {
+    position: fixed;
+    bottom: calc(7rem + env(safe-area-inset-bottom));
+    left: 0;
+    right: 0;
+    top: auto;
+    height: auto;
+    z-index: 9998;
+    @include px(3);
+  }
 }
 
 .summaryContent {
@@ -29,6 +40,13 @@
     box-shadow: $shadow-lg;
     border-color: $border-medium;
   }
+
+  @include media-sm {
+    @include p(4);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: $radius-xl $radius-xl 0 0;
+    border: none;
+  }
 }
 
 .title {
@@ -36,12 +54,21 @@
   font-weight: $font-bold;
   color: $text-primary-color;
   @include mb(2);
+
+  @include media-sm {
+    display: none;
+  }
 }
 
 .summaryDetails {
   @include flex-column;
   @include gap(4);
   @include my(4);
+
+  @include media-sm {
+    @include gap(2);
+    @include my(2);
+  }
 }
 
 .summaryRow {
@@ -99,6 +126,10 @@
 .checkoutButton {
   width: 100%;
   @include mt(4);
+
+  @include media-sm {
+    @include mt(2);
+  }
 }
 
 .noItemsNote {

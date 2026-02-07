@@ -28,6 +28,7 @@
 
   @include media-sm {
     @include grid-gap-4;
+    padding-bottom: 18rem;
   }
 }
 
