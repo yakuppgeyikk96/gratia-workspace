@@ -16,6 +16,7 @@ export default function TopHeaderLinkItem({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
+        prefetch={false}
       >
         <span className={styles.topHeaderLinkItemTitle}>{title}</span>
       </Link>
