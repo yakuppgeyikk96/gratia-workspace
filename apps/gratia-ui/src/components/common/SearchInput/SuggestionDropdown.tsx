@@ -1,6 +1,8 @@
 import { COLORS } from "@/constants/colors";
 import { SearchSuggestion } from "@/types/Product.types";
+import IconColumnsGap from "@gratia/ui/icons/IconColumnsGap";
 import IconSearch from "@gratia/ui/icons/IconSearch";
+import IconShoppingBag from "@gratia/ui/icons/IconShoppingBag";
 import styles from "./SearchInput.module.scss";
 
 interface SuggestionDropdownProps {
@@ -9,6 +11,17 @@ interface SuggestionDropdownProps {
   onSelect: (text: string) => void;
   onHover: (index: number) => void;
 }
+
+const getSuggestionIcon = (type: SearchSuggestion["type"]) => {
+  switch (type) {
+    case "brand":
+      return <IconShoppingBag color={COLORS.ICON_MUTED} size={16} />;
+    case "category":
+      return <IconColumnsGap color={COLORS.ICON_MUTED} size={16} />;
+    default:
+      return <IconSearch color={COLORS.ICON_MUTED} size={16} />;
+  }
+};
 
 export default function SuggestionDropdown({
   suggestions,
@@ -25,7 +38,7 @@ export default function SuggestionDropdown({
           onMouseDown={() => onSelect(suggestion.text)}
           onMouseEnter={() => onHover(index)}
         >
-          <IconSearch color={COLORS.ICON_MUTED} size={16} />
+          {getSuggestionIcon(suggestion.type)}
           {suggestion.text}
         </div>
       ))}
