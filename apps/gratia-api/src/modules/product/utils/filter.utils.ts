@@ -64,7 +64,7 @@ export const parseProductFilters = (
  * Parse sort option from query string
  */
 export const parseSortOption = (value: unknown): SortOption | undefined => {
-  const validOptions: SortOption[] = ["newest", "price-low", "price-high", "name"];
+  const validOptions: SortOption[] = ["newest", "price-low", "price-high", "name", "relevance"];
   if (typeof value === "string" && validOptions.includes(value as SortOption)) {
     return value as SortOption;
   }

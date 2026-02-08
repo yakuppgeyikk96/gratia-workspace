@@ -2,7 +2,7 @@ import { ProductFiltersState } from "@/store/productFilterStore";
 import { ProductFiltersDto } from "@/types/Product.types";
 
 /** Query param keys that are not attribute filters */
-export const KNOWN_QUERY_KEYS = ["page", "sort", "minPrice", "maxPrice", "brands"] as const;
+export const KNOWN_QUERY_KEYS = ["page", "sort", "minPrice", "maxPrice", "brands", "q"] as const;
 
 /**
  * Parse filter parameters from URL search params (server-side)
@@ -91,9 +91,15 @@ export function parseSortFromSearchParams(
 export function buildSearchParams(
   filters: ProductFiltersState,
   page?: number,
-  sort?: string | null
+  sort?: string | null,
+  searchQuery?: string | null
 ): URLSearchParams {
   const params = new URLSearchParams();
+
+  // Preserve search query
+  if (searchQuery) {
+    params.set("q", searchQuery);
+  }
 
   // Add page (only if > 1)
   if (page && page > 1) {

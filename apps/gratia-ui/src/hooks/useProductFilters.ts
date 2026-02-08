@@ -146,9 +146,17 @@ export function useProductFilters(): UseProductFiltersReturn {
     [toggleArrayFilterStore]
   );
 
+  // Check if we're on the search page
+  const isSearchContext = pathname === "/products/search";
+  const currentSearchQuery = searchParams.get("q");
+
   // Resolve the target path based on selected category
   const resolveTargetPath = useCallback(
     (categorySlug: string | null) => {
+      // Stay on search page when filtering search results
+      if (isSearchContext) {
+        return "/products/search";
+      }
       if (categorySlug) {
         return `/products/category/${categorySlug}`;
       }
@@ -161,18 +169,18 @@ export function useProductFilters(): UseProductFiltersReturn {
       }
       return pathname;
     },
-    [isCollectionContext, collectionSlug, parentCategorySlug, pathname]
+    [isSearchContext, isCollectionContext, collectionSlug, parentCategorySlug, pathname]
   );
 
   // Navigate to a path with filter query params
   const navigateWithFilters = useCallback(
     (targetPath: string, filterState: ProductFiltersState, sort: string | null) => {
-      const params = buildSearchParams(filterState, 1, sort);
+      const params = buildSearchParams(filterState, 1, sort, currentSearchQuery);
       const queryString = params.toString();
       const newURL = queryString ? `${targetPath}?${queryString}` : targetPath;
       router.push(newURL, { scroll: false });
     },
-    [router]
+    [router, currentSearchQuery]
   );
 
   // Apply current store filters to URL

@@ -3,41 +3,53 @@
 import { COLORS } from "@/constants/colors";
 import Input from "@gratia/ui/components/Input";
 import IconSearch from "@gratia/ui/icons/IconSearch";
-import { useState } from "react";
+import styles from "./SearchInput.module.scss";
+import SuggestionDropdown from "./SuggestionDropdown";
+import useSearchSuggestions from "./useSearchSuggestions";
 
 interface SearchInputProps {
   placeholder?: string;
-  value?: string;
-  onChange?: (value: string) => void;
   className?: string;
 }
 
 export default function SearchInput({
   placeholder = "Search your favorite products...",
-  value: controlledValue,
-  onChange,
   className = "",
 }: SearchInputProps) {
-  const [internalValue, setInternalValue] = useState("");
-
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    if (controlledValue === undefined) {
-      setInternalValue(newValue);
-    }
-    onChange?.(newValue);
-  };
+  const {
+    query,
+    suggestions,
+    isOpen,
+    selectedIndex,
+    wrapperRef,
+    handleChange,
+    handleKeyDown,
+    handleFocus,
+    navigateToSearch,
+    setSelectedIndex,
+  } = useSearchSuggestions();
 
   return (
-    <Input
-      size="lg"
-      startIcon={<IconSearch color={COLORS.ICON_MUTED} />}
-      placeholder={placeholder}
-      value={value}
-      onChange={handleChange}
-      className={className}
-    />
+    <div ref={wrapperRef} className={styles.searchWrapper}>
+      <Input
+        size="lg"
+        startIcon={<IconSearch color={COLORS.ICON_MUTED} />}
+        placeholder={placeholder}
+        value={query}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
+        className={className}
+        autoComplete="off"
+      />
+      {isOpen && suggestions.length > 0 && (
+        <SuggestionDropdown
+          suggestions={suggestions}
+          selectedIndex={selectedIndex}
+          onSelect={navigateToSearch}
+          onHover={setSelectedIndex}
+        />
+      )}
+    </div>
   );
 }

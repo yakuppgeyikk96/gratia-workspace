@@ -1,18 +1,22 @@
 import type { Request, Response } from "express";
+import { AppError, ErrorCode } from "../../shared/errors/base.errors";
+import { asyncHandler } from "../../shared/middlewares";
+import { StatusCode } from "../../shared/types";
+import { returnSuccess } from "../../shared/utils/response.utils";
 import {
   getFeaturedProducts,
   getFilterOptionsForProducts,
   getProductDetail,
   getProductList,
+  getSearchSuggestionsForQuery,
+  searchProductList,
 } from "./product.service";
 import {
+  parsePagination,
   parseProductFilters,
   parseProductListQuery,
+  parseSortOption,
 } from "./utils/filter.utils";
-
-// ============================================================================
-// Helpers
-// ============================================================================
 
 /**
  * Ensures a value is a string, handling arrays and unknowns
@@ -22,10 +26,6 @@ const ensureString = (value: unknown): string | undefined => {
   if (Array.isArray(value) && value.length > 0) return String(value[0]);
   return undefined;
 };
-
-// ============================================================================
-// Product List Controller
-// ============================================================================
 
 /**
  * GET /api/v2/products
@@ -43,29 +43,19 @@ const ensureString = (value: unknown): string | undefined => {
  * - filters[brandSlugs]: Comma-separated brand slugs
  * - filters[attributeKey]: Comma-separated attribute values
  */
-export const getProducts = async (req: Request, res: Response) => {
-  try {
-    const options = parseProductListQuery(req.query as Record<string, unknown>);
-    const filters = parseProductFilters(req.query as Record<string, unknown>);
+export const getProducts = asyncHandler(async (req: Request, res: Response) => {
+  const options = parseProductListQuery(req.query as Record<string, unknown>);
+  const filters = parseProductFilters(req.query as Record<string, unknown>);
 
-    const result = await getProductList(options, filters);
+  const result = await getProductList(options, filters);
 
-    res.json({
-      success: true,
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    res.status(500).json({
-      success: false,
-      error: "Failed to fetch products",
-    });
-  }
-};
-
-// ============================================================================
-// Filter Options Controller
-// ============================================================================
+  returnSuccess(
+    res,
+    result,
+    "Products retrieved successfully",
+    StatusCode.SUCCESS,
+  );
+});
 
 /**
  * GET /api/v2/products/filters
@@ -76,6 +66,7 @@ export const getProducts = async (req: Request, res: Response) => {
  * Query params:
  * - categorySlug: Filter by category
  * - collectionSlug: Filter by collection
+ * - q: Search query for scoping filter options
  * - filters[...]: Active filters for faceted count calculation
  *
  * Returns:
@@ -84,76 +75,138 @@ export const getProducts = async (req: Request, res: Response) => {
  * - attributes: [{ key, label, type, values: [{ value, count }] }]
  * - categories: [{ value, label, count, parentSlug, parentLabel }]
  */
-export const getFilters = async (req: Request, res: Response) => {
-  try {
-    const categorySlug = ensureString(req.query.categorySlug);
-    const collectionSlug = ensureString(req.query.collectionSlug);
-    const activeFilters = parseProductFilters(req.query as Record<string, unknown>);
+export const getFilters = asyncHandler(async (req: Request, res: Response) => {
+  const categorySlug = ensureString(req.query.categorySlug);
+  const collectionSlug = ensureString(req.query.collectionSlug);
+  const searchQuery = ensureString(req.query.q);
+  const activeFilters = parseProductFilters(
+    req.query as Record<string, unknown>,
+  );
 
-    const result = await getFilterOptionsForProducts(
-      categorySlug,
-      collectionSlug,
-      activeFilters
+  const result = await getFilterOptionsForProducts(
+    categorySlug,
+    collectionSlug,
+    activeFilters,
+    searchQuery,
+  );
+
+  returnSuccess(
+    res,
+    result,
+    "Filter options retrieved successfully",
+    StatusCode.SUCCESS,
+  );
+});
+
+/**
+ * GET /api/v2/products/search
+ *
+ * Full-text search for products with filtering and pagination.
+ *
+ * Query params:
+ * - q: Search query (required, min 2 chars)
+ * - sort: "relevance" | "newest" | "price-low" | "price-high" | "name"
+ * - page: Page number (default: 1)
+ * - limit: Items per page (default: 12, max: 100)
+ * - filters[...]: Same filter params as product listing
+ */
+export const searchProductsHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const q = ensureString(req.query.q);
+
+    if (!q || q.trim().length < 2) {
+      throw new AppError(
+        "Search query must be at least 2 characters",
+        ErrorCode.BAD_REQUEST,
+        400,
+      );
+    }
+
+    const sort = parseSortOption(req.query.sort) ?? "relevance";
+    const { page, limit } = parsePagination(
+      req.query as Record<string, unknown>,
     );
+    const filters = parseProductFilters(req.query as Record<string, unknown>);
 
-    res.json({
-      success: true,
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error fetching filter options:", error);
-    res.status(500).json({
-      success: false,
-      error: "Failed to fetch filter options",
-    });
-  }
-};
+    const result = await searchProductList(q, sort, page, limit, filters);
 
-// ============================================================================
-// Product Detail Controller
-// ============================================================================
+    returnSuccess(
+      res,
+      result,
+      "Search results retrieved successfully",
+      StatusCode.SUCCESS,
+    );
+  },
+);
+
+/**
+ * GET /api/v2/products/search/suggestions
+ *
+ * Get autocomplete suggestions for search input.
+ *
+ * Query params:
+ * - q: Search query (required, min 2 chars)
+ * - limit: Max suggestions (default: 8, max: 20)
+ */
+export const getSearchSuggestionsHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const q = ensureString(req.query.q);
+
+    if (!q || q.trim().length < 2) {
+      returnSuccess(
+        res,
+        { suggestions: [] },
+        "No suggestions",
+        StatusCode.SUCCESS,
+      );
+      return;
+    }
+
+    const limitParam = Number(req.query.limit);
+    const limit = isNaN(limitParam) ? 8 : Math.min(20, Math.max(1, limitParam));
+
+    const result = await getSearchSuggestionsForQuery(q, limit);
+
+    returnSuccess(
+      res,
+      result,
+      "Suggestions retrieved successfully",
+      StatusCode.SUCCESS,
+    );
+  },
+);
 
 /**
  * GET /api/v2/products/:slug
  *
  * Get product detail with variants and available options
  */
-export const getProductBySlug = async (req: Request, res: Response) => {
-  try {
+export const getProductBySlug = asyncHandler(
+  async (req: Request, res: Response) => {
     const slug = ensureString(req.params.slug);
 
     if (!slug) {
-      return res.status(400).json({
-        success: false,
-        error: "Product slug is required",
-      });
+      throw new AppError(
+        "Product slug is required",
+        ErrorCode.BAD_REQUEST,
+        400,
+      );
     }
 
     const result = await getProductDetail(slug);
 
     if (!result) {
-      return res.status(404).json({
-        success: false,
-        error: "Product not found",
-      });
+      throw new AppError("Product not found", ErrorCode.NOT_FOUND, 404);
     }
 
-    res.json({
-      success: true,
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error fetching product detail:", error);
-    res.status(500).json({
-      success: false,
-      error: "Failed to fetch product",
-    });
-  }
-};
-
-// ============================================================================
-// Featured Products Controller
-// ============================================================================
+    returnSuccess(
+      res,
+      result,
+      "Product retrieved successfully",
+      StatusCode.SUCCESS,
+    );
+  },
+);
 
 /**
  * GET /api/v2/products/featured
@@ -163,22 +216,16 @@ export const getProductBySlug = async (req: Request, res: Response) => {
  * Query params:
  * - limit: Number of products (default: 8, max: 20)
  */
-export const getFeatured = async (req: Request, res: Response) => {
-  try {
-    const limitParam = Number(req.query.limit);
-    const limit = isNaN(limitParam) ? 8 : Math.min(20, Math.max(1, limitParam));
+export const getFeatured = asyncHandler(async (req: Request, res: Response) => {
+  const limitParam = Number(req.query.limit);
+  const limit = isNaN(limitParam) ? 8 : Math.min(20, Math.max(1, limitParam));
 
-    const result = await getFeaturedProducts(limit);
+  const result = await getFeaturedProducts(limit);
 
-    res.json({
-      success: true,
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error fetching featured products:", error);
-    res.status(500).json({
-      success: false,
-      error: "Failed to fetch featured products",
-    });
-  }
-};
+  returnSuccess(
+    res,
+    result,
+    "Featured products retrieved successfully",
+    StatusCode.SUCCESS,
+  );
+});

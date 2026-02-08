@@ -5,7 +5,12 @@ import type { Category } from "../../../db/schema/category.schema";
 // Query Options
 // ============================================================================
 
-export type SortOption = "newest" | "price-low" | "price-high" | "name";
+export type SortOption =
+  | "newest"
+  | "price-low"
+  | "price-high"
+  | "name"
+  | "relevance";
 
 export interface ProductListQueryOptions {
   categorySlug?: string | undefined;
@@ -137,9 +142,15 @@ export interface ProductDetailResponse {
   availableOptions: Record<string, string[]>;
 }
 
-// ============================================================================
-// Internal Types
-// ============================================================================
+export interface SearchSuggestion {
+  text: string;
+  type: "product" | "brand" | "category";
+  slug: string;
+}
+
+export interface SearchSuggestionsResponse {
+  suggestions: SearchSuggestion[];
+}
 
 export interface CategoryContext {
   id: number;
