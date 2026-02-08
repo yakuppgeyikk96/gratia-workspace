@@ -60,7 +60,7 @@ export type ProductMaterial =
   | "modal"
   | "viscose";
 
-export type SortOptions = "newest" | "price-low" | "price-high" | "name";
+export type SortOptions = "newest" | "price-low" | "price-high" | "name" | "relevance";
 
 export interface ProductAttributes {
   [key: string]: string | number | boolean | undefined;
@@ -250,6 +250,20 @@ export interface FilterOptionsResponse {
   brands: FilterOption[];
   attributes: AttributeFilterOption[];
   categories: CategoryFilterOption[];
+}
+
+// ============================================================================
+// Search Types
+// ============================================================================
+
+export interface SearchSuggestion {
+  text: string;
+  type: "product" | "brand" | "category";
+  slug: string;
+}
+
+export interface SearchSuggestionsResponse {
+  suggestions: SearchSuggestion[];
 }
 
 // ============================================================================

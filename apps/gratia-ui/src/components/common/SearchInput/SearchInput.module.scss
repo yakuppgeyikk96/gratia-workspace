@@ -1,0 +1,51 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_position.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.searchWrapper {
+  @include position-relative;
+  width: 100%;
+}
+
+.suggestionsDropdown {
+  @include position-absolute(100%, 0, 0);
+  z-index: $z-dropdown;
+  margin-top: $spacing-1;
+  background: $bg-color;
+  @include border($border-1, $border-light);
+  @include rounded($radius-lg);
+  box-shadow: $shadow-md;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.suggestionItem {
+  @include flex(
+    $direction: row,
+    $justify: flex-start,
+    $align: center,
+    $wrap: nowrap,
+    $gap: $spacing-2
+  );
+  padding: $spacing-3 $spacing-4;
+  cursor: pointer;
+  font-size: $text-sm;
+  color: $text-secondary-color;
+  transition: background-color $transition-fast;
+
+  &:first-child {
+    @include rounded-t($radius-lg);
+  }
+
+  &:last-child {
+    @include rounded-b($radius-lg);
+  }
+
+  &:hover,
+  &.selected {
+    background-color: $interactive-hover-bg;
+  }
+}

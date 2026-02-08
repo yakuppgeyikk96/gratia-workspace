@@ -4,6 +4,8 @@ import {
   getFilters,
   getProductBySlug,
   getFeatured,
+  searchProductsHandler,
+  getSearchSuggestionsHandler,
 } from "./product.controller";
 
 const router: IRouter = Router();
@@ -20,8 +22,16 @@ router.get("/", getProducts);
 router.get("/featured", getFeatured);
 
 // GET /api/v2/products/filters - Filter options
-// Supports: categorySlug, collectionSlug query params
+// Supports: categorySlug, collectionSlug, q query params
 router.get("/filters", getFilters);
+
+// GET /api/v2/products/search - Full-text product search
+// Supports: q, sort, page, limit, filters[...]
+router.get("/search", searchProductsHandler);
+
+// GET /api/v2/products/search/suggestions - Autocomplete suggestions
+// Supports: q, limit
+router.get("/search/suggestions", getSearchSuggestionsHandler);
 
 // GET /api/v2/products/:slug - Product detail with variants
 // Note: This must be last to avoid catching other routes

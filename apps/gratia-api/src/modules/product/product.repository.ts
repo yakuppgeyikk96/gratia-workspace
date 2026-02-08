@@ -1,4 +1,15 @@
-import { aliasedTable, and, asc, desc, eq, gte, inArray, lte, sql, SQL } from "drizzle-orm";
+import {
+  aliasedTable,
+  and,
+  asc,
+  desc,
+  eq,
+  gte,
+  inArray,
+  lte,
+  sql,
+  SQL,
+} from "drizzle-orm";
 import { db } from "../../config/postgres.config";
 import { brands } from "../../db/schema/brand.schema";
 import { categories } from "../../db/schema/category.schema";
@@ -9,6 +20,7 @@ import type {
   ProductListQueryOptions,
   ProductVariant,
   ProductWithRelations,
+  SearchSuggestion,
   SortOption,
 } from "./types";
 import {
@@ -18,6 +30,11 @@ import {
   buildOrderByClause,
   buildPriceConditions,
 } from "./utils/query-builder.utils";
+import {
+  buildSearchCondition,
+  buildSearchRankExpression,
+  buildPrefixSearchCondition,
+} from "./utils/search-query.utils";
 
 // ============================================================================
 // Product Listing Repository
@@ -34,7 +51,7 @@ interface FindProductsResult {
 const buildFilterConditionsForQuery = (
   categorySlug?: string,
   collectionSlug?: string,
-  filters?: ProductFilters
+  filters?: ProductFilters,
 ): SQL | undefined => {
   const conditions: (SQL | undefined)[] = [eq(products.isActive, true)];
 
@@ -62,20 +79,21 @@ const buildFilterConditionsForQuery = (
   // Dynamic attribute filters (JSONB)
   if (filters) {
     for (const [key, value] of Object.entries(filters)) {
-      if (key === "minPrice" || key === "maxPrice" || key === "brandSlugs") continue;
+      if (key === "minPrice" || key === "maxPrice" || key === "brandSlugs")
+        continue;
 
       if (Array.isArray(value) && value.length > 0) {
         conditions.push(
           sql`${products.attributes}->>${key} IN (${sql.join(
             value.map((v) => sql`${v}`),
-            sql`, `
-          )})`
+            sql`, `,
+          )})`,
         );
       }
     }
   }
 
-  return and(...conditions.filter(Boolean) as SQL[]);
+  return and(...(conditions.filter(Boolean) as SQL[]));
 };
 
 /**
@@ -89,13 +107,23 @@ const buildFilterConditionsForQuery = (
  */
 export const findProducts = async (
   options: ProductListQueryOptions,
-  filters?: ProductFilters
+  filters?: ProductFilters,
 ): Promise<FindProductsResult> => {
-  const { categorySlug, collectionSlug, sort = "newest", page = 1, limit = 12 } = options;
+  const {
+    categorySlug,
+    collectionSlug,
+    sort = "newest",
+    page = 1,
+    limit = 12,
+  } = options;
   const offset = (page - 1) * limit;
 
   // Build WHERE conditions using Drizzle
-  const whereCondition = buildFilterConditionsForQuery(categorySlug, collectionSlug, filters);
+  const whereCondition = buildFilterConditionsForQuery(
+    categorySlug,
+    collectionSlug,
+    filters,
+  );
 
   // Build ORDER BY clause
   const orderByClause = buildOrderByClause(sort);
@@ -159,6 +187,170 @@ export const findProducts = async (
   return { products: mappedProducts, total };
 };
 
+interface SearchProductsOptions {
+  query: string;
+  sort?: SortOption;
+  page?: number;
+  limit?: number;
+}
+
+/**
+ * Search products using PostgreSQL full-text search
+ *
+ * Uses a CTE to first deduplicate by productGroupId with DISTINCT ON,
+ * then applies relevance-based ordering in the outer query.
+ * This is necessary because DISTINCT ON requires the distinct column
+ * to be first in ORDER BY, which conflicts with relevance sorting.
+ */
+export const searchProducts = async (
+  options: SearchProductsOptions,
+  filters?: ProductFilters,
+): Promise<FindProductsResult> => {
+  const { query, sort = "relevance", page = 1, limit = 12 } = options;
+  const offset = (page - 1) * limit;
+
+  // Build search-specific conditions
+  const searchCondition = buildSearchCondition(query);
+  const rankExpression = buildSearchRankExpression(query);
+
+  // Build filter conditions (reuse existing filter logic)
+  const filterConditions: (SQL | undefined)[] = [
+    eq(products.isActive, true),
+    searchCondition,
+  ];
+
+  if (filters) {
+    const priceConditions = buildPriceConditions(filters);
+    filterConditions.push(...priceConditions);
+  }
+
+  if (filters?.brandSlugs && filters.brandSlugs.length > 0) {
+    filterConditions.push(inArray(brands.slug, filters.brandSlugs));
+  }
+
+  // Dynamic attribute filters (JSONB)
+  if (filters) {
+    for (const [key, value] of Object.entries(filters)) {
+      if (key === "minPrice" || key === "maxPrice" || key === "brandSlugs")
+        continue;
+      if (Array.isArray(value) && value.length > 0) {
+        filterConditions.push(
+          sql`${products.attributes}->>${key} IN (${sql.join(
+            value.map((v) => sql`${v}`),
+            sql`, `,
+          )})`,
+        );
+      }
+    }
+  }
+
+  const whereCondition = and(...(filterConditions.filter(Boolean) as SQL[]));
+
+  // Determine ORDER BY for the outer query
+  const outerOrderBy =
+    sort === "relevance" ? sql`rank DESC` : buildOrderByClause(sort);
+
+  // CTE approach: deduplicate first, then sort by relevance
+  // Step 1: Get deduplicated rows with rank
+  // Note: No table aliases used so Drizzle's generated "products"/"brands" references work
+  const deduplicatedRows = await db.execute(sql`
+    WITH deduplicated AS (
+      SELECT DISTINCT ON ("products"."product_group_id")
+        "products"."id",
+        "products"."name",
+        "products"."slug",
+        "products"."description",
+        "products"."sku",
+        "products"."price",
+        "products"."discounted_price",
+        "products"."images",
+        "products"."product_group_id",
+        "products"."created_at",
+        "brands"."id" AS "brand_id",
+        "brands"."name" AS "brand_name",
+        "brands"."slug" AS "brand_slug",
+        ${rankExpression} AS rank
+      FROM "products"
+      LEFT JOIN "brands" ON "products"."brand_id" = "brands"."id"
+      WHERE ${whereCondition}
+      ORDER BY "products"."product_group_id", ${rankExpression} DESC
+    )
+    SELECT * FROM deduplicated
+    ORDER BY ${outerOrderBy}
+    LIMIT ${limit} OFFSET ${offset}
+  `);
+
+  // Step 2: Count distinct product groups
+  const countResult = await db
+    .select({
+      count: sql<number>`COUNT(DISTINCT ${products.productGroupId})`,
+    })
+    .from(products)
+    .leftJoin(brands, eq(products.brandId, brands.id))
+    .where(whereCondition);
+
+  // Map to response format
+  const mappedProducts: ProductListItem[] = (deduplicatedRows as any[]).map(
+    (row) => ({
+      id: row.id,
+      name: row.name,
+      slug: row.slug,
+      description: row.description,
+      sku: row.sku,
+      price: row.price,
+      discountedPrice: row.discounted_price,
+      images: row.images,
+      productGroupId: row.product_group_id,
+      brand: row.brand_id
+        ? {
+            id: row.brand_id,
+            name: row.brand_name,
+            slug: row.brand_slug,
+          }
+        : null,
+    }),
+  );
+
+  const total = Number(countResult[0]?.count ?? 0);
+
+  return { products: mappedProducts, total };
+};
+
+/**
+ * Get search suggestions using prefix matching
+ * Returns product names, brand names, and category names that match
+ */
+export const getSearchSuggestions = async (
+  query: string,
+  limit: number = 8,
+): Promise<SearchSuggestion[]> => {
+  const prefixCondition = buildPrefixSearchCondition(query);
+  const rankExpression = buildSearchRankExpression(query);
+
+  const result = await db
+    .selectDistinctOn([products.productGroupId], {
+      productName: products.name,
+      productSlug: products.slug,
+      brandName: brands.name,
+      brandSlug: brands.slug,
+      categoryName: categories.name,
+      categorySlug: categories.slug,
+      rank: rankExpression,
+    })
+    .from(products)
+    .leftJoin(brands, eq(products.brandId, brands.id))
+    .leftJoin(categories, eq(products.categoryId, categories.id))
+    .where(and(eq(products.isActive, true), prefixCondition))
+    .orderBy(products.productGroupId, sql`${rankExpression} DESC`)
+    .limit(limit);
+
+  return result.map((row) => ({
+    text: row.productName,
+    type: "product" as const,
+    slug: row.productSlug,
+  }));
+};
+
 // ============================================================================
 // Filter Options Repository
 // ============================================================================
@@ -184,10 +376,16 @@ export interface RawFilterData {
  */
 export const getFilterOptions = async (
   categorySlug?: string,
-  collectionSlug?: string
+  collectionSlug?: string,
+  searchQuery?: string,
 ): Promise<RawFilterData[]> => {
-  const whereCondition = buildBaseConditions(categorySlug, collectionSlug);
+  const baseCondition = buildBaseConditions(categorySlug, collectionSlug);
   const parentCategories = aliasedTable(categories, "parent_categories");
+
+  // Add search condition if search query is provided
+  const whereCondition = searchQuery
+    ? and(baseCondition, buildSearchCondition(searchQuery))
+    : baseCondition;
 
   const result = await db
     .selectDistinctOn([products.productGroupId], {
@@ -222,7 +420,7 @@ export const getFilterOptions = async (
  * Single query with JOINs - no N+1 problem
  */
 export const findProductBySlug = async (
-  slug: string
+  slug: string,
 ): Promise<ProductWithRelations | null> => {
   const result = await db
     .select({
@@ -295,18 +493,18 @@ export const findProductBySlug = async (
     updatedAt: row.updatedAt,
     category: row.categoryIdJoin
       ? {
-        id: row.categoryIdJoin,
-        name: row.categoryName!,
-        slug: row.categorySlug!,
-      }
+          id: row.categoryIdJoin,
+          name: row.categoryName!,
+          slug: row.categorySlug!,
+        }
       : null,
     brand: row.brandIdJoin
       ? {
-        id: row.brandIdJoin,
-        name: row.brandName!,
-        slug: row.brandSlug!,
-        logo: row.brandLogo,
-      }
+          id: row.brandIdJoin,
+          name: row.brandName!,
+          slug: row.brandSlug!,
+          logo: row.brandLogo,
+        }
       : null,
   };
 };
@@ -317,7 +515,7 @@ export const findProductBySlug = async (
  * Single query - returns all variants in one go
  */
 export const findVariantsByGroupId = async (
-  productGroupId: string
+  productGroupId: string,
 ): Promise<ProductVariant[]> => {
   const result = await db
     .select({
@@ -334,7 +532,10 @@ export const findVariantsByGroupId = async (
     })
     .from(products)
     .where(
-      and(eq(products.productGroupId, productGroupId), eq(products.isActive, true))
+      and(
+        eq(products.productGroupId, productGroupId),
+        eq(products.isActive, true),
+      ),
     )
     .orderBy(asc(products.id));
 
@@ -362,7 +563,7 @@ export const findVariantsByGroupId = async (
  * Simple query with optional limit
  */
 export const findFeaturedProducts = async (
-  limit: number = 8
+  limit: number = 8,
 ): Promise<ProductListItem[]> => {
   const result = await db
     .select({
@@ -397,10 +598,10 @@ export const findFeaturedProducts = async (
     productGroupId: row.productGroupId,
     brand: row.brandId
       ? {
-        id: row.brandId,
-        name: row.brandName!,
-        slug: row.brandSlug!,
-      }
+          id: row.brandId,
+          name: row.brandName!,
+          slug: row.brandSlug!,
+        }
       : null,
   }));
 };
@@ -438,7 +639,9 @@ export const findProductsByIds = async (ids: number[]): Promise<Product[]> => {
  * Avoids N+1 query problem when validating checkout items
  * Used for guest checkout cart validation
  */
-export const findProductsBySkus = async (skus: string[]): Promise<Product[]> => {
+export const findProductsBySkus = async (
+  skus: string[],
+): Promise<Product[]> => {
   if (skus.length === 0) {
     return [];
   }
@@ -447,6 +650,6 @@ export const findProductsBySkus = async (skus: string[]): Promise<Product[]> => 
     .select()
     .from(products)
     .where(
-      sql`${products.sku} = ANY(${sql.raw(`ARRAY[${skus.map((s) => `'${s}'`).join(",")}]`)})`
+      sql`${products.sku} = ANY(${sql.raw(`ARRAY[${skus.map((s) => `'${s}'`).join(",")}]`)})`,
     );
 };
