@@ -359,29 +359,32 @@ export const getSearchSuggestions = async (
     .orderBy(products.productGroupId, sql`${rankExpression} DESC`)
     .limit(limit * 3);
 
-  const suggestions: SearchSuggestion[] = [];
   const seen = new Set<string>();
 
-  // 1. Brand suggestions (only when brand name matches the typed query)
+  // Collect brand/category suggestions first to reserve slots for them
+  const structuredSuggestions: SearchSuggestion[] = [];
+
   for (const row of result) {
     if (!row.brandName || !row.brandSlug) continue;
     const key = row.brandName.toLowerCase();
     if (seen.has(key) || !key.includes(queryLower)) continue;
     seen.add(key);
-    suggestions.push({ text: row.brandName, type: "brand", slug: row.brandSlug });
+    structuredSuggestions.push({ text: row.brandName, type: "brand", slug: row.brandSlug });
   }
 
-  // 2. Category suggestions (only when category name matches the typed query)
   for (const row of result) {
     if (!row.categoryName || !row.categorySlug) continue;
     const key = row.categoryName.toLowerCase();
     if (seen.has(key) || !key.includes(queryLower)) continue;
     seen.add(key);
-    suggestions.push({ text: row.categoryName, type: "category", slug: row.categorySlug });
+    structuredSuggestions.push({ text: row.categoryName, type: "category", slug: row.categorySlug });
   }
 
-  // 3. Keyword suggestions: extract common product name prefixes
-  //    If 2+ product groups share a prefix, it's a useful broad keyword
+  // Keyword suggestions fill the remaining slots
+  const keywordLimit = limit - structuredSuggestions.length;
+  const keywordSuggestions: SearchSuggestion[] = [];
+
+  // Extract common product name prefixes — if 2+ groups share a prefix, it's broad
   const prefixCounts = new Map<string, number>();
   for (const row of result) {
     const baseName = stripVariantSuffix(row.productName);
@@ -394,34 +397,39 @@ export const getSearchSuggestions = async (
     }
   }
 
-  // Broad keywords: prefixes matching 2+ product groups, shortest (broadest) first
+  // Only keep prefixes shared by 2+ product groups (truly broad keywords).
+  // This prevents specific product names from appearing as suggestions.
   const broadKeywords = [...prefixCounts.entries()]
     .filter(([_, count]) => count >= 2)
     .sort((a, b) => a[0].length - b[0].length);
 
-  if (broadKeywords.length > 0) {
-    for (const [keyword] of broadKeywords) {
-      const key = keyword.toLowerCase();
-      if (seen.has(key)) continue;
+  for (const [keyword] of broadKeywords) {
+    if (keywordSuggestions.length >= keywordLimit) break;
+    const key = keyword.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    keywordSuggestions.push({
+      text: keyword,
+      type: "product",
+      slug: key.replace(/\s+/g, "-"),
+    });
+  }
+
+  // If no broad keywords found, use the search query itself as a keyword
+  if (keywordSuggestions.length === 0 && keywordLimit > 0) {
+    const key = query.trim().toLowerCase();
+    if (!seen.has(key)) {
       seen.add(key);
-      suggestions.push({
-        text: keyword,
+      keywordSuggestions.push({
+        text: query.trim(),
         type: "product",
         slug: key.replace(/\s+/g, "-"),
       });
     }
-  } else {
-    // Fallback: specific product names when no common prefixes found
-    for (const row of result) {
-      const simplified = stripVariantSuffix(row.productName);
-      const key = simplified.toLowerCase();
-      if (seen.has(key)) continue;
-      seen.add(key);
-      suggestions.push({ text: simplified, type: "product", slug: row.productSlug });
-    }
   }
 
-  return suggestions.slice(0, limit);
+  // Output: keywords first (top section), then brands/categories (bottom section)
+  return [...keywordSuggestions, ...structuredSuggestions];
 };
 
 // ============================================================================
