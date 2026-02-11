@@ -316,9 +316,22 @@ export const searchProducts = async (
   return { products: mappedProducts, total };
 };
 
+/** Strip variant suffix from product name: "MacBook Air M3 - Midnight" → "MacBook Air M3" */
+const stripVariantSuffix = (name: string): string => {
+  const idx = name.lastIndexOf(" - ");
+  return idx > 0 ? name.substring(0, idx).trim() : name;
+};
+
 /**
- * Get search suggestions using prefix matching
- * Returns product names, brand names, and category names that match
+ * Get keyword-based search suggestions using prefix matching
+ *
+ * Returns three types of suggestions (prioritized in this order):
+ * 1. Brand names — only if the brand name contains the typed query
+ * 2. Category names — only if the category name contains the typed query
+ * 3. Product keywords — variant suffix stripped, deduplicated by base name
+ *
+ * All suggestions navigate to search results, giving broader matches
+ * than the old product-name-only approach.
  */
 export const getSearchSuggestions = async (
   query: string,
@@ -326,7 +339,9 @@ export const getSearchSuggestions = async (
 ): Promise<SearchSuggestion[]> => {
   const prefixCondition = buildPrefixSearchCondition(query);
   const rankExpression = buildSearchRankExpression(query);
+  const queryLower = query.toLowerCase().trim();
 
+  // Fetch more rows than needed — deduplication will reduce the count
   const result = await db
     .selectDistinctOn([products.productGroupId], {
       productName: products.name,
@@ -342,13 +357,79 @@ export const getSearchSuggestions = async (
     .leftJoin(categories, eq(products.categoryId, categories.id))
     .where(and(eq(products.isActive, true), prefixCondition))
     .orderBy(products.productGroupId, sql`${rankExpression} DESC`)
-    .limit(limit);
+    .limit(limit * 3);
 
-  return result.map((row) => ({
-    text: row.productName,
-    type: "product" as const,
-    slug: row.productSlug,
-  }));
+  const seen = new Set<string>();
+
+  // Collect brand/category suggestions first to reserve slots for them
+  const structuredSuggestions: SearchSuggestion[] = [];
+
+  for (const row of result) {
+    if (!row.brandName || !row.brandSlug) continue;
+    const key = row.brandName.toLowerCase();
+    if (seen.has(key) || !key.includes(queryLower)) continue;
+    seen.add(key);
+    structuredSuggestions.push({ text: row.brandName, type: "brand", slug: row.brandSlug });
+  }
+
+  for (const row of result) {
+    if (!row.categoryName || !row.categorySlug) continue;
+    const key = row.categoryName.toLowerCase();
+    if (seen.has(key) || !key.includes(queryLower)) continue;
+    seen.add(key);
+    structuredSuggestions.push({ text: row.categoryName, type: "category", slug: row.categorySlug });
+  }
+
+  // Keyword suggestions fill the remaining slots
+  const keywordLimit = limit - structuredSuggestions.length;
+  const keywordSuggestions: SearchSuggestion[] = [];
+
+  // Extract common product name prefixes — if 2+ groups share a prefix, it's broad
+  const prefixCounts = new Map<string, number>();
+  for (const row of result) {
+    const baseName = stripVariantSuffix(row.productName);
+    const words = baseName.split(/\s+/);
+
+    for (let i = 1; i <= words.length; i++) {
+      const prefix = words.slice(0, i).join(" ");
+      if (!prefix.toLowerCase().includes(queryLower)) continue;
+      prefixCounts.set(prefix, (prefixCounts.get(prefix) || 0) + 1);
+    }
+  }
+
+  // Only keep prefixes shared by 2+ product groups (truly broad keywords).
+  // This prevents specific product names from appearing as suggestions.
+  const broadKeywords = [...prefixCounts.entries()]
+    .filter(([_, count]) => count >= 2)
+    .sort((a, b) => a[0].length - b[0].length);
+
+  for (const [keyword] of broadKeywords) {
+    if (keywordSuggestions.length >= keywordLimit) break;
+    const key = keyword.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    keywordSuggestions.push({
+      text: keyword,
+      type: "product",
+      slug: key.replace(/\s+/g, "-"),
+    });
+  }
+
+  // If no broad keywords found, use the search query itself as a keyword
+  if (keywordSuggestions.length === 0 && keywordLimit > 0) {
+    const key = query.trim().toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      keywordSuggestions.push({
+        text: query.trim(),
+        type: "product",
+        slug: key.replace(/\s+/g, "-"),
+      });
+    }
+  }
+
+  // Output: keywords first (top section), then brands/categories (bottom section)
+  return [...keywordSuggestions, ...structuredSuggestions];
 };
 
 // ============================================================================

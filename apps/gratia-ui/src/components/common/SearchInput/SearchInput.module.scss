@@ -49,3 +49,21 @@
     background-color: $interactive-hover-bg;
   }
 }
+
+.suggestionSeparator {
+  height: 1px;
+  background-color: $border-light;
+  margin: $spacing-1 0;
+}
+
+.suggestionText {
+  flex: 1;
+  min-width: 0;
+}
+
+.typeLabel {
+  margin-left: auto;
+  font-size: $text-xs;
+  color: $text-muted-color;
+  white-space: nowrap;
+}
