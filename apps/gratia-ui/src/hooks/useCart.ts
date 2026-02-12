@@ -5,8 +5,6 @@ import {
   addToUserCart,
   clearGuestCart,
   clearUserCart,
-  getGuestCart,
-  getUserCart,
   mergeGuestToUserCart,
   removeGuestCartItem,
   removeUserCartItem,
@@ -18,34 +16,16 @@ import {
   AddToCartDto,
   CartableProduct,
   CartData,
+  CartResponse,
   GuestCartData,
+  GuestCartResponse,
   StoredCartItem,
 } from "@/types/Cart.types";
 import { useToastContext } from "@gratia/ui/components/Toast";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
-
-// ============================================================================
-// Constants
-// ============================================================================
-
-const TOAST_DURATION = 3000;
-const CART_QUERY_KEY = "cart";
-
-// ============================================================================
-// Helpers
-// ============================================================================
-
-function extractCartPayload(
-  isLoggedIn: boolean,
-  data: CartData | GuestCartData,
-): { cart: CartData; sessionId?: string } {
-  if (isLoggedIn) {
-    return { cart: data as CartData };
-  }
-  const guest = data as GuestCartData;
-  return { cart: guest.cart, sessionId: guest.sessionId };
-}
+import { CART_QUERY_KEY, extractCartPayload, TOAST_DURATION } from "./cart-utils";
+import { useCartQuery } from "./useCartQuery";
 
 // ============================================================================
 // Hook
@@ -54,6 +34,9 @@ function extractCartPayload(
 export function useCart(isLoggedIn: boolean) {
   const queryClient = useQueryClient();
   const { addToast } = useToastContext();
+
+  // Query (delegated to useCartQuery)
+  const { cartData, refetchCart, isLoading: isQueryLoading } = useCartQuery(isLoggedIn);
 
   // Store actions
   const sessionId = useCartStore((state) => state.sessionId);
@@ -67,102 +50,21 @@ export function useCart(isLoggedIn: boolean) {
   );
   const removeLocalItem = useCartStore((state) => state.removeLocalItem);
   const clearCart = useCartStore((state) => state.clearCart);
-  const setLoading = useCartStore((state) => state.setLoading);
-  const localItems = useCartStore((state) => state.localItems);
   const setSessionId = useCartStore((state) => state.setSessionId);
+  const setMergeStatus = useCartStore((state) => state.setMergeStatus);
 
   // ============================================================================
-  // Query - Fetch Cart
+  // Helper - Handle Mutation Success (shared by add/update/remove/clear)
   // ============================================================================
 
-  const {
-    data: cartData,
-    refetch: refetchCart,
-    isLoading: isQueryLoading,
-  } = useQuery({
-    queryKey: [CART_QUERY_KEY, isLoggedIn, sessionId],
-    queryFn: async () => {
-      setLoading(true);
-      try {
-        let response;
-
-        if (isLoggedIn) {
-          // Logged in user - fetch from user cart
-          response = await getUserCart();
-        } else {
-          // Guest user - fetch from guest cart
-          const currentSessionId = getOrCreateSessionId();
-          response = await getGuestCart(currentSessionId);
-        }
-
-        if (response.success && response.data) {
-          const { cart, sessionId: returnedSessionId } = extractCartPayload(
-            isLoggedIn,
-            response.data as CartData | GuestCartData,
-          );
-
-          if (
-            !isLoggedIn &&
-            returnedSessionId &&
-            returnedSessionId !== sessionId
-          ) {
-            setSessionId(returnedSessionId);
-          }
-
-          setCartData({
-            items: cart.items,
-            summary: cart.summary,
-            warnings: cart.warnings,
-            createdAt: cart.createdAt,
-            updatedAt: cart.updatedAt,
-          });
-          return cart;
-        }
-
-        return null;
-      } catch (error) {
-        console.error("Fetch cart error:", error);
-        return null;
-      } finally {
-        setLoading(false);
-      }
-    },
-    staleTime: 30 * 1000, // 30 seconds
-    gcTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
-  });
-
-  // ============================================================================
-  // Helper - Update Store from Response
-  // ============================================================================
-
-  const updateStoreFromResponse = useCallback(
-    (data: CartData) => {
-      setCartData({
-        items: data.items,
-        summary: data.summary,
-        warnings: data.warnings,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      });
-    },
-    [setCartData],
-  );
-
-  // ============================================================================
-  // Mutation - Add to Cart
-  // ============================================================================
-
-  const addToCartMutation = useMutation({
-    mutationFn: async (dto: AddToCartDto) => {
-      if (isLoggedIn) {
-        return await addToUserCart(dto);
-      } else {
-        const currentSessionId = getOrCreateSessionId();
-        return await addToGuestCart(currentSessionId, dto);
-      }
-    },
-    onSuccess: (response) => {
+  const handleMutationSuccess = useCallback(
+    (
+      response: CartResponse | GuestCartResponse,
+      options?: {
+        onSuccess?: () => void;
+        onFailure?: (message: string) => void;
+      },
+    ) => {
       if (response.success && response.data) {
         const { cart, sessionId: returnedSessionId } = extractCartPayload(
           isLoggedIn,
@@ -177,23 +79,53 @@ export function useCart(isLoggedIn: boolean) {
           setSessionId(returnedSessionId);
         }
 
-        updateStoreFromResponse(cart);
+        setCartData({
+          items: cart.items,
+          summary: cart.summary,
+          warnings: cart.warnings,
+          createdAt: cart.createdAt,
+          updatedAt: cart.updatedAt,
+        });
         queryClient.invalidateQueries({ queryKey: [CART_QUERY_KEY] });
-        addToast({
-          title: "Added to Cart",
-          description: "Product has been added to your cart.",
-          variant: "success",
-          duration: TOAST_DURATION,
-        });
+        options?.onSuccess?.();
       } else {
-        addToast({
-          title: "Error",
-          description:
-            response.message || "Product could not be added to the cart.",
-          variant: "error",
-          duration: TOAST_DURATION,
-        });
+        options?.onFailure?.(response.message || "An error occurred.");
       }
+    },
+    [isLoggedIn, sessionId, setSessionId, setCartData, queryClient],
+  );
+
+  // ============================================================================
+  // Mutation - Add to Cart
+  // ============================================================================
+
+  const addToCartMutation = useMutation({
+    mutationFn: async (dto: AddToCartDto) => {
+      if (isLoggedIn) {
+        return await addToUserCart(dto);
+      }
+      const currentSessionId = getOrCreateSessionId();
+      return await addToGuestCart(currentSessionId, dto);
+    },
+    onSuccess: (response) => {
+      handleMutationSuccess(response, {
+        onSuccess: () => {
+          addToast({
+            title: "Added to Cart",
+            description: "Product has been added to your cart.",
+            variant: "success",
+            duration: TOAST_DURATION,
+          });
+        },
+        onFailure: (message) => {
+          addToast({
+            title: "Error",
+            description: message || "Product could not be added to the cart.",
+            variant: "error",
+            duration: TOAST_DURATION,
+          });
+        },
+      });
     },
     onError: (error) => {
       console.error("Add to cart error:", error);
@@ -220,42 +152,25 @@ export function useCart(isLoggedIn: boolean) {
     }) => {
       if (isLoggedIn) {
         return await updateUserCartItem(sku, { quantity });
-      } else {
-        const currentSessionId = getOrCreateSessionId();
-        return await updateGuestCartItem(currentSessionId, sku, { quantity });
       }
+      const currentSessionId = getOrCreateSessionId();
+      return await updateGuestCartItem(currentSessionId, sku, { quantity });
     },
     onMutate: async ({ sku, quantity }) => {
-      // Optimistic update
       updateLocalItemQuantity(sku, quantity);
     },
     onSuccess: (response) => {
-      if (response.success && response.data) {
-        const { cart, sessionId: returnedSessionId } = extractCartPayload(
-          isLoggedIn,
-          response.data as CartData | GuestCartData,
-        );
-
-        if (
-          !isLoggedIn &&
-          returnedSessionId &&
-          returnedSessionId !== sessionId
-        ) {
-          setSessionId(returnedSessionId);
-        }
-
-        updateStoreFromResponse(cart);
-        queryClient.invalidateQueries({ queryKey: [CART_QUERY_KEY] });
-      } else {
-        // Revert on failure
-        refetchCart();
-        addToast({
-          title: "Error",
-          description: response.message || "Quantity could not be updated",
-          variant: "error",
-          duration: TOAST_DURATION,
-        });
-      }
+      handleMutationSuccess(response, {
+        onFailure: (message) => {
+          refetchCart();
+          addToast({
+            title: "Error",
+            description: message || "Quantity could not be updated",
+            variant: "error",
+            duration: TOAST_DURATION,
+          });
+        },
+      });
     },
     onError: (error) => {
       console.error("Update cart item error:", error);
@@ -277,48 +192,34 @@ export function useCart(isLoggedIn: boolean) {
     mutationFn: async (sku: string) => {
       if (isLoggedIn) {
         return await removeUserCartItem(sku);
-      } else {
-        const currentSessionId = getOrCreateSessionId();
-        return await removeGuestCartItem(currentSessionId, sku);
       }
+      const currentSessionId = getOrCreateSessionId();
+      return await removeGuestCartItem(currentSessionId, sku);
     },
     onMutate: async (sku) => {
-      // Optimistic update
       removeLocalItem(sku);
     },
     onSuccess: (response) => {
-      if (response.success && response.data) {
-        const { cart, sessionId: returnedSessionId } = extractCartPayload(
-          isLoggedIn,
-          response.data as CartData | GuestCartData,
-        );
-
-        if (
-          !isLoggedIn &&
-          returnedSessionId &&
-          returnedSessionId !== sessionId
-        ) {
-          setSessionId(returnedSessionId);
-        }
-
-        updateStoreFromResponse(cart);
-        queryClient.invalidateQueries({ queryKey: [CART_QUERY_KEY] });
-        addToast({
-          title: "",
-          description: "Product removed from cart.",
-          variant: "success",
-          duration: TOAST_DURATION,
-        });
-      } else {
-        refetchCart();
-        addToast({
-          title: "Error",
-          description:
-            response.message || "Product could not be removed from the cart.",
-          variant: "error",
-          duration: TOAST_DURATION,
-        });
-      }
+      handleMutationSuccess(response, {
+        onSuccess: () => {
+          addToast({
+            title: "",
+            description: "Product removed from cart.",
+            variant: "success",
+            duration: TOAST_DURATION,
+          });
+        },
+        onFailure: (message) => {
+          refetchCart();
+          addToast({
+            title: "Error",
+            description:
+              message || "Product could not be removed from the cart.",
+            variant: "error",
+            duration: TOAST_DURATION,
+          });
+        },
+      });
     },
     onError: (error) => {
       console.error("Remove cart item error:", error);
@@ -341,47 +242,33 @@ export function useCart(isLoggedIn: boolean) {
     mutationFn: async () => {
       if (isLoggedIn) {
         return await clearUserCart();
-      } else {
-        const currentSessionId = getOrCreateSessionId();
-        return await clearGuestCart(currentSessionId);
       }
+      const currentSessionId = getOrCreateSessionId();
+      return await clearGuestCart(currentSessionId);
     },
     onMutate: () => {
-      // Optimistic update
       clearCart();
     },
     onSuccess: (response) => {
-      if (response.success && response.data) {
-        const { cart, sessionId: returnedSessionId } = extractCartPayload(
-          isLoggedIn,
-          response.data as CartData | GuestCartData,
-        );
-
-        if (
-          !isLoggedIn &&
-          returnedSessionId &&
-          returnedSessionId !== sessionId
-        ) {
-          setSessionId(returnedSessionId);
-        }
-
-        updateStoreFromResponse(cart);
-        queryClient.invalidateQueries({ queryKey: [CART_QUERY_KEY] });
-        addToast({
-          title: "",
-          description: "Sepet temizlendi",
-          variant: "success",
-          duration: TOAST_DURATION,
-        });
-      } else {
-        refetchCart();
-        addToast({
-          title: "Error",
-          description: response.message || "Cart could not be cleared.",
-          variant: "error",
-          duration: TOAST_DURATION,
-        });
-      }
+      handleMutationSuccess(response, {
+        onSuccess: () => {
+          addToast({
+            title: "",
+            description: "Sepet temizlendi",
+            variant: "success",
+            duration: TOAST_DURATION,
+          });
+        },
+        onFailure: (message) => {
+          refetchCart();
+          addToast({
+            title: "Error",
+            description: message || "Cart could not be cleared.",
+            variant: "error",
+            duration: TOAST_DURATION,
+          });
+        },
+      });
     },
     onError: (error) => {
       console.error("Clear cart error:", error);
@@ -405,8 +292,24 @@ export function useCart(isLoggedIn: boolean) {
     },
     onSuccess: (response) => {
       if (response.success && response.data) {
-        updateStoreFromResponse(response.data.cart);
-        queryClient.invalidateQueries({ queryKey: [CART_QUERY_KEY] });
+        const mergedCart = response.data.cart;
+
+        // Clear guest state FIRST to prevent re-triggers
+        setMergeStatus("completed");
+        setSessionId(null);
+
+        // Use clearLocalItems to prevent localItems from being repopulated
+        setCartData({
+          items: mergedCart.items,
+          summary: mergedCart.summary,
+          warnings: mergedCart.warnings,
+          createdAt: mergedCart.createdAt,
+          updatedAt: mergedCart.updatedAt,
+          clearLocalItems: true,
+        });
+
+        // Set query data directly instead of invalidating to avoid refetch cascade
+        queryClient.setQueryData([CART_QUERY_KEY, true], mergedCart);
 
         const { merged } = response.data;
         const addedCount = merged.added.length;
@@ -428,12 +331,8 @@ export function useCart(isLoggedIn: boolean) {
             duration: TOAST_DURATION,
           });
         }
-
-        // Clear guest session after successful merge
-        if (response.data.guestCartCleared) {
-          setSessionId(null);
-        }
       } else {
+        setMergeStatus("failed");
         addToast({
           title: "Error",
           description: response.message || "Cart could not be merged.",
@@ -444,6 +343,7 @@ export function useCart(isLoggedIn: boolean) {
     },
     onError: (error) => {
       console.error("Merge cart error:", error);
+      setMergeStatus("failed");
       addToast({
         title: "Error",
         description: "An error occurred while merging the cart.",
@@ -459,7 +359,6 @@ export function useCart(isLoggedIn: boolean) {
 
   const handleAddToCart = useCallback(
     (product: CartableProduct, quantity: number = 1) => {
-      // Optimistically add to local store
       const now = new Date().toISOString();
       const localItem: StoredCartItem = {
         sku: product.sku,
@@ -470,7 +369,6 @@ export function useCart(isLoggedIn: boolean) {
         updatedAt: now,
       };
 
-      // Try to add locally first
       const success = addLocalItem(localItem);
       if (!success) {
         addToast({
@@ -482,7 +380,6 @@ export function useCart(isLoggedIn: boolean) {
         return;
       }
 
-      // Call API
       addToCartMutation.mutate({ sku: product.sku, quantity });
     },
     [addLocalItem, addToCartMutation, addToast],
@@ -511,21 +408,39 @@ export function useCart(isLoggedIn: boolean) {
   }, [clearCartMutation]);
 
   const handleMergeCart = useCallback(() => {
-    if (isLoggedIn && sessionId && localItems.length > 0) {
-      mergeCartMutation.mutate(sessionId);
+    if (!isLoggedIn) return;
+    const state = useCartStore.getState();
+    if (
+      state.sessionId &&
+      state.localItems.length > 0 &&
+      (state.mergeStatus === "idle" || state.mergeStatus === "failed")
+    ) {
+      state.setMergeStatus("pending");
+      mergeCartMutation.mutate(state.sessionId);
     }
-  }, [isLoggedIn, sessionId, localItems.length, mergeCartMutation]);
+  }, [isLoggedIn, mergeCartMutation]);
 
   // ============================================================================
   // Auto-merge on login
   // ============================================================================
 
   useEffect(() => {
-    // When user logs in and has guest cart items, trigger merge
-    if (isLoggedIn && sessionId && localItems.length > 0) {
-      handleMergeCart();
+    if (!isLoggedIn) return;
+
+    // Read fresh state from store to avoid stale closure issues
+    // when multiple useCart instances run their effects in the same render cycle
+    const state = useCartStore.getState();
+    if (
+      state.sessionId &&
+      state.localItems.length > 0 &&
+      state.mergeStatus === "idle"
+    ) {
+      // Atomically set to 'pending' before mutating to block other instances
+      state.setMergeStatus("pending");
+      mergeCartMutation.mutate(state.sessionId);
     }
-  }, [isLoggedIn, sessionId, localItems.length, handleMergeCart]); // Only run on login state change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn]);
 
   // ============================================================================
   // Return

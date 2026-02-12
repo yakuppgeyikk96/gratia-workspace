@@ -1,4 +1,5 @@
 import VerifyEmail from "@/components/auth/VerifyEmail";
+import { COOKIE_USER_KEY } from "@/constants";
 import { isAuthenticatedUser } from "@/actions/auth";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
@@ -24,7 +25,7 @@ export default async function VerifyEmailPage({
 
   // Check if user is already verified (only for authenticated users)
   const cookieStore = await cookies();
-  const userCookie = cookieStore.get("gratia-user")?.value;
+  const userCookie = cookieStore.get(COOKIE_USER_KEY)?.value;
 
   if (userCookie) {
     try {

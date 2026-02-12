@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/hooks/useCart";
+import { useCartQuery } from "@/hooks/useCartQuery";
 import { useCartStore } from "@/store/cartStore";
 import { CartableProduct, CartItem, CartWarning } from "@/types/Cart.types";
 import { createContext, useContext, useEffect, useMemo } from "react";
@@ -186,13 +187,11 @@ interface CartInitializerProps {
 }
 
 export function CartInitializer({ isLoggedIn }: CartInitializerProps) {
-  const { refetchCart } = useCart(isLoggedIn);
+  const { refetchCart } = useCartQuery(isLoggedIn);
   const isHydrated = useCartStore((state) => state.isHydrated);
 
   useEffect(() => {
-    // Wait for store hydration before fetching
     if (isHydrated) {
-      // Fetch cart on mount
       refetchCart();
     }
   }, [isHydrated, isLoggedIn, refetchCart]);

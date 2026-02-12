@@ -8,6 +8,7 @@ import Flex from "@gratia/ui/components/Flex";
 import IconChevronDown from "@gratia/ui/icons/IconChevronDown";
 import IconBox from "@gratia/ui/icons/IconBox";
 import IconPerson from "@gratia/ui/icons/IconPerson";
+import IconShoppingBag from "@gratia/ui/icons/IconShoppingBag";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
@@ -21,6 +22,8 @@ export default function ProfileDropdown() {
       router.push("/profile");
     } else if (value === "my-orders") {
       router.push("/profile/orders");
+    } else if (value === "become-a-vendor") {
+      router.push("/become-a-vendor");
     } else if (value === "logout") {
       logoutUser();
       clearCart();
@@ -39,6 +42,11 @@ export default function ProfileDropdown() {
         label: "My Orders",
         value: "my-orders",
         icon: <IconBox />,
+      },
+      {
+        label: "Become a Vendor",
+        value: "become-a-vendor",
+        icon: <IconShoppingBag />,
       },
       {
         label: "Logout",
