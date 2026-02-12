@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import Container from "@gratia/ui/components/Container";
 import type { IUser } from "@/types/User.types";
 import BecomeVendorForm from "@/components/features/vendor/BecomeVendorForm";
+import { Flex } from "@gratia/ui";
 
 export default async function BecomeVendorPage() {
   const cookieStore = await cookies();
@@ -23,7 +24,9 @@ export default async function BecomeVendorPage() {
 
   return (
     <Container>
-      <BecomeVendorForm user={user} />
+      <Flex direction="column" align="center" className="gap-8 py-12">
+        <BecomeVendorForm user={user} />
+      </Flex>
     </Container>
   );
 }

@@ -27,7 +27,7 @@
   }
 
   &-sm {
-    padding: $input-padding-sm;
+    padding: $spacing-2 $spacing-3;
     font-size: $input-font-sm;
     font-weight: $input-font-weight-sm;
     border-radius: $radius-md;
@@ -39,7 +39,7 @@
   }
 
   &-md {
-    padding: $input-padding-md;
+    padding: $spacing-3 $spacing-4;
     font-size: $input-font-md;
     font-weight: $input-font-weight-md;
     border-radius: $radius-md;
@@ -51,7 +51,7 @@
   }
 
   &-lg {
-    padding: $input-padding-lg;
+    padding: $spacing-3 $spacing-4;
     font-size: $input-font-lg;
     font-weight: $input-font-weight-lg;
     border-radius: $radius-md;
