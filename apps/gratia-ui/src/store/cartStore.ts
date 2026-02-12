@@ -42,12 +42,19 @@ interface CartState {
   // Timestamps
   createdAt: string | null;
   updatedAt: string | null;
+
+  // Merge guard: prevents duplicate merge calls across all useCart instances
+  mergeStatus: "idle" | "pending" | "completed" | "failed";
 }
 
 interface CartActions {
   // Session management
   setSessionId: (sessionId: string | null) => void;
   getOrCreateSessionId: () => string;
+
+  // Merge status management
+  setMergeStatus: (status: "idle" | "pending" | "completed" | "failed") => void;
+  resetMergeTracking: () => void;
 
   // Full cart data (from API)
   setCartData: (data: {
@@ -56,6 +63,7 @@ interface CartActions {
     warnings: CartWarning[];
     createdAt?: string;
     updatedAt?: string;
+    clearLocalItems?: boolean;
   }) => void;
 
   // Local item management (for optimistic updates)
@@ -114,10 +122,20 @@ export const useCartStore = create<CartStore>()(
       isHydrated: false,
       createdAt: null,
       updatedAt: null,
+      mergeStatus: "idle" as const,
 
       // Session management
       setSessionId: (sessionId) => {
         set({ sessionId });
+      },
+
+      // Merge status management
+      setMergeStatus: (status) => {
+        set({ mergeStatus: status });
+      },
+
+      resetMergeTracking: () => {
+        set({ mergeStatus: "idle" });
       },
 
       getOrCreateSessionId: () => {
@@ -131,7 +149,14 @@ export const useCartStore = create<CartStore>()(
       },
 
       // Set full cart data from API
-      setCartData: ({ items, summary, warnings, createdAt, updatedAt }) => {
+      setCartData: ({
+        items,
+        summary,
+        warnings,
+        createdAt,
+        updatedAt,
+        clearLocalItems,
+      }) => {
         const now = new Date().toISOString();
         set({
           items,
@@ -139,15 +164,16 @@ export const useCartStore = create<CartStore>()(
           warnings,
           createdAt: createdAt || get().createdAt || now,
           updatedAt: updatedAt || now,
-          // Also update local items to stay in sync
-          localItems: items.map((item) => ({
-            sku: item.sku,
-            productId: item.productId,
-            quantity: item.quantity,
-            originalPrice: item.originalPrice,
-            addedAt: item.addedAt,
-            updatedAt: item.updatedAt,
-          })),
+          localItems: clearLocalItems
+            ? []
+            : items.map((item) => ({
+                sku: item.sku,
+                productId: item.productId,
+                quantity: item.quantity,
+                originalPrice: item.originalPrice,
+                addedAt: item.addedAt,
+                updatedAt: item.updatedAt,
+              })),
         });
       },
 
@@ -391,3 +417,4 @@ export const selectCartWarnings = (state: CartStore) => state.warnings;
 export const selectCartSessionId = (state: CartStore) => state.sessionId;
 export const selectCartIsLoading = (state: CartStore) => state.isLoading;
 export const selectCartIsHydrated = (state: CartStore) => state.isHydrated;
+export const selectCartMergeStatus = (state: CartStore) => state.mergeStatus;
