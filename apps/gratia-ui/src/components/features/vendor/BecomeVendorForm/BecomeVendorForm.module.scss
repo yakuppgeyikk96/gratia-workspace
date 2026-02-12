@@ -6,9 +6,14 @@
 @use "@gratia/ui/styles/layout/grid.scss" as *;
 @use "@gratia/ui/styles/layout/flex.scss" as *;
 
+
 .container {
   @include py(6);
-  max-width: $width-500;
+  width: 100%;
+
+  @include media-md-up {
+    width: $width-800;
+  }
 }
 
 .card {
@@ -39,6 +44,10 @@
 
 .formFieldFull {
   @include form-field;
+}
+
+.formFieldHalf {
+  @include form-field-half;
 }
 
 .submitButton {

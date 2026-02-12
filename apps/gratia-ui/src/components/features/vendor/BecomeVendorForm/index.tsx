@@ -42,7 +42,7 @@ export default function BecomeVendorForm({ user }: BecomeVendorFormProps) {
       const name = e.target.value;
       setValue("storeSlug", slugify(name), { shouldValidate: true });
     },
-    [setValue]
+    [setValue],
   );
 
   const onSubmit: SubmitHandler<VendorFormData> = (data) => {
@@ -66,7 +66,7 @@ export default function BecomeVendorForm({ user }: BecomeVendorFormProps) {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.formGrid}>
-            <div className={styles.formFieldFull}>
+            <div className={styles.formFieldHalf}>
               <FormField
                 label="Store Name"
                 error={errors.storeName?.message}
@@ -85,7 +85,7 @@ export default function BecomeVendorForm({ user }: BecomeVendorFormProps) {
               </FormField>
             </div>
 
-            <div className={styles.formFieldFull}>
+            <div className={styles.formFieldHalf}>
               <FormField
                 label="Store Slug"
                 error={errors.storeSlug?.message}
@@ -103,7 +103,7 @@ export default function BecomeVendorForm({ user }: BecomeVendorFormProps) {
               </FormField>
             </div>
 
-            <div className={styles.formFieldFull}>
+            <div className={styles.formFieldHalf}>
               <FormField
                 label="Email"
                 error={errors.email?.message}
@@ -117,11 +117,12 @@ export default function BecomeVendorForm({ user }: BecomeVendorFormProps) {
                   size="lg"
                   placeholder="your@email.com"
                   error={!!errors.email}
+                  disabled
                 />
               </FormField>
             </div>
 
-            <div className={styles.formFieldFull}>
+            <div className={styles.formFieldHalf}>
               <FormField
                 label="Phone"
                 error={errors.phone?.message}
