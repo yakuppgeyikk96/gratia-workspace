@@ -1,0 +1,37 @@
+@use "@gratia/ui/styles/core/spacing.scss" as *;
+@use "@gratia/ui/styles/core/breakpoints.scss" as *;
+@use "@gratia/ui/styles/core/variables.scss" as *;
+@use "@gratia/ui/styles/core/colors.scss" as *;
+@use "@gratia/ui/styles/layout/grid.scss" as *;
+
+.container {
+  @include py(6);
+  max-width: $width-500;
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  margin-bottom: $spacing-2;
+}
+
+.subtitle {
+  font-size: $text-base;
+  color: $text-secondary-color;
+  margin-bottom: $spacing-8;
+}
+
+.formGrid {
+  @include form-grid;
+  @include gap-y(4);
+}
+
+.formFieldFull {
+  @include form-field;
+}
+
+.submitButton {
+  width: 100%;
+  margin-top: $spacing-2;
+}

@@ -6,3 +6,4 @@ export * from "./Checkout.types";
 export * from "./Navigation.types";
 export * from "./Order.types";
 export * from "./Shipping.types";
+export * from "./Vendor.types";

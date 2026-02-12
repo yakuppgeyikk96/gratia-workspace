@@ -1,0 +1,94 @@
+@use "../../styles/core/colors" as *;
+@use "../../styles/core/spacing" as *;
+@use "../../styles/core/border" as *;
+@use "../../styles/core/variables" as *;
+@use "../../styles/components/input" as *;
+
+.textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: $font-family-sans;
+  color: $text-primary-color;
+  transition: all 0.2s ease;
+  resize: vertical;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  &::placeholder {
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &-sm {
+    padding: $input-padding-sm;
+    font-size: $input-font-sm;
+    font-weight: $input-font-weight-sm;
+    border-radius: $radius-md;
+
+    &::placeholder {
+      font-size: $input-placeholder-sm;
+      font-weight: $input-font-weight-sm;
+    }
+  }
+
+  &-md {
+    padding: $input-padding-md;
+    font-size: $input-font-md;
+    font-weight: $input-font-weight-md;
+    border-radius: $radius-md;
+
+    &::placeholder {
+      font-size: $input-placeholder-md;
+      font-weight: $input-font-weight-md;
+    }
+  }
+
+  &-lg {
+    padding: $input-padding-lg;
+    font-size: $input-font-lg;
+    font-weight: $input-font-weight-lg;
+    border-radius: $radius-md;
+
+    &::placeholder {
+      font-size: $input-placeholder-lg;
+      font-weight: $input-font-weight-lg;
+    }
+  }
+
+  &-filled {
+    background: rgba($primary-color, $input-bg-opacity-md);
+    border: none;
+
+    &.textarea-sm {
+      background: rgba($primary-color, $input-bg-opacity-sm);
+    }
+
+    &.textarea-lg {
+      background: rgba($primary-color, $input-bg-opacity-lg);
+    }
+  }
+
+  &-outlined {
+    background: $bg-color;
+    border: 1px solid $border-medium;
+
+    &:focus {
+      border-color: $primary-color;
+    }
+  }
+
+  &Error {
+    border-color: $text-error-color !important;
+
+    &.textarea-filled {
+      background: rgba($text-error-color, 0.05);
+    }
+  }
+}

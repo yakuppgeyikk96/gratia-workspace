@@ -1,6 +1,7 @@
 "use server";
 
 import { apiClient } from "@/lib/apiClient";
+import { COOKIE_TOKEN_KEY, COOKIE_USER_KEY } from "@/constants";
 import {
   ILoginUserRequest,
   ILoginUserResponse,
@@ -46,8 +47,8 @@ export async function registerUser(
 
     const cookieStore = await cookies();
 
-    cookieStore.set("gratia-token", token);
-    cookieStore.set("gratia-user", JSON.stringify(user));
+    cookieStore.set(COOKIE_TOKEN_KEY, token);
+    cookieStore.set(COOKIE_USER_KEY, JSON.stringify(user));
 
     redirect(`/`);
   }
@@ -68,8 +69,8 @@ export async function loginUser(
 
     const cookieStore = await cookies();
 
-    cookieStore.set("gratia-token", token);
-    cookieStore.set("gratia-user", JSON.stringify(user));
+    cookieStore.set(COOKIE_TOKEN_KEY, token);
+    cookieStore.set(COOKIE_USER_KEY, JSON.stringify(user));
 
     redirect("/");
   }
@@ -79,14 +80,14 @@ export async function loginUser(
 
 export async function logoutUser(): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.delete("gratia-token");
-  cookieStore.delete("gratia-user");
+  cookieStore.delete(COOKIE_TOKEN_KEY);
+  cookieStore.delete(COOKIE_USER_KEY);
   redirect("/");
 }
 
 export async function isAuthenticatedUser(): Promise<boolean> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("gratia-token")?.value;
+  const token = cookieStore.get(COOKIE_TOKEN_KEY)?.value;
 
   return !!token;
 }

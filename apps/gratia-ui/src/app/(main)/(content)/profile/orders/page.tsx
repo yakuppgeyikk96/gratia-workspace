@@ -1,3 +1,4 @@
+import { COOKIE_TOKEN_KEY, COOKIE_USER_KEY } from "@/constants";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { getUserOrders } from "@/actions";
@@ -10,8 +11,8 @@ interface OrdersPageProps {
 
 export default async function OrdersPage({ searchParams }: OrdersPageProps) {
   const cookieStore = await cookies();
-  const token = cookieStore.get("gratia-token")?.value;
-  const userCookie = cookieStore.get("gratia-user")?.value;
+  const token = cookieStore.get(COOKIE_TOKEN_KEY)?.value;
+  const userCookie = cookieStore.get(COOKIE_USER_KEY)?.value;
 
   if (!token || !userCookie) {
     redirect("/login");

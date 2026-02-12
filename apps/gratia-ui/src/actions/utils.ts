@@ -1,10 +1,11 @@
 "use server";
 
+import { COOKIE_TOKEN_KEY } from "@/constants";
 import { cookies } from "next/headers";
 
 export const getAuthToken = async () => {
   const cookieStore = await cookies();
-  const authToken = cookieStore.get("gratia-token")?.value;
+  const authToken = cookieStore.get(COOKIE_TOKEN_KEY)?.value;
   return authToken;
 };
 
