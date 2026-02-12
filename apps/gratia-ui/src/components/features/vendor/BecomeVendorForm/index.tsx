@@ -58,115 +58,117 @@ export default function BecomeVendorForm({ user }: BecomeVendorFormProps) {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Become a Vendor</h1>
-      <p className={styles.subtitle}>
-        Set up your store and start selling on Gratia.
-      </p>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Become a Vendor</h1>
+        <p className={styles.subtitle}>
+          Set up your store and start selling on Gratia.
+        </p>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className={styles.formGrid}>
-          <div className={styles.formFieldFull}>
-            <FormField
-              label="Store Name"
-              error={errors.storeName?.message}
-              required
-              name="storeName"
-            >
-              <Input
-                {...register("storeName", {
-                  onChange: handleStoreNameChange,
-                })}
-                variant="outlined"
-                size="lg"
-                placeholder="My Awesome Store"
-                error={!!errors.storeName}
-              />
-            </FormField>
-          </div>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className={styles.formGrid}>
+            <div className={styles.formFieldFull}>
+              <FormField
+                label="Store Name"
+                error={errors.storeName?.message}
+                required
+                name="storeName"
+              >
+                <Input
+                  {...register("storeName", {
+                    onChange: handleStoreNameChange,
+                  })}
+                  variant="outlined"
+                  size="lg"
+                  placeholder="My Awesome Store"
+                  error={!!errors.storeName}
+                />
+              </FormField>
+            </div>
 
-          <div className={styles.formFieldFull}>
-            <FormField
-              label="Store Slug"
-              error={errors.storeSlug?.message}
-              required
-              name="storeSlug"
-              hint="This will be your store URL identifier"
-            >
-              <Input
-                {...register("storeSlug")}
-                variant="outlined"
-                size="lg"
-                placeholder="my-awesome-store"
-                error={!!errors.storeSlug}
-              />
-            </FormField>
-          </div>
+            <div className={styles.formFieldFull}>
+              <FormField
+                label="Store Slug"
+                error={errors.storeSlug?.message}
+                required
+                name="storeSlug"
+                hint="This will be your store URL identifier"
+              >
+                <Input
+                  {...register("storeSlug")}
+                  variant="outlined"
+                  size="lg"
+                  placeholder="my-awesome-store"
+                  error={!!errors.storeSlug}
+                />
+              </FormField>
+            </div>
 
-          <div className={styles.formFieldFull}>
-            <FormField
-              label="Email"
-              error={errors.email?.message}
-              required
-              name="email"
-            >
-              <Input
-                {...register("email")}
-                type="email"
-                variant="outlined"
-                size="lg"
-                placeholder="your@email.com"
-                error={!!errors.email}
-              />
-            </FormField>
-          </div>
+            <div className={styles.formFieldFull}>
+              <FormField
+                label="Email"
+                error={errors.email?.message}
+                required
+                name="email"
+              >
+                <Input
+                  {...register("email")}
+                  type="email"
+                  variant="outlined"
+                  size="lg"
+                  placeholder="your@email.com"
+                  error={!!errors.email}
+                />
+              </FormField>
+            </div>
 
-          <div className={styles.formFieldFull}>
-            <FormField
-              label="Phone"
-              error={errors.phone?.message}
-              name="phone"
-              hint="E.164 format, e.g. +1234567890"
-            >
-              <Input
-                {...register("phone")}
-                type="tel"
-                variant="outlined"
-                size="lg"
-                placeholder="+1234567890"
-                error={!!errors.phone}
-              />
-            </FormField>
-          </div>
+            <div className={styles.formFieldFull}>
+              <FormField
+                label="Phone"
+                error={errors.phone?.message}
+                name="phone"
+                hint="E.164 format, e.g. +1234567890"
+              >
+                <Input
+                  {...register("phone")}
+                  type="tel"
+                  variant="outlined"
+                  size="lg"
+                  placeholder="+1234567890"
+                  error={!!errors.phone}
+                />
+              </FormField>
+            </div>
 
-          <div className={styles.formFieldFull}>
-            <FormField
-              label="Store Description"
-              error={errors.storeDescription?.message}
-              name="storeDescription"
-            >
-              <Textarea
-                {...register("storeDescription")}
-                variant="outlined"
-                size="lg"
-                rows={4}
-                placeholder="Tell customers about your store..."
-                error={!!errors.storeDescription}
-              />
-            </FormField>
-          </div>
+            <div className={styles.formFieldFull}>
+              <FormField
+                label="Store Description"
+                error={errors.storeDescription?.message}
+                name="storeDescription"
+              >
+                <Textarea
+                  {...register("storeDescription")}
+                  variant="outlined"
+                  size="lg"
+                  rows={4}
+                  placeholder="Tell customers about your store..."
+                  error={!!errors.storeDescription}
+                />
+              </FormField>
+            </div>
 
-          <div className={styles.formFieldFull}>
-            <Button
-              type="submit"
-              variant="primary"
-              className={styles.submitButton}
-              loading={isPending}
-            >
-              Create Vendor Account
-            </Button>
+            <div className={styles.formFieldFull}>
+              <Button
+                type="submit"
+                variant="primary"
+                className={styles.submitButton}
+                loading={isPending}
+              >
+                Create Vendor Account
+              </Button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
