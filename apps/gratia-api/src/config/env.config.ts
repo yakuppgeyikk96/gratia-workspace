@@ -3,12 +3,13 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const validateEnvironment = (): void => {
+  const isDevelopment = process.env.NODE_ENV === "development";
+
   const required = [
     "JWT_SECRET",
-    "REDIS_HOST",
-    "REDIS_PORT",
-    "REDIS_USERNAME",
-    "REDIS_PASSWORD",
+    ...(isDevelopment
+      ? ["REDIS_HOST_LOCAL", "REDIS_PORT_LOCAL"]
+      : ["REDIS_HOST", "REDIS_PORT", "REDIS_USERNAME", "REDIS_PASSWORD"]),
   ];
 
   for (const key of required) {

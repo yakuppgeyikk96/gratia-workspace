@@ -5,6 +5,7 @@ import {
   deleteRedisValue,
   getRedisValue,
   setRedisValue,
+  setRedisValueNX,
 } from "../../shared/services";
 import { generateUniqueToken } from "../../shared/utils/token.utils";
 import { generateOrderNumber } from "../order/order.helpers";
@@ -271,133 +272,151 @@ export const completeCheckoutService = async (
   notes?: string,
   userId?: number | null
 ): Promise<CreateOrderResponse> => {
-  // Idempotency: if this session was completed recently, return the same response
+  // Atomic idempotency claim — only the first concurrent request proceeds
   const completionCacheKey = `checkout:complete:${sessionToken}`;
-  const cached = await getRedisValue<CreateOrderResponse>(completionCacheKey);
-  if (cached) {
-    return cached;
-  }
-
-  /* Generate order number to be used for the order follow-up */
-  const orderNumber = generateOrderNumber();
-
-  /* Get the session from the database */
-  const session = await getCheckoutSessionService(sessionToken);
-
-  /* Validate if session is valid */
-  validateCheckoutCompletion(session);
-
-  if (paymentMethodType === PaymentMethodType.BANK_TRANSFER) {
-    throw new AppError(
-      CHECKOUT_MESSAGES.BANK_TRANSFER_NOT_SUPPORTED,
-      ErrorCode.BAD_REQUEST
-    );
-  } else if (paymentMethodType === PaymentMethodType.CASH_ON_DELIVERY) {
-    throw new AppError(
-      CHECKOUT_MESSAGES.CASH_ON_DELIVERY_NOT_SUPPORTED,
-      ErrorCode.BAD_REQUEST
-    );
-  }
-
-  // Re-validate stock and ensure reservation is still active
-  // Stock lock TTL (15min) may have expired before session TTL (20min)
-  const stockItems = session.cartSnapshot.items.map((item) => ({
-    sku: item.sku,
-    quantity: item.quantity,
-  }));
-
-  const reservationStatus = await getReservationStatus(sessionToken);
-  if (reservationStatus.length === 0) {
-    // Locks expired - re-reserve stock before proceeding
-    await reserveStockForCheckout(sessionToken, stockItems);
-  } else {
-    // Locks exist - verify stock is still sufficient
-    const availability = await checkStockAvailability(stockItems);
-    if (!availability.available) {
-      const failedSkus = availability.failures.map((f) => f.sku).join(", ");
-      throw new AppError(
-        `Insufficient stock for: ${failedSkus}`,
-        ErrorCode.CONFLICT
-      );
-    }
-  }
-
-  const completedSession: CheckoutSession = {
-    ...session,
-    paymentMethodType,
-    orderNumber,
-    status: CheckoutStatus.COMPLETED,
-    currentStep: CheckoutStep.COMPLETED,
-    completedAt: new Date(),
-  };
-
-  /**
-   * Create order FIRST (paymentStatus starts as PENDING; webhook will update)
-   */
-  const order: Order = await createOrderFromSession(completedSession, {
-    userId: userId ?? null,
-    notes: notes || null,
-  });
-
-  if (!order) {
-    throw new AppError(
-      CHECKOUT_MESSAGES.ORDER_CREATION_FAILED,
-      ErrorCode.INTERNAL_SERVER_ERROR
-    );
-  }
-
-  // Create payment intent (DO NOT confirm on backend; confirmation happens client-side)
-  if (paymentMethodType === PaymentMethodType.CREDIT_CARD) {
-    if (!paymentToken) {
-      throw new AppError(
-        CHECKOUT_MESSAGES.PAYMENT_TOKEN_REQUIRED,
-        ErrorCode.BAD_REQUEST
-      );
-    }
-  }
-
-  const paymentIntent = await createPaymentIntent(
-    session.pricing.total,
-    "usd",
-    {
-      sessionToken: session.sessionToken,
-      orderNumber: order.orderNumber,
-      orderId: order.id.toString(),
-    },
-    `checkout:complete:${sessionToken}`
-  );
-
-  const clientSecret = paymentIntent.client_secret;
-  if (!clientSecret) {
-    throw new AppError(
-      "Stripe did not return a client_secret for payment intent",
-      ErrorCode.INTERNAL_SERVER_ERROR
-    );
-  }
-
-  // Persist payment intent id on the order
-  await updateOrderPaymentIntentId(order.id, paymentIntent.id);
-
-  // Issue short-lived guest order access token
-  const orderAccessToken = generateUniqueToken();
-  await setRedisValue(
-    `order:access:${orderAccessToken}`,
-    { orderNumber: order.orderNumber, email: order.email },
+  const claimed = await setRedisValueNX(
+    completionCacheKey,
+    { status: "processing" },
     60 * 60
   );
 
-  const response: CreateOrderResponse = {
-    orderId: order.id.toString(),
-    orderNumber: order.orderNumber,
-    paymentIntentClientSecret: clientSecret,
-    orderAccessToken,
-  };
+  if (!claimed) {
+    // Another request already claimed this session — wait briefly for result
+    await new Promise((r) => setTimeout(r, 2000));
+    const existing = await getRedisValue<CreateOrderResponse>(completionCacheKey);
+    if (existing && "orderId" in existing) return existing;
+    throw new AppError(
+      "Checkout completion already in progress",
+      ErrorCode.CONFLICT
+    );
+  }
 
-  // Cache response for a short time to prevent duplicate orders on retries
-  await setRedisValue(completionCacheKey, response, 60 * 60);
+  try {
+    /* Generate order number to be used for the order follow-up */
+    const orderNumber = generateOrderNumber();
 
-  /* Remove session from Redis after order is created */
-  await deleteCheckoutSessionService(sessionToken);
+    /* Get the session from the database */
+    const session = await getCheckoutSessionService(sessionToken);
 
-  return response;
+    /* Validate if session is valid */
+    validateCheckoutCompletion(session);
+
+    if (paymentMethodType === PaymentMethodType.BANK_TRANSFER) {
+      throw new AppError(
+        CHECKOUT_MESSAGES.BANK_TRANSFER_NOT_SUPPORTED,
+        ErrorCode.BAD_REQUEST
+      );
+    } else if (paymentMethodType === PaymentMethodType.CASH_ON_DELIVERY) {
+      throw new AppError(
+        CHECKOUT_MESSAGES.CASH_ON_DELIVERY_NOT_SUPPORTED,
+        ErrorCode.BAD_REQUEST
+      );
+    }
+
+    // Re-validate stock and ensure reservation is still active
+    // Stock lock TTL (15min) may have expired before session TTL (20min)
+    const stockItems = session.cartSnapshot.items.map((item) => ({
+      sku: item.sku,
+      quantity: item.quantity,
+    }));
+
+    const reservationStatus = await getReservationStatus(sessionToken);
+    if (reservationStatus.length === 0) {
+      // Locks expired - re-reserve stock before proceeding
+      await reserveStockForCheckout(sessionToken, stockItems);
+    } else {
+      // Locks exist - verify stock is still sufficient
+      const availability = await checkStockAvailability(stockItems);
+      if (!availability.available) {
+        const failedSkus = availability.failures.map((f) => f.sku).join(", ");
+        throw new AppError(
+          `Insufficient stock for: ${failedSkus}`,
+          ErrorCode.CONFLICT
+        );
+      }
+    }
+
+    const completedSession: CheckoutSession = {
+      ...session,
+      paymentMethodType,
+      orderNumber,
+      status: CheckoutStatus.COMPLETED,
+      currentStep: CheckoutStep.COMPLETED,
+      completedAt: new Date(),
+    };
+
+    /**
+     * Create order FIRST (paymentStatus starts as PENDING; webhook will update)
+     */
+    const order: Order = await createOrderFromSession(completedSession, {
+      userId: userId ?? null,
+      notes: notes || null,
+    });
+
+    if (!order) {
+      throw new AppError(
+        CHECKOUT_MESSAGES.ORDER_CREATION_FAILED,
+        ErrorCode.INTERNAL_SERVER_ERROR
+      );
+    }
+
+    // Create payment intent (DO NOT confirm on backend; confirmation happens client-side)
+    if (paymentMethodType === PaymentMethodType.CREDIT_CARD) {
+      if (!paymentToken) {
+        throw new AppError(
+          CHECKOUT_MESSAGES.PAYMENT_TOKEN_REQUIRED,
+          ErrorCode.BAD_REQUEST
+        );
+      }
+    }
+
+    const paymentIntent = await createPaymentIntent(
+      session.pricing.total,
+      "usd",
+      {
+        sessionToken: session.sessionToken,
+        orderNumber: order.orderNumber,
+        orderId: order.id.toString(),
+      },
+      `checkout:complete:${sessionToken}`
+    );
+
+    const clientSecret = paymentIntent.client_secret;
+    if (!clientSecret) {
+      throw new AppError(
+        "Stripe did not return a client_secret for payment intent",
+        ErrorCode.INTERNAL_SERVER_ERROR
+      );
+    }
+
+    // Persist payment intent id on the order
+    await updateOrderPaymentIntentId(order.id, paymentIntent.id);
+
+    // Issue short-lived guest order access token
+    const orderAccessToken = generateUniqueToken();
+    await setRedisValue(
+      `order:access:${orderAccessToken}`,
+      { orderNumber: order.orderNumber, email: order.email },
+      60 * 60
+    );
+
+    const response: CreateOrderResponse = {
+      orderId: order.id.toString(),
+      orderNumber: order.orderNumber,
+      paymentIntentClientSecret: clientSecret,
+      orderAccessToken,
+    };
+
+    // Overwrite "processing" claim with actual response
+    await setRedisValue(completionCacheKey, response, 60 * 60);
+
+    /* Remove session from Redis after order is created */
+    await deleteCheckoutSessionService(sessionToken);
+
+    return response;
+  } catch (error) {
+    // Clear claim so the session can be retried
+    await deleteRedisValue(completionCacheKey);
+    throw error;
+  }
 };

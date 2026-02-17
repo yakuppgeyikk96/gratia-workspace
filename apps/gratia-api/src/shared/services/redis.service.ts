@@ -71,23 +71,55 @@ export const setRedisKeyExpire = async (
 };
 
 /**
- * Get all keys matching a pattern
+ * Get all keys matching a pattern (uses SCAN instead of KEYS to avoid blocking Redis)
  */
 export const getRedisKeys = async (pattern: string): Promise<string[]> => {
   const client = getRedisClient();
-  return await client.keys(pattern);
+  const keys: string[] = [];
+  for await (const batch of client.scanIterator({ MATCH: pattern, COUNT: 100 })) {
+    if (Array.isArray(batch)) {
+      keys.push(...batch);
+    } else {
+      keys.push(batch);
+    }
+  }
+  return keys;
 };
 
 /**
- * Delete all keys matching a pattern
+ * Delete all keys matching a pattern (uses SCAN instead of KEYS)
  */
 export const deleteRedisKeysByPattern = async (
   pattern: string
 ): Promise<void> => {
   const client = getRedisClient();
-  const keys = await client.keys(pattern);
+  const keys: string[] = [];
+  for await (const batch of client.scanIterator({ MATCH: pattern, COUNT: 100 })) {
+    if (Array.isArray(batch)) {
+      keys.push(...batch);
+    } else {
+      keys.push(batch);
+    }
+  }
 
   if (keys.length > 0) {
     await client.del(keys);
   }
+};
+
+/**
+ * Set a key-value pair only if it does not already exist (atomic)
+ * Returns true if the key was set, false if it already existed
+ */
+export const setRedisValueNX = async (
+  key: string,
+  value: any,
+  ttl: number
+): Promise<boolean> => {
+  const client = getRedisClient();
+  const result = await client.set(key, JSON.stringify(value), {
+    NX: true,
+    EX: ttl,
+  });
+  return result === "OK";
 };

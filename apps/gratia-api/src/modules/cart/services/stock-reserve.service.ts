@@ -1,5 +1,9 @@
 import { getRedisClient } from "../../../config/redis.config";
 import {
+  getRedisKeys,
+  deleteRedisKeysByPattern,
+} from "../../../shared/services/redis.service";
+import {
   CART_LIMITS,
   CART_REDIS_KEYS,
   CART_MESSAGES,
@@ -14,6 +18,25 @@ import {
   decreaseProductStock,
 } from "../repositories/cart.repository";
 import { AppError, ErrorCode } from "../../../shared/errors/base.errors";
+
+// Lua script: Atomically check available stock and create lock
+// Prevents race condition where two concurrent checkouts oversell inventory
+const ATOMIC_RESERVE_SCRIPT = `
+local keys = redis.call("KEYS", ARGV[1])
+local totalLocked = 0
+for _, key in ipairs(keys) do
+  local val = redis.call("GET", key)
+  if val then totalLocked = totalLocked + tonumber(val) end
+end
+
+local available = tonumber(ARGV[2]) - totalLocked
+if available < tonumber(ARGV[3]) then
+  return -1
+end
+
+redis.call("SETEX", KEYS[1], tonumber(ARGV[4]), ARGV[3])
+return available - tonumber(ARGV[3])
+`;
 
 // ============================================================================
 // Stock Reserve Service - Hard Reserve at Checkout
@@ -68,11 +91,24 @@ export const reserveStockForCheckout = async (
       continue;
     }
 
-    // Calculate available stock (DB stock - existing locks)
-    const lockedQuantity = await getLockedQuantityForSku(item.sku);
-    const availableStock = product.stock - lockedQuantity;
+    // Atomic check-and-lock via Lua script (prevents overselling race condition)
+    const lockKey = CART_REDIS_KEYS.STOCK_LOCK(item.sku, sessionId);
+    const skuPattern = CART_REDIS_KEYS.STOCK_LOCK_BY_SKU_PATTERN(item.sku);
 
-    if (availableStock < item.quantity) {
+    const remaining = await client.eval(ATOMIC_RESERVE_SCRIPT, {
+      keys: [lockKey],
+      arguments: [
+        skuPattern,
+        String(product.stock),
+        String(item.quantity),
+        String(CART_LIMITS.STOCK_LOCK_TTL_SECONDS),
+      ],
+    }) as number;
+
+    if (remaining < 0) {
+      // Lua returned -1: insufficient stock
+      const lockedQuantity = await getLockedQuantityForSku(item.sku);
+      const availableStock = product.stock - lockedQuantity;
       failed.push({
         sku: item.sku,
         reason: `${CART_MESSAGES.INSUFFICIENT_STOCK}. Only ${availableStock} available.`,
@@ -81,13 +117,6 @@ export const reserveStockForCheckout = async (
       continue;
     }
 
-    // Create lock
-    const lockKey = CART_REDIS_KEYS.STOCK_LOCK(item.sku, sessionId);
-    await client.setEx(
-      lockKey,
-      CART_LIMITS.STOCK_LOCK_TTL_SECONDS,
-      String(item.quantity)
-    );
     reserved.push(item.sku);
   }
 
@@ -125,13 +154,8 @@ export const reserveStockForCheckout = async (
 export const releaseStockReservation = async (
   sessionId: string
 ): Promise<void> => {
-  const client = getRedisClient();
   const pattern = CART_REDIS_KEYS.STOCK_LOCK_PATTERN(sessionId);
-  const keys = await client.keys(pattern);
-
-  if (keys.length > 0) {
-    await client.del(keys);
-  }
+  await deleteRedisKeysByPattern(pattern);
 };
 
 /**
@@ -163,13 +187,12 @@ export const commitStockReservation = async (
 export const getLockedQuantityForSku = async (sku: string): Promise<number> => {
   const client = getRedisClient();
   const pattern = CART_REDIS_KEYS.STOCK_LOCK_BY_SKU_PATTERN(sku);
-  const keys = await client.keys(pattern);
+  const keys = await getRedisKeys(pattern);
 
   if (keys.length === 0) {
     return 0;
   }
 
-  // Get all lock values
   const values = await client.mGet(keys);
   let totalLocked = 0;
 
@@ -192,7 +215,7 @@ export const getReservationStatus = async (
 ): Promise<{ sku: string; quantity: number; ttl: number }[]> => {
   const client = getRedisClient();
   const pattern = CART_REDIS_KEYS.STOCK_LOCK_PATTERN(sessionId);
-  const keys = await client.keys(pattern);
+  const keys = await getRedisKeys(pattern);
 
   if (keys.length === 0) {
     return [];
@@ -233,7 +256,7 @@ export const extendReservation = async (
 ): Promise<void> => {
   const client = getRedisClient();
   const pattern = CART_REDIS_KEYS.STOCK_LOCK_PATTERN(sessionId);
-  const keys = await client.keys(pattern);
+  const keys = await getRedisKeys(pattern);
 
   if (keys.length === 0) {
     return;

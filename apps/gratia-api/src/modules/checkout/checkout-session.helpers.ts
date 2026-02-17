@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import type { Product } from "../../db/schema/product.schema";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
-import { getRedisKeyTTL, getRedisValue } from "../../shared/services";
+import { getRedisValue } from "../../shared/services";
 import { CartResponse } from "../cart/cart.types";
 import { findProductsBySkus } from "../product/product.repository";
 import {
@@ -241,12 +241,12 @@ export const getSessionWithTTL = async (
     );
   }
 
-  // Get TTL from Redis and update session
-  const ttl = await getRedisKeyTTL(redisKey);
+  // Calculate remaining TTL from expiresAt (avoids extra Redis round-trip)
+  const remainingMs = new Date(session.expiresAt).getTime() - Date.now();
 
   return {
     ...session,
-    ttl: ttl > 0 ? ttl : 0,
+    ttl: Math.max(0, Math.floor(remainingMs / 1000)),
   };
 };
 

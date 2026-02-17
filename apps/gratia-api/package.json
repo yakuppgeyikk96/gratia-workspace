@@ -15,7 +15,10 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "load-test:browse": "k6 run load-tests/scenarios/browse-products.js"
+    "load-test:browse": "k6 run load-tests/scenarios/browse-products.js",
+    "load-test:stock-race": "k6 run load-tests/scenarios/concurrent-stock-reserve.js",
+    "load-test:idempotency": "k6 run load-tests/scenarios/concurrent-checkout-complete.js",
+    "load-test:checkout-flow": "k6 run load-tests/scenarios/checkout-flow-load.js"
   },
   "keywords": [
     "api",

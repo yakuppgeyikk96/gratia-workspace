@@ -3,26 +3,48 @@ import { createClient, RedisClientType } from "redis";
 let redisClient: RedisClientType | null = null;
 
 export const connectRedis = async (): Promise<void> => {
-  const redisHost = process.env.REDIS_HOST as string;
-  const redisPort = process.env.REDIS_PORT as string;
-  const redisUsername = process.env.REDIS_USERNAME as string;
-  const redisPassword = process.env.REDIS_PASSWORD as string;
+  const isDevelopment = process.env.NODE_ENV === "development";
+
+  const redisHost = isDevelopment
+    ? (process.env.REDIS_HOST_LOCAL as string)
+    : (process.env.REDIS_HOST as string);
+  const redisPort = isDevelopment
+    ? (process.env.REDIS_PORT_LOCAL as string)
+    : (process.env.REDIS_PORT as string);
 
   console.log("Connecting to Redis...");
 
   try {
-    if (!redisHost || !redisPort || !redisUsername || !redisPassword) {
-      throw new Error("Redis configuration is missing");
+    if (!redisHost || !redisPort) {
+      throw new Error("Redis host/port configuration is missing");
     }
 
-    redisClient = createClient({
-      username: redisUsername,
-      password: redisPassword,
-      socket: {
-        host: redisHost,
-        port: Number(redisPort),
-      },
-    });
+    if (isDevelopment) {
+      // Local Docker Redis — no auth needed
+      redisClient = createClient({
+        socket: {
+          host: redisHost,
+          port: Number(redisPort),
+        },
+      });
+    } else {
+      // Production — requires auth
+      const redisUsername = process.env.REDIS_USERNAME as string;
+      const redisPassword = process.env.REDIS_PASSWORD as string;
+
+      if (!redisUsername || !redisPassword) {
+        throw new Error("Redis credentials are missing for production");
+      }
+
+      redisClient = createClient({
+        username: redisUsername,
+        password: redisPassword,
+        socket: {
+          host: redisHost,
+          port: Number(redisPort),
+        },
+      });
+    }
 
     redisClient.on("error", (err) => {
       console.error("Redis Client Error:", err);
@@ -31,6 +53,7 @@ export const connectRedis = async (): Promise<void> => {
     redisClient.on("connect", () => {
       console.log("--------------------------------");
       console.log("✅ Redis connected successfully");
+      console.log(`- Environment: ${isDevelopment ? "LOCAL" : "PRODUCTION"}`);
       console.log(`- Host: ${redisHost}`);
       console.log(`- Port: ${redisPort}`);
       console.log("--------------------------------");
@@ -39,7 +62,7 @@ export const connectRedis = async (): Promise<void> => {
     await redisClient.connect();
   } catch (error) {
     console.error("Redis connection error:", error);
-    throw error; // Throw error instead of crashing the app
+    throw error;
   }
 };
 
