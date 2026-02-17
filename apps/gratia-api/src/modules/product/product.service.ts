@@ -3,16 +3,18 @@ import {
   getAttributeSortOrder,
 } from "./constants/common-attributes";
 import {
-  cacheCategoryProducts,
-  cacheCollectionProducts,
-  cacheProductList,
-  cacheSearchProducts,
-  cacheSuggestions,
-  getCachedCategoryProducts,
-  getCachedCollectionProducts,
-  getCachedProductList,
-  getCachedSearchProducts,
-  getCachedSuggestions,
+  categoryCache,
+  categoryKey,
+  collectionCache,
+  collectionKey,
+  featuredCache,
+  paginationKey,
+  productDetailCache,
+  productListCache,
+  searchCache,
+  searchKey,
+  suggestionsCache,
+  suggestionKey,
 } from "./product.cache";
 import {
   findFeaturedProducts,
@@ -54,15 +56,20 @@ export const getProductList = async (
   const shouldCache = !filters;
 
   if (shouldCache) {
-    const cached = categorySlug
-      ? await getCachedCategoryProducts(categorySlug, page, limit)
+    const cacheKey = categorySlug
+      ? categoryKey(categorySlug, page, limit)
       : collectionSlug
-        ? await getCachedCollectionProducts(collectionSlug, page, limit)
-        : await getCachedProductList(page, limit);
+        ? collectionKey(collectionSlug, page, limit)
+        : paginationKey(page, limit);
 
-    if (cached) {
-      return cached;
-    }
+    const cache = categorySlug
+      ? categoryCache
+      : collectionSlug
+        ? collectionCache
+        : productListCache;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) return cached;
   }
 
   const { products, total } = await findProducts(options, filters);
@@ -79,13 +86,21 @@ export const getProductList = async (
 
   // Cache the result (non-blocking)
   if (shouldCache) {
-    const cachePromise = categorySlug
-      ? cacheCategoryProducts(categorySlug, page, limit, result)
+    const cacheKey = categorySlug
+      ? categoryKey(categorySlug, page, limit)
       : collectionSlug
-        ? cacheCollectionProducts(collectionSlug, page, limit, result)
-        : cacheProductList(page, limit, result);
+        ? collectionKey(collectionSlug, page, limit)
+        : paginationKey(page, limit);
 
-    cachePromise.catch((err) => console.error("Cache write failed:", err));
+    const cache = categorySlug
+      ? categoryCache
+      : collectionSlug
+        ? collectionCache
+        : productListCache;
+
+    cache.set(cacheKey, result).catch((err) =>
+      console.error("Cache write failed:", err),
+    );
   }
 
   return result;
@@ -105,7 +120,7 @@ export const searchProductList = async (
   const shouldCache = !filters;
 
   if (shouldCache) {
-    const cached = await getCachedSearchProducts(query, page, limit);
+    const cached = await searchCache.get(searchKey(query, page, limit));
     if (cached) return cached;
   }
 
@@ -120,7 +135,7 @@ export const searchProductList = async (
   };
 
   if (shouldCache) {
-    cacheSearchProducts(query, page, limit, result).catch((err) =>
+    searchCache.set(searchKey(query, page, limit), result).catch((err) =>
       console.error("Search cache write failed:", err),
     );
   }
@@ -140,13 +155,13 @@ export const getSearchSuggestionsForQuery = async (
     return { suggestions: [] };
   }
 
-  const cached = await getCachedSuggestions(query);
+  const cached = await suggestionsCache.get(suggestionKey(query));
   if (cached) return cached;
 
   const suggestions = await getSearchSuggestions(query, limit);
   const result: SearchSuggestionsResponse = { suggestions };
 
-  cacheSuggestions(query, result).catch((err) =>
+  suggestionsCache.set(suggestionKey(query), result).catch((err) =>
     console.error("Suggestion cache write failed:", err),
   );
 
@@ -392,6 +407,9 @@ export const getFilterOptionsForProducts = async (
 export const getProductDetail = async (
   slug: string,
 ): Promise<ProductDetailResponse | null> => {
+  const cached = await productDetailCache.get(slug);
+  if (cached) return cached;
+
   const product = await findProductBySlug(slug);
 
   if (!product) {
@@ -404,7 +422,7 @@ export const getProductDetail = async (
   // Build available options from variants O(variants * attributes)
   const availableOptions = buildAvailableOptions(variants);
 
-  return {
+  const result: ProductDetailResponse = {
     id: product.id,
     name: product.name,
     slug: product.slug,
@@ -425,6 +443,12 @@ export const getProductDetail = async (
     variants,
     availableOptions,
   };
+
+  productDetailCache.set(slug, result).catch((err) =>
+    console.error("Product detail cache write failed:", err),
+  );
+
+  return result;
 };
 
 /**
@@ -468,5 +492,16 @@ const buildAvailableOptions = (
 export const getFeaturedProducts = async (
   limit: number = 8,
 ): Promise<ProductListItem[]> => {
-  return findFeaturedProducts(limit);
+  const cacheKey = `l${limit}`;
+
+  const cached = await featuredCache.get(cacheKey);
+  if (cached) return cached;
+
+  const products = await findFeaturedProducts(limit);
+
+  featuredCache.set(cacheKey, products).catch((err) =>
+    console.error("Featured cache write failed:", err),
+  );
+
+  return products;
 };

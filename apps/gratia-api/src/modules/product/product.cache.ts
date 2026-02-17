@@ -3,153 +3,81 @@ import {
   getRedisValue,
   deleteRedisKeysByPattern,
 } from "../../shared/services/redis.service";
-import type { ProductListResponse, SearchSuggestionsResponse } from "./types";
+import type {
+  ProductDetailResponse,
+  ProductListItem,
+  ProductListResponse,
+  SearchSuggestionsResponse,
+} from "./types";
 
-const CACHE_TTL = 300; // 5 minutes
+// TTL constants
+const LIST_CACHE_TTL = 300; // 5 minutes
+const DETAIL_CACHE_TTL = 600; // 10 minutes
 const SUGGESTION_CACHE_TTL = 60; // 1 minute
 
-export const getCategoryListCacheKey = (
-  categorySlug: string,
-  page: number,
-  limit: number,
-): string => {
-  return `products:category:${categorySlug}:p${page}:l${limit}`;
-};
+// --- Factory ---
 
-export const getProductListCacheKey = (
-  page: number,
-  limit: number,
-): string => {
-  return `products:list:p${page}:l${limit}`;
-};
+const createCache = <T>(prefix: string, ttl: number) => ({
+  get: (keySuffix: string): Promise<T | null> =>
+    getRedisValue<T>(`${prefix}:${keySuffix}`),
+  set: (keySuffix: string, data: T): Promise<void> =>
+    setRedisValue(`${prefix}:${keySuffix}`, data, ttl),
+  invalidate: (pattern: string = "*"): Promise<void> =>
+    deleteRedisKeysByPattern(`${prefix}:${pattern}`),
+});
 
-export const getCollectionListCacheKey = (
-  collectionSlug: string,
-  page: number,
-  limit: number,
-): string => {
-  return `products:collection:${collectionSlug}:p${page}:l${limit}`;
-};
+// --- Cache instances ---
 
-export const getCachedCategoryProducts = async (
-  categorySlug: string,
-  page: number,
-  limit: number,
-): Promise<ProductListResponse | null> => {
-  const key = getCategoryListCacheKey(categorySlug, page, limit);
-  return getRedisValue<ProductListResponse>(key);
-};
+export const productListCache =
+  createCache<ProductListResponse>("products:list", LIST_CACHE_TTL);
 
-export const getCachedProductList = async (
-  page: number,
-  limit: number,
-): Promise<ProductListResponse | null> => {
-  const key = getProductListCacheKey(page, limit);
-  return getRedisValue<ProductListResponse>(key);
-};
+export const categoryCache =
+  createCache<ProductListResponse>("products:category", LIST_CACHE_TTL);
 
-export const getCachedCollectionProducts = async (
-  collectionSlug: string,
-  page: number,
-  limit: number,
-): Promise<ProductListResponse | null> => {
-  const key = getCollectionListCacheKey(collectionSlug, page, limit);
-  return getRedisValue<ProductListResponse>(key);
-};
+export const collectionCache =
+  createCache<ProductListResponse>("products:collection", LIST_CACHE_TTL);
 
-export const cacheCategoryProducts = async (
-  categorySlug: string,
-  page: number,
-  limit: number,
-  data: ProductListResponse,
-): Promise<void> => {
-  const key = getCategoryListCacheKey(categorySlug, page, limit);
-  await setRedisValue(key, data, CACHE_TTL);
-};
+export const searchCache =
+  createCache<ProductListResponse>("products:search", LIST_CACHE_TTL);
 
-export const cacheProductList = async (
-  page: number,
-  limit: number,
-  data: ProductListResponse,
-): Promise<void> => {
-  const key = getProductListCacheKey(page, limit);
-  await setRedisValue(key, data, CACHE_TTL);
-};
+export const suggestionsCache =
+  createCache<SearchSuggestionsResponse>(
+    "products:suggestions",
+    SUGGESTION_CACHE_TTL,
+  );
 
-export const cacheCollectionProducts = async (
-  collectionSlug: string,
-  page: number,
-  limit: number,
-  data: ProductListResponse,
-): Promise<void> => {
-  const key = getCollectionListCacheKey(collectionSlug, page, limit);
-  await setRedisValue(key, data, CACHE_TTL);
-};
+export const productDetailCache =
+  createCache<ProductDetailResponse>("products:detail", DETAIL_CACHE_TTL);
 
-export const getSearchCacheKey = (
-  query: string,
-  page: number,
-  limit: number,
-): string => {
-  return `products:search:${query.toLowerCase().trim()}:p${page}:l${limit}`;
-};
+export const featuredCache =
+  createCache<ProductListItem[]>("products:featured", DETAIL_CACHE_TTL);
 
-export const getSuggestionCacheKey = (query: string): string => {
-  return `products:suggestions:${query.toLowerCase().trim()}`;
-};
+// --- Key builders ---
 
-export const getCachedSearchProducts = async (
-  query: string,
-  page: number,
-  limit: number,
-): Promise<ProductListResponse | null> => {
-  const key = getSearchCacheKey(query, page, limit);
-  return getRedisValue<ProductListResponse>(key);
-};
+export const paginationKey = (page: number, limit: number) =>
+  `p${page}:l${limit}`;
 
-export const cacheSearchProducts = async (
-  query: string,
-  page: number,
-  limit: number,
-  data: ProductListResponse,
-): Promise<void> => {
-  const key = getSearchCacheKey(query, page, limit);
-  await setRedisValue(key, data, CACHE_TTL);
-};
+export const categoryKey = (slug: string, page: number, limit: number) =>
+  `${slug}:p${page}:l${limit}`;
 
-export const getCachedSuggestions = async (
-  query: string,
-): Promise<SearchSuggestionsResponse | null> => {
-  const key = getSuggestionCacheKey(query);
-  return getRedisValue<SearchSuggestionsResponse>(key);
-};
+export const collectionKey = (slug: string, page: number, limit: number) =>
+  `${slug}:p${page}:l${limit}`;
 
-export const cacheSuggestions = async (
-  query: string,
-  data: SearchSuggestionsResponse,
-): Promise<void> => {
-  const key = getSuggestionCacheKey(query);
-  await setRedisValue(key, data, SUGGESTION_CACHE_TTL);
-};
+export const searchKey = (query: string, page: number, limit: number) =>
+  `${query.toLowerCase().trim()}:p${page}:l${limit}`;
 
-export const invalidateCategoryCache = async (
-  categorySlug: string,
-): Promise<void> => {
-  await deleteRedisKeysByPattern(`products:category:${categorySlug}:*`);
-};
+export const suggestionKey = (query: string) => query.toLowerCase().trim();
 
-export const invalidateCollectionCache = async (
-  collectionSlug: string,
-): Promise<void> => {
-  await deleteRedisKeysByPattern(`products:collection:${collectionSlug}:*`);
-};
+// --- Bulk invalidation ---
 
-export const invalidateAllProductListCaches = async (): Promise<void> => {
+export const invalidateAllProductCaches = async (): Promise<void> => {
   await Promise.all([
-    deleteRedisKeysByPattern("products:list:*"),
-    deleteRedisKeysByPattern("products:category:*"),
-    deleteRedisKeysByPattern("products:collection:*"),
-    deleteRedisKeysByPattern("products:search:*"),
-    deleteRedisKeysByPattern("products:suggestions:*"),
+    productListCache.invalidate(),
+    categoryCache.invalidate(),
+    collectionCache.invalidate(),
+    searchCache.invalidate(),
+    suggestionsCache.invalidate(),
+    productDetailCache.invalidate(),
+    featuredCache.invalidate(),
   ]);
 };

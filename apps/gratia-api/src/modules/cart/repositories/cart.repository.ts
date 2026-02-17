@@ -8,6 +8,7 @@ import {
   type NewCartItem,
 } from "../../../db/schema/cart.schema";
 import { products, type Product } from "../../../db/schema/product.schema";
+import { productDetailCache } from "../../product/product.cache";
 import type { CartProductData, StoredCartItem } from "../cart.types";
 
 // ============================================================================
@@ -431,6 +432,11 @@ export const decreaseProductStock = async (
         .where(eq(products.sku, item.sku));
     }
   });
+
+  // Invalidate product detail cache (stock changed)
+  productDetailCache.invalidate().catch((err) =>
+    console.error("Product detail cache invalidation failed:", err),
+  );
 };
 
 // ============================================================================
