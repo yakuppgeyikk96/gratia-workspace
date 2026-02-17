@@ -5,10 +5,12 @@ import {
 import {
   cacheCategoryProducts,
   cacheCollectionProducts,
+  cacheProductList,
   cacheSearchProducts,
   cacheSuggestions,
   getCachedCategoryProducts,
   getCachedCollectionProducts,
+  getCachedProductList,
   getCachedSearchProducts,
   getCachedSuggestions,
 } from "./product.cache";
@@ -48,13 +50,15 @@ export const getProductList = async (
 ): Promise<ProductListResponse> => {
   const { page = 1, limit = 12, categorySlug, collectionSlug } = options;
 
-  // Cache only for category/collection requests without filters
-  const shouldCache = !filters && (categorySlug || collectionSlug);
+  // Cache for requests without filters
+  const shouldCache = !filters;
 
   if (shouldCache) {
     const cached = categorySlug
       ? await getCachedCategoryProducts(categorySlug, page, limit)
-      : await getCachedCollectionProducts(collectionSlug!, page, limit);
+      : collectionSlug
+        ? await getCachedCollectionProducts(collectionSlug, page, limit)
+        : await getCachedProductList(page, limit);
 
     if (cached) {
       return cached;
@@ -77,7 +81,9 @@ export const getProductList = async (
   if (shouldCache) {
     const cachePromise = categorySlug
       ? cacheCategoryProducts(categorySlug, page, limit, result)
-      : cacheCollectionProducts(collectionSlug!, page, limit, result);
+      : collectionSlug
+        ? cacheCollectionProducts(collectionSlug, page, limit, result)
+        : cacheProductList(page, limit, result);
 
     cachePromise.catch((err) => console.error("Cache write failed:", err));
   }

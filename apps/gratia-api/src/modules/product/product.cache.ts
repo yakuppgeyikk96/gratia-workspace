@@ -16,6 +16,13 @@ export const getCategoryListCacheKey = (
   return `products:category:${categorySlug}:p${page}:l${limit}`;
 };
 
+export const getProductListCacheKey = (
+  page: number,
+  limit: number,
+): string => {
+  return `products:list:p${page}:l${limit}`;
+};
+
 export const getCollectionListCacheKey = (
   collectionSlug: string,
   page: number,
@@ -30,6 +37,14 @@ export const getCachedCategoryProducts = async (
   limit: number,
 ): Promise<ProductListResponse | null> => {
   const key = getCategoryListCacheKey(categorySlug, page, limit);
+  return getRedisValue<ProductListResponse>(key);
+};
+
+export const getCachedProductList = async (
+  page: number,
+  limit: number,
+): Promise<ProductListResponse | null> => {
+  const key = getProductListCacheKey(page, limit);
   return getRedisValue<ProductListResponse>(key);
 };
 
@@ -49,6 +64,15 @@ export const cacheCategoryProducts = async (
   data: ProductListResponse,
 ): Promise<void> => {
   const key = getCategoryListCacheKey(categorySlug, page, limit);
+  await setRedisValue(key, data, CACHE_TTL);
+};
+
+export const cacheProductList = async (
+  page: number,
+  limit: number,
+  data: ProductListResponse,
+): Promise<void> => {
+  const key = getProductListCacheKey(page, limit);
   await setRedisValue(key, data, CACHE_TTL);
 };
 
@@ -122,6 +146,7 @@ export const invalidateCollectionCache = async (
 
 export const invalidateAllProductListCaches = async (): Promise<void> => {
   await Promise.all([
+    deleteRedisKeysByPattern("products:list:*"),
     deleteRedisKeysByPattern("products:category:*"),
     deleteRedisKeysByPattern("products:collection:*"),
     deleteRedisKeysByPattern("products:search:*"),

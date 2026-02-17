@@ -45,3 +45,5 @@ drizzle
 apps/gratia-mobile
 
 .pnpm-store/
+
+load-tests
