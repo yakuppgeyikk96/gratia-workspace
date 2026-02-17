@@ -1,8 +1,4 @@
-import {
-  setRedisValue,
-  getRedisValue,
-  deleteRedisKeysByPattern,
-} from "../../shared/services/redis.service";
+import { createCache } from "../../shared/services";
 import type {
   ProductDetailResponse,
   ProductListItem,
@@ -14,17 +10,6 @@ import type {
 const LIST_CACHE_TTL = 300; // 5 minutes
 const DETAIL_CACHE_TTL = 600; // 10 minutes
 const SUGGESTION_CACHE_TTL = 60; // 1 minute
-
-// --- Factory ---
-
-const createCache = <T>(prefix: string, ttl: number) => ({
-  get: (keySuffix: string): Promise<T | null> =>
-    getRedisValue<T>(`${prefix}:${keySuffix}`),
-  set: (keySuffix: string, data: T): Promise<void> =>
-    setRedisValue(`${prefix}:${keySuffix}`, data, ttl),
-  invalidate: (pattern: string = "*"): Promise<void> =>
-    deleteRedisKeysByPattern(`${prefix}:${pattern}`),
-});
 
 // --- Cache instances ---
 

@@ -1,10 +1,6 @@
 import { getActiveRootCategoriesService } from "../category/category.service";
 import { getCollectionsByTypeService } from "../collection/collection.service";
-import {
-  clearNavigationCache,
-  getNavigationCache,
-  setNavigationCache,
-} from "./navigation.cache";
+import { navigationCache } from "./navigation.cache";
 import {
   NavigationCategoryItem,
   NavigationCollectionItem,
@@ -13,7 +9,7 @@ import {
 
 export const getNavigationService = async (): Promise<NavigationResponse> => {
   // Try to get from cache first
-  const cached = await getNavigationCache();
+  const cached = await navigationCache.get("data");
   if (cached) {
     return cached;
   }
@@ -57,7 +53,7 @@ export const getNavigationService = async (): Promise<NavigationResponse> => {
   };
 
   // Cache the result
-  await setNavigationCache(result);
+  await navigationCache.set("data", result);
 
   return result;
 };
@@ -67,5 +63,5 @@ export const getNavigationService = async (): Promise<NavigationResponse> => {
  * Call this when categories or collections are updated
  */
 export const invalidateNavigationCache = async (): Promise<void> => {
-  await clearNavigationCache();
+  await navigationCache.invalidate();
 };

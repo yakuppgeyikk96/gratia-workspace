@@ -7,6 +7,7 @@ import {
 } from "../../db/schema/collection.schema";
 import { orders } from "../../db/schema/order.schema";
 import { products } from "../../db/schema/product.schema";
+import { invalidateNavigationCache } from "../navigation/navigation.service";
 import { invalidateAllProductCaches } from "../product/product.cache";
 
 // Helper function to generate picsum image URL with seed for consistency
@@ -1032,8 +1033,11 @@ export const seedDatabase = async (vendorId?: number) => {
     products: productCount,
   };
 
-  // Invalidate all product caches after reseeding
-  await invalidateAllProductCaches();
+  // Invalidate all caches after reseeding
+  await Promise.all([
+    invalidateAllProductCaches(),
+    invalidateNavigationCache(),
+  ]);
 
   return {
     success: true,
