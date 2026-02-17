@@ -19,14 +19,23 @@ export const connectRedis = async (): Promise<void> => {
       throw new Error("Redis host/port configuration is missing");
     }
 
+    const socketConfig = {
+      host: redisHost,
+      port: Number(redisPort),
+      reconnectStrategy: (retries: number) => {
+        if (retries > 10) {
+          console.error("Redis: max reconnect attempts reached, giving up");
+          return new Error("Max reconnect attempts reached");
+        }
+        const delay = Math.min(retries * 200, 5000);
+        console.log(`Redis: reconnecting in ${delay}ms (attempt ${retries})...`);
+        return delay;
+      },
+    };
+
     if (isDevelopment) {
       // Local Docker Redis — no auth needed
-      redisClient = createClient({
-        socket: {
-          host: redisHost,
-          port: Number(redisPort),
-        },
-      });
+      redisClient = createClient({ socket: socketConfig });
     } else {
       // Production — requires auth
       const redisUsername = process.env.REDIS_USERNAME as string;
@@ -39,15 +48,16 @@ export const connectRedis = async (): Promise<void> => {
       redisClient = createClient({
         username: redisUsername,
         password: redisPassword,
-        socket: {
-          host: redisHost,
-          port: Number(redisPort),
-        },
+        socket: socketConfig,
       });
     }
 
     redisClient.on("error", (err) => {
       console.error("Redis Client Error:", err);
+    });
+
+    redisClient.on("reconnecting", () => {
+      console.log("Redis: reconnecting...");
     });
 
     redisClient.on("connect", () => {

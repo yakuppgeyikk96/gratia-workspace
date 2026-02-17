@@ -18,16 +18,23 @@ console.log(
 );
 
 // Create postgres client
-// Local: Use normal connection pooling (max: 10)
-// Production (Supabase): Single connection (Supabase pooler handles the rest)
+// Supabase pooler (port 6543, transaction mode) handles backend connection management.
+// App-side pool controls how many concurrent queries WE can send to the pooler.
+// max:10 is safe — Supabase free tier backend limit is ~60, and pooler multiplexes above that.
 const client = postgres(connectionString, {
-  max: isDevelopment ? 10 : 1,
+  max: 10,
   idle_timeout: 20,
   connect_timeout: 10,
 });
 
 // Create drizzle instance
 export const db = drizzle(client);
+
+// Close all connections gracefully
+export const disconnectPostgres = async () => {
+  await client.end();
+  console.log("PostgreSQL disconnected");
+};
 
 // Test connection function
 export const testPostgresConnection = async () => {
