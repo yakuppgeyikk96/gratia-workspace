@@ -6,6 +6,7 @@ import { getIdParam, getStringParam } from "../../shared/utils/params.utils";
 import {
   createVendorService,
   getActiveVendorsService,
+  getMyVendorStoreService,
   getVendorByIdService,
   getVendorBySlugService,
   getVendorsService,
@@ -59,6 +60,20 @@ export const getVendorBySlugController = asyncHandler(
     const result = await getVendorBySlugService(slug);
 
     returnSuccess(res, result, "Vendor found", StatusCode.SUCCESS);
+  }
+);
+
+export const getMyVendorStoreController = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const userId = req.user!.userId;
+    const result = await getMyVendorStoreService(userId);
+
+    returnSuccess(
+      res,
+      result,
+      result ? "Vendor store found" : "No vendor store found",
+      StatusCode.SUCCESS
+    );
   }
 );
 

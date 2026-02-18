@@ -2,6 +2,7 @@
 
 import { logoutUser } from "@/actions/auth";
 import { useCartStore } from "@/store/cartStore";
+import { useVendorStatus } from "@/hooks/useVendorStatus";
 import Button from "@gratia/ui/components/Button";
 import Dropdown, { type DropdownOption } from "@gratia/ui/components/Dropdown";
 import Flex from "@gratia/ui/components/Flex";
@@ -16,6 +17,7 @@ export default function ProfileDropdown() {
   const router = useRouter();
   const clearCart = useCartStore((state) => state.clearCart);
   const setSessionId = useCartStore((state) => state.setSessionId);
+  const { isVendor, isLoading } = useVendorStatus();
 
   const onValueChange = (value: string) => {
     if (value === "profile") {
@@ -24,6 +26,8 @@ export default function ProfileDropdown() {
       router.push("/profile/orders");
     } else if (value === "become-a-vendor") {
       router.push("/become-a-vendor");
+    } else if (value === "vendor-dashboard") {
+      router.push("/vendor-dashboard");
     } else if (value === "logout") {
       logoutUser();
       clearCart();
@@ -43,17 +47,29 @@ export default function ProfileDropdown() {
         value: "my-orders",
         icon: <IconBox />,
       },
-      {
-        label: "Become a Vendor",
-        value: "become-a-vendor",
-        icon: <IconShoppingBag />,
-      },
+      ...(isLoading
+        ? []
+        : isVendor
+          ? [
+              {
+                label: "Vendor Dashboard",
+                value: "vendor-dashboard",
+                icon: <IconShoppingBag />,
+              },
+            ]
+          : [
+              {
+                label: "Become a Vendor",
+                value: "become-a-vendor",
+                icon: <IconShoppingBag />,
+              },
+            ]),
       {
         label: "Logout",
         value: "logout",
       },
     ],
-    []
+    [isVendor, isLoading]
   );
 
   return (

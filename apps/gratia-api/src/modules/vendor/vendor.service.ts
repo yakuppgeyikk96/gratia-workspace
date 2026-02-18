@@ -96,6 +96,12 @@ export const getVendorBySlugService = async (slug: string): Promise<Vendor> => {
   return vendor;
 };
 
+export const getMyVendorStoreService = async (
+  userId: string
+): Promise<Vendor | null> => {
+  return await findVendorByUserId(Number(userId));
+};
+
 export const updateVendorService = async (
   id: number,
   data: UpdateVendorDto

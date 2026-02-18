@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { validateBody } from "../../shared/middlewares";
+import { authMiddleware, validateBody } from "../../shared/middlewares";
 import {
   createVendorController,
   getActiveVendorsController,
   getAllVendorsController,
+  getMyVendorStoreController,
   getVendorByIdController,
   getVendorBySlugController,
   updateVendorController,
@@ -20,6 +21,9 @@ router.get("/", getAllVendorsController);
 
 // Get active vendors
 router.get("/active", getActiveVendorsController);
+
+// Get my vendor store (auth required) — must be before /:id
+router.get("/my-store", authMiddleware, getMyVendorStoreController);
 
 // Get vendor by ID
 router.get("/:id", getVendorByIdController);

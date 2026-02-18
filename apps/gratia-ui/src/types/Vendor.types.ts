@@ -25,3 +25,5 @@ export interface ICreateVendorRequest {
 }
 
 export type ICreateVendorResponse = IApiResponse<IVendor>;
+
+export type IGetMyVendorStoreResponse = IApiResponse<IVendor | null>;
