@@ -1,0 +1,29 @@
+services:
+  redis:
+    ports:
+      - "6379:6379"
+
+  gratia-api:
+    build:
+      context: .
+      dockerfile: apps/gratia-api/Dockerfile
+      target: base
+    command: pnpm --filter=gratia-api dev
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./apps/gratia-api/src:/app/apps/gratia-api/src
+
+  gratia-ui:
+    build:
+      context: .
+      dockerfile: apps/gratia-ui/Dockerfile
+      target: base
+    command: pnpm --filter=gratia-ui dev
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/gratia-ui/src:/app/apps/gratia-ui/src
+      - ./packages/ui/src:/app/packages/ui/src

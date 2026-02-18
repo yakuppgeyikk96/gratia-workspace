@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import {
   UserAlreadyExistsError,
   UserCreationFailedError,
-  UserNotFoundError,
 } from "../user/user.errors";
 import { createUser, findUserByEmail } from "../user/user.repository";
 import { createUserSchema, type CreateUserDto } from "../user/user.validation";
@@ -17,6 +16,7 @@ import {
 } from "../verification/email-verification.services";
 import { EMAIL_VERIFICATION_EXPIRATION_TIME } from "../../shared/constants/expiration.constants";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
+import { StatusCode } from "../../shared/types/api.types";
 import { decrypt, encrypt } from "../../shared/utils/encryption.utils";
 import { generateJwtToken } from "../../shared/utils/jwt.utils";
 import {
@@ -118,14 +118,13 @@ export const loginUser = async (
   const user = await findUserByEmail(email);
 
   if (!user) {
-    throw new UserNotFoundError(email);
+    throw new AppError("Invalid credentials", ErrorCode.INVALID_CREDENTIALS, StatusCode.UNAUTHORIZED);
   }
 
-  const t2 = Date.now();
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
-    throw new AppError("Invalid credentials", ErrorCode.INVALID_CREDENTIALS);
+    throw new AppError("Invalid credentials", ErrorCode.INVALID_CREDENTIALS, StatusCode.UNAUTHORIZED);
   }
 
   const jwtToken = await generateJwtToken({
