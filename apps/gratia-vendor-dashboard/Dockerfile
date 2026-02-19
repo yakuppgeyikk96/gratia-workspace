@@ -1,5 +1,5 @@
 # Use official Node.js LTS image
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
 # Install pnpm
 RUN npm install -g pnpm@10.20.0
@@ -9,8 +9,7 @@ WORKDIR /app
 
 # Copy workspace files
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
-COPY apps/gratia-ui/package.json ./apps/gratia-ui/
-COPY packages/ui/package.json ./packages/ui/
+COPY apps/gratia-vendor-dashboard/package.json ./apps/gratia-vendor-dashboard/
 COPY packages/typescript-config/package.json ./packages/typescript-config/
 COPY packages/eslint-config/package.json ./packages/eslint-config/
 
@@ -18,17 +17,12 @@ COPY packages/eslint-config/package.json ./packages/eslint-config/
 RUN pnpm install --frozen-lockfile
 
 # Copy source code
-COPY apps/gratia-ui ./apps/gratia-ui
-COPY packages/ui ./packages/ui
+COPY apps/gratia-vendor-dashboard ./apps/gratia-vendor-dashboard
 COPY packages/typescript-config ./packages/typescript-config
 COPY packages/eslint-config ./packages/eslint-config
 
-# Build args for Next.js config (needed at build time for rewrites)
-ARG VENDOR_DASHBOARD_URL
-ENV VENDOR_DASHBOARD_URL=${VENDOR_DASHBOARD_URL}
-
 # Build the application
-WORKDIR /app/apps/gratia-ui
+WORKDIR /app/apps/gratia-vendor-dashboard
 RUN pnpm build
 
 # Production stage
@@ -37,17 +31,17 @@ FROM node:18-alpine AS production
 WORKDIR /app
 
 # Copy standalone output
-COPY --from=base /app/apps/gratia-ui/.next/standalone ./
-COPY --from=base /app/apps/gratia-ui/.next/static ./apps/gratia-ui/.next/static
-COPY --from=base /app/apps/gratia-ui/public ./apps/gratia-ui/public
+COPY --from=base /app/apps/gratia-vendor-dashboard/.next/standalone ./
+COPY --from=base /app/apps/gratia-vendor-dashboard/.next/static ./apps/gratia-vendor-dashboard/.next/static
+COPY --from=base /app/apps/gratia-vendor-dashboard/public ./apps/gratia-vendor-dashboard/public
 
 # Expose port
-EXPOSE 3000
+EXPOSE 3100
 
 # Set environment
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=3100
 ENV HOSTNAME=0.0.0.0
 
 # Start the application
-CMD ["node", "apps/gratia-ui/server.js"]
+CMD ["node", "apps/gratia-vendor-dashboard/server.js"]

@@ -19,11 +19,27 @@ services:
       context: .
       dockerfile: apps/gratia-ui/Dockerfile
       target: base
+      args:
+        - VENDOR_DASHBOARD_URL=http://gratia-vendor-dashboard:3100
     command: pnpm --filter=gratia-ui dev
     environment:
       - NODE_ENV=development
+      - VENDOR_DASHBOARD_URL=http://gratia-vendor-dashboard:3100
     ports:
       - "3000:3000"
     volumes:
       - ./apps/gratia-ui/src:/app/apps/gratia-ui/src
       - ./packages/ui/src:/app/packages/ui/src
+
+  gratia-vendor-dashboard:
+    build:
+      context: .
+      dockerfile: apps/gratia-vendor-dashboard/Dockerfile
+      target: base
+    command: pnpm --filter=gratia-vendor-dashboard dev
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./apps/gratia-vendor-dashboard/src:/app/apps/gratia-vendor-dashboard/src

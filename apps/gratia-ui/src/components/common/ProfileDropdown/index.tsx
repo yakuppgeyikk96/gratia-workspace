@@ -27,7 +27,7 @@ export default function ProfileDropdown() {
     } else if (value === "become-a-vendor") {
       router.push("/become-a-vendor");
     } else if (value === "vendor-dashboard") {
-      router.push("/vendor-dashboard");
+      window.location.href = "/vendor";
     } else if (value === "logout") {
       logoutUser();
       clearCart();

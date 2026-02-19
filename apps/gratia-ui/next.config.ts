@@ -4,6 +4,22 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   transpilePackages: ["@gratia/ui"],
+  async rewrites() {
+    const vendorDashboardUrl =
+      process.env.VENDOR_DASHBOARD_URL || "http://localhost:3100";
+    return {
+      beforeFiles: [
+        {
+          source: "/vendor",
+          destination: `${vendorDashboardUrl}/vendor`,
+        },
+        {
+          source: "/vendor/:path+",
+          destination: `${vendorDashboardUrl}/vendor/:path+`,
+        },
+      ],
+    };
+  },
   images: {
     remotePatterns: [
       {

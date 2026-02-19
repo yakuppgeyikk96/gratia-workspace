@@ -57,11 +57,14 @@ services:
     build:
       context: .
       dockerfile: apps/gratia-ui/Dockerfile
+      args:
+        - VENDOR_DASHBOARD_URL=http://gratia-vendor-dashboard:3100
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
       - API_URL=http://gratia-api:8080
+      - VENDOR_DASHBOARD_URL=http://gratia-vendor-dashboard:3100
       - CACHE_SECRET_KEY=${CACHE_SECRET_KEY}
       - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
     depends_on:
@@ -69,6 +72,25 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  gratia-vendor-dashboard:
+    build:
+      context: .
+      dockerfile: apps/gratia-vendor-dashboard/Dockerfile
+    ports:
+      - "3100:3100"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://gratia-api:8080
+    depends_on:
+      - gratia-api
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3100"]
       interval: 30s
       timeout: 10s
       retries: 3
