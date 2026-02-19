@@ -1,0 +1,30 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.dashboardLayout {
+  min-height: 100vh;
+}
+
+.mainContent {
+  margin-left: var(--sidebar-width-expanded);
+  margin-top: var(--navbar-height);
+  min-height: calc(100vh - var(--navbar-height));
+  @include p(6);
+  transition: margin-left $transition-normal;
+  background-color: $bg-secondary-color;
+
+  &.sidebarCollapsed {
+    margin-left: var(--sidebar-width-collapsed);
+  }
+
+  @include media-lg {
+    margin-left: var(--sidebar-width-collapsed);
+  }
+
+  @include media-sm {
+    margin-left: 0;
+    @include p(4);
+  }
+}

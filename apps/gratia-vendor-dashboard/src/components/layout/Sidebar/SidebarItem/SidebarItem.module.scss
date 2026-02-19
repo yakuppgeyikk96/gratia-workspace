@@ -1,0 +1,55 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.sidebarItem {
+  @include flex(row, flex-start, center, nowrap, $spacing-3);
+  width: 100%;
+  @include py(2);
+  @include px(3);
+  border-radius: 8px;
+  text-decoration: none;
+  color: $text-secondary-color;
+  cursor: pointer;
+  transition: background-color $transition-fast, color $transition-fast;
+  white-space: nowrap;
+  overflow: hidden;
+
+  &:hover {
+    background-color: $interactive-hover-bg;
+    color: $text-primary-color;
+  }
+
+  &.active {
+    background-color: $primary-color-50;
+    color: $primary-color;
+    font-weight: $font-medium;
+
+    .iconWrapper {
+      color: $primary-color;
+    }
+  }
+
+  &.collapsed {
+    @include flex(row, center, center);
+    @include px(0);
+  }
+}
+
+.iconWrapper {
+  @include flex(row, center, center);
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: inherit;
+  transition: color $transition-fast;
+}
+
+.label {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  line-height: $leading-normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

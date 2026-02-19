@@ -1,0 +1,62 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.navbar {
+  @include flex(row, space-between, center);
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width-expanded);
+  right: 0;
+  height: var(--navbar-height);
+  background-color: $bg-color;
+  border-bottom: 1px solid $border-light;
+  @include px(6);
+  z-index: $z-sticky;
+  transition: left $transition-normal;
+
+  &.sidebarCollapsed {
+    left: var(--sidebar-width-collapsed);
+  }
+
+  @include media-lg {
+    left: var(--sidebar-width-collapsed);
+  }
+
+  @include media-sm {
+    left: 0;
+  }
+}
+
+.leftSection {
+  @include flex(row, flex-start, center, nowrap, $spacing-3);
+}
+
+.toggleButton {
+  @include flex(row, center, center);
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: $text-secondary-color;
+  cursor: pointer;
+  transition: background-color $transition-fast, color $transition-fast;
+
+  &:hover {
+    background-color: $interactive-hover-bg;
+    color: $text-primary-color;
+  }
+}
+
+.rightSection {
+  @include flex(row, flex-end, center, nowrap, $spacing-3);
+}
+
+.placeholder {
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-muted-color;
+}
