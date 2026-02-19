@@ -10,6 +10,7 @@ WORKDIR /app
 # Copy workspace files
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 COPY apps/gratia-vendor-dashboard/package.json ./apps/gratia-vendor-dashboard/
+COPY packages/ui/package.json ./packages/ui/
 COPY packages/typescript-config/package.json ./packages/typescript-config/
 COPY packages/eslint-config/package.json ./packages/eslint-config/
 
@@ -18,6 +19,7 @@ RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY apps/gratia-vendor-dashboard ./apps/gratia-vendor-dashboard
+COPY packages/ui ./packages/ui
 COPY packages/typescript-config ./packages/typescript-config
 COPY packages/eslint-config ./packages/eslint-config
 
@@ -26,7 +28,7 @@ WORKDIR /app/apps/gratia-vendor-dashboard
 RUN pnpm build
 
 # Production stage
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
