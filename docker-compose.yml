@@ -12,6 +12,15 @@ services:
       timeout: 5s
       retries: 3
 
+  fake-gcs:
+    image: fsouza/fake-gcs-server
+    ports:
+      - "4443:4443"
+    command: ["-scheme", "http", "-port", "4443", "-public-host", "localhost:4443"]
+    volumes:
+      - gcs-data:/data
+    restart: unless-stopped
+
   gratia-api:
     build:
       context: .
@@ -42,9 +51,13 @@ services:
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
       - FRONTEND_URL=${FRONTEND_URL}
+      - GCS_BUCKET_NAME=gratia-dev
+      - STORAGE_EMULATOR_HOST=http://fake-gcs:4443
     depends_on:
       redis:
         condition: service_healthy
+      fake-gcs:
+        condition: service_started
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/health"]
@@ -100,3 +113,4 @@ services:
 
 volumes:
   redis-data:
+  gcs-data:
