@@ -73,10 +73,13 @@ export default function ProductCreateForm() {
     }
   }, [nameValue, setValue]);
 
-  // Reset attributes when category changes
-  useEffect(() => {
-    setAttributes({});
-  }, [selectedCategoryId]);
+  const handleCategoryChange = useCallback(
+    (value: string, fieldOnChange: (value: string) => void) => {
+      fieldOnChange(value);
+      setAttributes({});
+    },
+    [],
+  );
 
   const handleAttributeChange = useCallback(
     (key: string, value: string) => {
@@ -265,7 +268,9 @@ export default function ProductCreateForm() {
                 <Select
                   items={categoryOptions}
                   value={field.value}
-                  onValueChange={field.onChange}
+                  onValueChange={(val) =>
+                    handleCategoryChange(val, field.onChange)
+                  }
                   onBlur={field.onBlur}
                   placeholder={
                     categoriesLoading ? "Loading..." : "Select category"
