@@ -30,14 +30,20 @@ export default function Sidebar() {
 
       <nav className={styles.nav}>
         <ul className={styles.navList}>
-          {SIDEBAR_ITEMS.map((item) => (
-            <SidebarItem
-              key={item.key}
-              item={item}
-              isCollapsed={isCollapsed}
-              isActive={pathname === item.href}
-            />
-          ))}
+          {SIDEBAR_ITEMS.map((item) => {
+            const isActive = item.children
+              ? pathname.startsWith(item.href) && item.href !== "/"
+              : pathname === item.href;
+
+            return (
+              <SidebarItem
+                key={item.key}
+                item={item}
+                isCollapsed={isCollapsed}
+                isActive={isActive}
+              />
+            );
+          })}
         </ul>
       </nav>
     </aside>
