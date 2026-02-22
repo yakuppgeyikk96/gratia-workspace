@@ -1,0 +1,7 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.header {
+  @include flex(row, space-between, center);
+  @include mb(6);
+}

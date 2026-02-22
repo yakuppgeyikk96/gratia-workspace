@@ -1,0 +1,61 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.form {
+  @include flex-start-column;
+  @include gap(6);
+  max-width: 800px;
+}
+
+.section {
+  @include flex-start-column;
+  @include gap(4);
+  width: 100%;
+  padding: $spacing-5;
+  background-color: $bg-color;
+  border: 1px solid $border-light;
+  border-radius: 12px;
+}
+
+.sectionTitle {
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  margin: 0;
+  padding-bottom: $spacing-2;
+  border-bottom: 1px solid $border-light;
+  width: 100%;
+}
+
+.fieldRow {
+  @include flex(row, flex-start, flex-start, wrap, $spacing-4);
+  width: 100%;
+
+  > * {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+.actions {
+  @include flex(row, flex-start, center, nowrap, $spacing-3);
+  padding-top: $spacing-2;
+}
+
+.attributeGrid {
+  @include flex(row, flex-start, flex-start, wrap, $spacing-4);
+  width: 100%;
+
+  > * {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+.emptyAttributes {
+  color: $text-secondary-color;
+  font-size: $text-sm;
+  font-style: italic;
+}
