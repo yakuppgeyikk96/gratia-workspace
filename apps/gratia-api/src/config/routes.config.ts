@@ -3,6 +3,7 @@ import authRoutes from "../modules/auth/auth.routes";
 import brandRoutes from "../modules/brand/brand.routes";
 import { cartRoutes } from "../modules/cart";
 import categoryRoutes from "../modules/category/category.routes";
+import categoryAttributeTemplateRoutes from "../modules/category-attribute-template/category-attribute-template.routes";
 import checkoutRoutes from "../modules/checkout/checkout.routes";
 import collectionRoutes from "../modules/collection/collection.routes";
 import locationRoutes from "../modules/location/location.routes";
@@ -23,6 +24,10 @@ export const routesConfig = (app: Express) => {
   router.use("/products", productRoutes);
   router.use("/vendors", vendorRoutes);
   router.use("/brands", brandRoutes);
+  router.use(
+    "/category-attribute-templates",
+    categoryAttributeTemplateRoutes,
+  );
   router.use("/navigation", navigationRoutes);
   router.use("/seed", seedRoutes);
 
