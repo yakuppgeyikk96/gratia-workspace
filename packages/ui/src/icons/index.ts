@@ -27,6 +27,8 @@ export { default as IconShoppingBag } from "./IconShoppingBag";
 export { default as IconThreeDotsVertical } from "./IconThreeDotsVertical";
 export { default as IconTick } from "./IconTick";
 export { default as IconTranslate } from "./IconTranslate";
+export { default as IconTrash } from "./IconTrash";
+export { default as IconUpload } from "./IconUpload";
 export { default as IconVisibility } from "./IconVisibility";
 export { default as IconWhatsapp } from "./IconWhatsapp";
 export { default as IconX } from "./IconX";

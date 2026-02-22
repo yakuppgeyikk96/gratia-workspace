@@ -9,6 +9,8 @@ export { default as Drawer } from "./Drawer";
 export type { DrawerItem, DrawerProps } from "./Drawer/Drawer.types";
 export { default as Dropdown } from "./Dropdown";
 export type { DropdownOption, DropdownProps } from "./Dropdown/Dropdown.types";
+export { default as FileUpload } from "./FileUpload";
+export type { FileUploadProps } from "./FileUpload";
 export { default as Flex } from "./Flex";
 export { default as FormField } from "./FormField";
 export { default as IconButton } from "./IconButton";
