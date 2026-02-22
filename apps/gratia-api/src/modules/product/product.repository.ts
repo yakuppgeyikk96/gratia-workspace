@@ -13,7 +13,11 @@ import {
 import { db } from "../../config/postgres.config";
 import { brands } from "../../db/schema/brand.schema";
 import { categories } from "../../db/schema/category.schema";
-import { Product, products } from "../../db/schema/product.schema";
+import {
+  type NewProduct,
+  Product,
+  products,
+} from "../../db/schema/product.schema";
 import type {
   ProductFilters,
   ProductListItem,
@@ -35,6 +39,53 @@ import {
   buildSearchRankExpression,
   buildPrefixSearchCondition,
 } from "./utils/search-query.utils";
+
+// ============================================================================
+// Product Creation Repository
+// ============================================================================
+
+/**
+ * Find a product by exact slug (ignores isActive filter)
+ * Used for uniqueness validation during product creation
+ */
+export const findProductBySlugExact = async (
+  slug: string,
+): Promise<Product | null> => {
+  const [product] = await db
+    .select()
+    .from(products)
+    .where(eq(products.slug, slug))
+    .limit(1);
+
+  return product || null;
+};
+
+/**
+ * Find a product by SKU
+ * Used for uniqueness validation during product creation
+ */
+export const findProductBySku = async (
+  sku: string,
+): Promise<Product | null> => {
+  const [product] = await db
+    .select()
+    .from(products)
+    .where(eq(products.sku, sku))
+    .limit(1);
+
+  return product || null;
+};
+
+/**
+ * Create a new product
+ */
+export const createProduct = async (
+  data: Omit<NewProduct, "id" | "createdAt" | "updatedAt">,
+): Promise<Product | null> => {
+  const [product] = await db.insert(products).values(data).returning();
+
+  return product || null;
+};
 
 // ============================================================================
 // Product Listing Repository

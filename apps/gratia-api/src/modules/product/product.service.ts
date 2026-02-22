@@ -1,3 +1,10 @@
+import crypto from "node:crypto";
+import type { Product } from "../../db/schema/product.schema";
+import { findBrandById } from "../brand/brand.repository";
+import { findCategoryById } from "../category/category.repository";
+import { findVendorByUserId } from "../vendor/vendor.repository";
+import { AppError, ErrorCode } from "../../shared/errors/base.errors";
+import { StatusCode } from "../../shared/types";
 import {
   getAttributeLabel,
   getAttributeSortOrder,
@@ -8,6 +15,7 @@ import {
   collectionCache,
   collectionKey,
   featuredCache,
+  invalidateAllProductCaches,
   paginationKey,
   productDetailCache,
   productListCache,
@@ -16,9 +24,13 @@ import {
   suggestionsCache,
   suggestionKey,
 } from "./product.cache";
+import { PRODUCT_MESSAGES } from "./product.constants";
 import {
+  createProduct,
   findFeaturedProducts,
   findProductBySlug,
+  findProductBySlugExact,
+  findProductBySku,
   findProducts,
   findVariantsByGroupId,
   getFilterOptions,
@@ -26,6 +38,7 @@ import {
   searchProducts,
   type RawFilterData,
 } from "./product.repository";
+import type { CreateProductDto } from "./product.validations";
 import type {
   AttributeFilterOption,
   CategoryFilterOption,
@@ -39,6 +52,106 @@ import type {
   SearchSuggestionsResponse,
   SortOption,
 } from "./types";
+
+/**
+ * Create a new product
+ *
+ * Validates vendor ownership, category/brand existence, and slug/sku uniqueness.
+ * Generates productGroupId if not provided.
+ */
+export const createProductService = async (
+  data: CreateProductDto,
+  userId: string,
+): Promise<Product> => {
+  // 1. Find vendor profile for the authenticated user
+  const vendor = await findVendorByUserId(Number(userId));
+  if (!vendor) {
+    throw new AppError(
+      PRODUCT_MESSAGES.VENDOR_NOT_FOUND,
+      ErrorCode.FORBIDDEN,
+      StatusCode.FORBIDDEN,
+    );
+  }
+
+  // 2. Validate category exists
+  const category = await findCategoryById(data.categoryId);
+  if (!category) {
+    throw new AppError(
+      PRODUCT_MESSAGES.CATEGORY_NOT_FOUND,
+      ErrorCode.NOT_FOUND,
+      StatusCode.NOT_FOUND,
+    );
+  }
+
+  // 3. Validate brand exists (if provided)
+  if (data.brandId !== undefined) {
+    const brand = await findBrandById(data.brandId);
+    if (!brand) {
+      throw new AppError(
+        PRODUCT_MESSAGES.BRAND_NOT_FOUND,
+        ErrorCode.NOT_FOUND,
+        StatusCode.NOT_FOUND,
+      );
+    }
+  }
+
+  // 4. Check slug uniqueness
+  const existingSlug = await findProductBySlugExact(data.slug);
+  if (existingSlug) {
+    throw new AppError(
+      PRODUCT_MESSAGES.PRODUCT_SLUG_ALREADY_EXISTS,
+      ErrorCode.DUPLICATE_ENTRY,
+      StatusCode.CONFLICT,
+    );
+  }
+
+  // 5. Check SKU uniqueness
+  const existingSku = await findProductBySku(data.sku);
+  if (existingSku) {
+    throw new AppError(
+      PRODUCT_MESSAGES.PRODUCT_SKU_ALREADY_EXISTS,
+      ErrorCode.DUPLICATE_ENTRY,
+      StatusCode.CONFLICT,
+    );
+  }
+
+  // 6. Generate productGroupId if not provided
+  const productGroupId = data.productGroupId || crypto.randomUUID();
+
+  // 7. Create the product
+  const product = await createProduct({
+    name: data.name,
+    slug: data.slug,
+    description: data.description ?? null,
+    sku: data.sku,
+    categoryId: data.categoryId,
+    brandId: data.brandId ?? null,
+    vendorId: vendor.id,
+    price: data.price,
+    discountedPrice: data.discountedPrice ?? null,
+    stock: data.stock,
+    attributes: data.attributes,
+    productGroupId,
+    metaTitle: data.metaTitle ?? null,
+    metaDescription: data.metaDescription ?? null,
+    isActive: data.isActive,
+  });
+
+  if (!product) {
+    throw new AppError(
+      PRODUCT_MESSAGES.PRODUCT_CREATION_FAILED,
+      ErrorCode.INTERNAL_SERVER_ERROR,
+      StatusCode.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  // 8. Invalidate product caches (fire-and-forget)
+  invalidateAllProductCaches().catch((err) =>
+    console.error("Product cache invalidation failed:", err),
+  );
+
+  return product;
+};
 
 /**
  * Get paginated product list with optional filtering

@@ -1,9 +1,11 @@
 import type { Request, Response } from "express";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { asyncHandler } from "../../shared/middlewares";
-import { StatusCode } from "../../shared/types";
+import { AuthRequest, StatusCode } from "../../shared/types";
 import { returnSuccess } from "../../shared/utils/response.utils";
+import { PRODUCT_MESSAGES } from "./product.constants";
 import {
+  createProductService,
   getFeaturedProducts,
   getFilterOptionsForProducts,
   getProductDetail,
@@ -11,12 +13,34 @@ import {
   getSearchSuggestionsForQuery,
   searchProductList,
 } from "./product.service";
+import type { CreateProductDto } from "./product.validations";
 import {
   parsePagination,
   parseProductFilters,
   parseProductListQuery,
   parseSortOption,
 } from "./utils/filter.utils";
+
+/**
+ * POST /api/products
+ *
+ * Create a new product. Requires authentication (vendor).
+ */
+export const createProductController = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const payload: CreateProductDto = req.body;
+    const userId = req.user!.userId;
+
+    const result = await createProductService(payload, userId);
+
+    returnSuccess(
+      res,
+      result,
+      PRODUCT_MESSAGES.PRODUCT_CREATED,
+      StatusCode.CREATED,
+    );
+  },
+);
 
 /**
  * Ensures a value is a string, handling arrays and unknowns

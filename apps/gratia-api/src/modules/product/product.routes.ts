@@ -1,5 +1,8 @@
 import { Router, type IRouter } from "express";
+import { authMiddleware } from "../../shared/middlewares/auth.middleware";
+import { validateBody } from "../../shared/middlewares/validation.middleware";
 import {
+  createProductController,
   getProducts,
   getFilters,
   getProductBySlug,
@@ -7,12 +10,21 @@ import {
   searchProductsHandler,
   getSearchSuggestionsHandler,
 } from "./product.controller";
+import { createProductSchema } from "./product.validations";
 
 const router: IRouter = Router();
 
 // ============================================================================
 // Product Routes
 // ============================================================================
+
+// POST /api/products - Create a new product (requires auth)
+router.post(
+  "/",
+  authMiddleware,
+  validateBody(createProductSchema),
+  createProductController,
+);
 
 // GET /api/v2/products - Main product listing with query params
 // Supports: categorySlug, collectionSlug, sort, page, limit, filters[...]
