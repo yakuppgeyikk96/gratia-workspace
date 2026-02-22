@@ -25,6 +25,8 @@ COPY packages/eslint-config ./packages/eslint-config
 
 # Build the application
 WORKDIR /app/apps/gratia-vendor-dashboard
+ARG API_URL=http://localhost:8080
+ENV API_URL=${API_URL}
 RUN pnpm build
 
 # Production stage
