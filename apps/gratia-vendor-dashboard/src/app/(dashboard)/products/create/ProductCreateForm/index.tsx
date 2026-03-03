@@ -5,6 +5,7 @@ import { useForm, useWatch, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import Button from "@gratia/ui/components/Button";
+import FileUpload from "@gratia/ui/components/FileUpload";
 import FormField from "@gratia/ui/components/FormField";
 import Input from "@gratia/ui/components/Input";
 import Select from "@gratia/ui/components/Select";
@@ -18,6 +19,7 @@ import {
   useCategories,
   useCategoryAttributeTemplate,
   useCreateProduct,
+  useUploadImages,
 } from "../hooks";
 import {
   createProductFormSchema,
@@ -29,10 +31,12 @@ export default function ProductCreateForm() {
   const router = useRouter();
   const { addToast } = useToastContext();
   const [attributes, setAttributes] = useState<Record<string, string>>({});
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
 
   const { data: categories, isLoading: categoriesLoading } = useCategories();
   const { data: brands, isLoading: brandsLoading } = useBrands();
   const createProduct = useCreateProduct();
+  const uploadImages = useUploadImages();
 
   const {
     register,
@@ -88,6 +92,10 @@ export default function ProductCreateForm() {
     [],
   );
 
+  const handleImagesChange = useCallback((files: File[]) => {
+    setImageFiles(files);
+  }, []);
+
   const categoryOptions: SelectOption[] = (categories ?? []).map((cat) => ({
     label: cat.name,
     value: String(cat.id),
@@ -99,7 +107,22 @@ export default function ProductCreateForm() {
   }));
 
   const onSubmit = async (formData: CreateProductFormValues) => {
-    // Build attributes object from dynamic fields
+    // 1. Upload images if any
+    let imageUrls: string[] = [];
+    if (imageFiles.length > 0) {
+      try {
+        imageUrls = await uploadImages.mutateAsync(imageFiles);
+      } catch {
+        addToast({
+          variant: "error",
+          title: "Upload Failed",
+          description: "Failed to upload images. Please try again.",
+        });
+        return;
+      }
+    }
+
+    // 2. Build attributes object from dynamic fields
     const productAttributes: Record<string, unknown> = {};
     if (attributeTemplate?.attributeDefinitions) {
       for (const def of attributeTemplate.attributeDefinitions) {
@@ -116,6 +139,7 @@ export default function ProductCreateForm() {
       }
     }
 
+    // 3. Create product (API handles image rollback on failure)
     const result = await createProduct.mutateAsync({
       name: formData.name,
       slug: formData.slug,
@@ -126,6 +150,7 @@ export default function ProductCreateForm() {
       price: formData.price,
       discountedPrice: formData.discountedPrice || undefined,
       stock: parseInt(formData.stock, 10),
+      images: imageUrls.length > 0 ? imageUrls : undefined,
       attributes: productAttributes,
       metaTitle: formData.metaTitle || undefined,
       metaDescription: formData.metaDescription || undefined,
@@ -354,6 +379,22 @@ export default function ProductCreateForm() {
         </div>
       )}
 
+      {/* Product Images */}
+      <div className={styles.section}>
+        <h2 className={styles.sectionTitle}>Product Images</h2>
+        <FormField label="Images">
+          <FileUpload
+            value={imageFiles}
+            onChange={handleImagesChange}
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            multiple
+            maxFiles={10}
+            maxSize={5 * 1024 * 1024}
+            disabled={isSubmitting || uploadImages.isPending}
+          />
+        </FormField>
+      </div>
+
       {/* SEO */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>SEO</h2>
@@ -380,9 +421,13 @@ export default function ProductCreateForm() {
       <div className={styles.actions}>
         <Button
           type="submit"
-          disabled={isSubmitting || createProduct.isPending}
+          disabled={isSubmitting || createProduct.isPending || uploadImages.isPending}
         >
-          {createProduct.isPending ? "Creating..." : "Create Product"}
+          {uploadImages.isPending
+            ? "Uploading images..."
+            : createProduct.isPending
+              ? "Creating..."
+              : "Create Product"}
         </Button>
         <Button
           type="button"

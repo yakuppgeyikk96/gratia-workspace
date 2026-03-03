@@ -59,3 +59,16 @@
   font-size: $text-sm;
   font-style: italic;
 }
+
+.uploadingText {
+  color: $text-secondary-color;
+  font-size: $text-sm;
+  font-style: italic;
+  margin: 0;
+}
+
+.uploadError {
+  color: $text-error-color;
+  font-size: $text-sm;
+  margin: 0;
+}

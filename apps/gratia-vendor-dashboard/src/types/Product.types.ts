@@ -31,11 +31,16 @@ export interface ICreateProductRequest {
   price: string;
   discountedPrice?: string;
   stock: number;
+  images?: string[];
   attributes: Record<string, unknown>;
   productGroupId?: string;
   metaTitle?: string;
   metaDescription?: string;
   isActive: boolean;
+}
+
+export interface IUploadImagesResponse {
+  urls: string[];
 }
 
 export interface ICategory {
