@@ -48,6 +48,8 @@ export const createProductSchema = z.object({
 
   stock: z.number().int("Stock must be an integer").min(0).default(0),
 
+  images: z.array(z.string().url()).max(10).default([]),
+
   attributes: z.record(z.string(), z.unknown()).default({}),
 
   productGroupId: z

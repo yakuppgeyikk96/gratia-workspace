@@ -3,6 +3,7 @@ import type { Product } from "../../db/schema/product.schema";
 import { findBrandById } from "../brand/brand.repository";
 import { findCategoryById } from "../category/category.repository";
 import { findVendorByUserId } from "../vendor/vendor.repository";
+import { deleteUploadedImages } from "../upload";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
 import { StatusCode } from "../../shared/types";
 import {
@@ -119,25 +120,43 @@ export const createProductService = async (
   const productGroupId = data.productGroupId || crypto.randomUUID();
 
   // 7. Create the product
-  const product = await createProduct({
-    name: data.name,
-    slug: data.slug,
-    description: data.description ?? null,
-    sku: data.sku,
-    categoryId: data.categoryId,
-    brandId: data.brandId ?? null,
-    vendorId: vendor.id,
-    price: data.price,
-    discountedPrice: data.discountedPrice ?? null,
-    stock: data.stock,
-    attributes: data.attributes,
-    productGroupId,
-    metaTitle: data.metaTitle ?? null,
-    metaDescription: data.metaDescription ?? null,
-    isActive: data.isActive,
-  });
+  let product: Product | null = null;
+  try {
+    product = await createProduct({
+      name: data.name,
+      slug: data.slug,
+      description: data.description ?? null,
+      sku: data.sku,
+      categoryId: data.categoryId,
+      brandId: data.brandId ?? null,
+      vendorId: vendor.id,
+      price: data.price,
+      discountedPrice: data.discountedPrice ?? null,
+      stock: data.stock,
+      images: data.images,
+      attributes: data.attributes,
+      productGroupId,
+      metaTitle: data.metaTitle ?? null,
+      metaDescription: data.metaDescription ?? null,
+      isActive: data.isActive,
+    });
+  } catch (err) {
+    // Rollback uploaded images on product creation failure (best-effort)
+    if (data.images.length > 0) {
+      deleteUploadedImages(data.images).catch((deleteErr) =>
+        console.error("Image rollback failed:", deleteErr),
+      );
+    }
+    throw err;
+  }
 
   if (!product) {
+    // Rollback uploaded images (best-effort)
+    if (data.images.length > 0) {
+      deleteUploadedImages(data.images).catch((deleteErr) =>
+        console.error("Image rollback failed:", deleteErr),
+      );
+    }
     throw new AppError(
       PRODUCT_MESSAGES.PRODUCT_CREATION_FAILED,
       ErrorCode.INTERNAL_SERVER_ERROR,
