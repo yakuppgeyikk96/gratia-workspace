@@ -33,7 +33,7 @@ export const initializeEmailService = async (): Promise<void> => {
     console.log("Email service is ready to send emails");
   } catch (error) {
     console.error("Email service verification failed:", error);
-    throw new Error("Failed to initialize email service");
+    console.warn("Email service is unavailable — emails will not be sent");
   }
 };
 
