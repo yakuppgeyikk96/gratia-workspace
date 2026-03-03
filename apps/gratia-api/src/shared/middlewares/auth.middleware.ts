@@ -19,7 +19,7 @@ export const authMiddleware = async (
         errorCode: ErrorCode.UNAUTHORIZED,
         timestamp: new Date().toISOString(),
       };
-      return res.send(noAuthResponse);
+      return res.status(401).send(noAuthResponse);
     }
 
     const decoded = await verifyJwtToken(token);
@@ -27,7 +27,7 @@ export const authMiddleware = async (
 
     next();
   } catch (error) {
-    return res.send({
+    return res.status(401).send({
       success: false,
       message: "Invalid or expired token",
       errors: [],
