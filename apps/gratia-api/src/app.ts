@@ -113,10 +113,12 @@ routesConfig(app);
 startOrderCleanupJob();
 
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || "0.0.0.0";
+const HOST = process.env.NODE_ENV === "development"
+  ? (process.env.HOST || "localhost")
+  : "0.0.0.0";
 
 const server = app.listen(Number(PORT), HOST, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on ${HOST}:${PORT}`);
 });
 
 // Graceful shutdown — Cloud Run sends SIGTERM before stopping the container
