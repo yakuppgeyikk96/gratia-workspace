@@ -1,6 +1,10 @@
 "use client";
 
-import { getOrderByNumber, requestOrderAccess, verifyOrderAccess } from "@/actions";
+import {
+  getOrderByNumber,
+  requestOrderAccess,
+  verifyOrderAccess,
+} from "@/actions";
 import { formatPrice } from "@/lib/utils/format";
 import type { Order } from "@/types/Order.types";
 import Button from "@gratia/ui/components/Button";
@@ -20,7 +24,10 @@ function getStatusClass(status: string) {
   return `${styles.status} ${styles.statusPending}`;
 }
 
-export default function OrderConfirmation({ orderNumber, initialOrder }: Props) {
+export default function OrderConfirmation({
+  orderNumber,
+  initialOrder,
+}: Props) {
   const [order, setOrder] = useState<Order | null>(initialOrder);
   const [loading, setLoading] = useState(false);
   const [pollError, setPollError] = useState<string | null>(null);
@@ -34,7 +41,7 @@ export default function OrderConfirmation({ orderNumber, initialOrder }: Props) 
   const paymentStatus = order?.paymentStatus || "pending";
   const canPoll = useMemo(
     () => !!order && !TERMINAL_STATUSES.has(paymentStatus),
-    [order, paymentStatus]
+    [order, paymentStatus],
   );
 
   const fetchLatest = async () => {
@@ -74,7 +81,7 @@ export default function OrderConfirmation({ orderNumber, initialOrder }: Props) 
       if (resp.success && resp.data?.requestToken) {
         setRequestToken(resp.data.requestToken);
         setAccessMessage(
-          "If the email matches this order, an access code has been sent."
+          "If the email matches this order, an access code has been sent.",
         );
       } else {
         setPollError(resp.message || "Failed to request access");
@@ -178,8 +185,8 @@ export default function OrderConfirmation({ orderNumber, initialOrder }: Props) 
           {order.items.map((item) => {
             const unitPrice =
               item.discountedPrice !== undefined &&
-                item.discountedPrice > 0 &&
-                item.discountedPrice < item.price
+              item.discountedPrice > 0 &&
+              item.discountedPrice < item.price
                 ? item.discountedPrice
                 : item.price;
             const total = unitPrice * item.quantity;
@@ -200,27 +207,37 @@ export default function OrderConfirmation({ orderNumber, initialOrder }: Props) 
         <div className={styles.pricing}>
           <div className={styles.pricingRow}>
             <span className={styles.label}>Subtotal</span>
-            <span className={styles.value}>{formatPrice(order.pricing.subtotal)}</span>
+            <span className={styles.value}>
+              {formatPrice(order.pricing.subtotal)}
+            </span>
           </div>
           {order.pricing.discount > 0 && (
             <div className={styles.pricingRow}>
               <span className={styles.label}>Discount</span>
-              <span className={styles.value}>-{formatPrice(order.pricing.discount)}</span>
+              <span className={styles.value}>
+                -{formatPrice(order.pricing.discount)}
+              </span>
             </div>
           )}
           <div className={styles.pricingRow}>
             <span className={styles.label}>Shipping</span>
-            <span className={styles.value}>{formatPrice(order.pricing.shippingCost)}</span>
+            <span className={styles.value}>
+              {formatPrice(order.pricing.shippingCost)}
+            </span>
           </div>
           {order.pricing.tax !== undefined && order.pricing.tax > 0 && (
             <div className={styles.pricingRow}>
               <span className={styles.label}>Tax</span>
-              <span className={styles.value}>{formatPrice(order.pricing.tax)}</span>
+              <span className={styles.value}>
+                {formatPrice(order.pricing.tax)}
+              </span>
             </div>
           )}
           <div className={styles.pricingRow}>
             <span className={styles.label}>Total</span>
-            <span className={styles.value}>{formatPrice(order.pricing.total)}</span>
+            <span className={styles.value}>
+              {formatPrice(order.pricing.total)}
+            </span>
           </div>
         </div>
 
@@ -234,4 +251,3 @@ export default function OrderConfirmation({ orderNumber, initialOrder }: Props) 
     </div>
   );
 }
-
