@@ -1,58 +1,38 @@
-# Use official Node.js LTS image
-FROM node:18-alpine AS base
+# Stage 1: Build the Application
+# We use node:18-slim as the base for building and installing dependencies.
+FROM node:18-slim AS build
 
-# Install pnpm
-RUN npm install -g pnpm@10.20.0
+# Set the working directory inside the container
+WORKDIR /usr/src/app
 
-# Set working directory
-WORKDIR /app
-
-# Copy workspace files
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
-COPY apps/gratia-api/package.json ./apps/gratia-api/
-COPY packages/typescript-config/package.json ./packages/typescript-config/
-COPY packages/eslint-config/package.json ./packages/eslint-config/
+# Copy package.json and package-lock.json first to leverage Docker caching.
+# If these files don't change, subsequent builds can skip 'npm install'.
+COPY package*.json ./
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN npm install
 
-# Copy source code
-COPY apps/gratia-api ./apps/gratia-api
-COPY packages/typescript-config ./packages/typescript-config
-COPY packages/eslint-config ./packages/eslint-config
+# Copy the rest of the application source code
+COPY . .
 
-# Build TypeScript
-WORKDIR /app/apps/gratia-api
-RUN pnpm build
+# Stage 2: Create the Final Production Image
+# We use node:18-slim as a minimal runtime image.
+FROM node:18-slim
 
-# Production stage
-FROM node:18-alpine AS production
+# Set the working directory
+WORKDIR /usr/src/app
 
-# Install pnpm
-RUN npm install -g pnpm@10.20.0
+# Copy the node_modules and built application files from the 'build' stage
+COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY --from=build /usr/src/app/package*.json ./
+COPY --from=build /usr/src/app .
 
-WORKDIR /app
+# Expose the port your app runs on
+ENV PORT=8080
+EXPOSE $PORT
 
-# Copy workspace files for production install
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
-COPY apps/gratia-api/package.json ./apps/gratia-api/
-COPY packages/typescript-config/package.json ./packages/typescript-config/
-COPY packages/eslint-config/package.json ./packages/eslint-config/
+# Run the application using the non-root user (recommended for security)
+USER node
 
-# Install only production dependencies
-RUN pnpm install --frozen-lockfile --prod
-
-# Copy built files from base stage
-COPY --from=base /app/apps/gratia-api/dist ./apps/gratia-api/dist
-
-WORKDIR /app/apps/gratia-api
-
-# Expose port
-EXPOSE 8080
-
-# Set production environment
-ENV NODE_ENV=production
-ENV HOST=0.0.0.0
-
-# Start the application
-CMD ["node", "dist/app.js"]
+# Define the command to start your application
+CMD [ "node", "index.js" ]
