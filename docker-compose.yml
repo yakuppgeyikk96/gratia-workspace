@@ -25,6 +25,7 @@ services:
     build:
       context: .
       dockerfile: apps/gratia-api/Dockerfile
+      target: production
     ports:
       - "8080:8080"
     environment:
@@ -53,6 +54,7 @@ services:
       - FRONTEND_URL=${FRONTEND_URL}
       - GCS_BUCKET_NAME=gratia-dev
       - STORAGE_EMULATOR_HOST=http://fake-gcs:4443
+      - STORAGE_PUBLIC_HOST=http://localhost:4443
     depends_on:
       redis:
         condition: service_healthy
@@ -60,7 +62,7 @@ services:
         condition: service_started
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/health"]
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/api/health').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -80,11 +82,13 @@ services:
       - VENDOR_DASHBOARD_URL=http://gratia-vendor-dashboard:3100
       - CACHE_SECRET_KEY=${CACHE_SECRET_KEY}
       - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      - GCS_PUBLIC_HOST=http://localhost:4443
+      - GCS_INTERNAL_HOST=http://fake-gcs:4443
     depends_on:
       - gratia-api
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -105,7 +109,7 @@ services:
       - gratia-api
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3100"]
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3100').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"]
       interval: 30s
       timeout: 10s
       retries: 3
