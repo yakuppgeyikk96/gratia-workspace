@@ -46,6 +46,20 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.samsung.com",
       },
+      {
+        protocol: "https",
+        hostname: "storage.googleapis.com",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "4443",
+      },
+      {
+        protocol: "http",
+        hostname: "fake-gcs",
+        port: "4443",
+      },
     ],
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200],
