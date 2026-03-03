@@ -7,6 +7,7 @@ export const validateEnvironment = (): void => {
 
   const required = [
     "JWT_SECRET",
+    "RESEND_API_KEY",
     ...(isDevelopment
       ? ["REDIS_HOST_LOCAL", "REDIS_PORT_LOCAL"]
       : ["REDIS_HOST", "REDIS_PORT", "REDIS_USERNAME", "REDIS_PASSWORD"]),

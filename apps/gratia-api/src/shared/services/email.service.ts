@@ -1,47 +1,28 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { EmailMessage, EmailResult } from "../types";
 
-const EMAIL_SERVICE = process.env.EMAIL_SERVICE || "gmail";
-const EMAIL_USER = process.env.EMAIL_USER;
-const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const EMAIL_FROM = process.env.EMAIL_FROM;
 
-if (!EMAIL_USER) {
-  throw new Error("EMAIL_USER is not set");
-}
-
-if (!EMAIL_PASSWORD) {
-  throw new Error("EMAIL_PASSWORD is not set");
+if (!RESEND_API_KEY) {
+  throw new Error("RESEND_API_KEY is not set");
 }
 
 if (!EMAIL_FROM) {
   throw new Error("EMAIL_FROM is not set");
 }
 
-// Create transporter
-const transporter = nodemailer.createTransport({
-  service: EMAIL_SERVICE,
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASSWORD,
-  },
-});
+const resend = new Resend(RESEND_API_KEY);
 
 export const initializeEmailService = async (): Promise<void> => {
-  try {
-    await transporter.verify();
-    console.log("Email service is ready to send emails");
-  } catch (error) {
-    console.error("Email service verification failed:", error);
-    console.warn("Email service is unavailable — emails will not be sent");
-  }
+  console.log("Email service initialized with Resend");
 };
 
 export const sendMail = async (message: EmailMessage): Promise<EmailResult> => {
   try {
     console.log("Sending email to:", message.to);
 
-    const result = await transporter.sendMail({
+    const { data, error } = await resend.emails.send({
       from: EMAIL_FROM,
       to: message.to,
       subject: message.subject,
@@ -49,11 +30,19 @@ export const sendMail = async (message: EmailMessage): Promise<EmailResult> => {
       html: message.html,
     });
 
-    console.log("Email sent successfully. MessageId:", result.messageId);
+    if (error) {
+      console.error("Email sending failed:", error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+
+    console.log("Email sent successfully. MessageId:", data?.id);
 
     return {
       success: true,
-      messageId: result.messageId,
+      messageId: data?.id,
     };
   } catch (error) {
     console.error("Email sending failed:", error);
