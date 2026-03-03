@@ -9,7 +9,7 @@ export const validateEnvironment = (): void => {
     "JWT_SECRET",
     ...(isDevelopment
       ? ["REDIS_HOST_LOCAL", "REDIS_PORT_LOCAL"]
-      : ["REDIS_HOST", "REDIS_PORT", "REDIS_USERNAME", "REDIS_PASSWORD", "GCS_BUCKET_NAME"]),
+      : ["REDIS_HOST", "REDIS_PORT", "REDIS_USERNAME", "REDIS_PASSWORD"]),
   ];
 
   for (const key of required) {
