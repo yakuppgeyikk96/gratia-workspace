@@ -65,7 +65,9 @@ export default function CheckoutPayment() {
         setRetryContext({ orderNumber, clientSecret });
       }
 
-      // Confirm payment client-side (3DS handled by Stripe)
+      // Confirm payment client-side (3DS modal handled by Stripe).
+      // If 3DS is required, stripe.confirmCardPayment shows the iframe/modal
+      // and resolves once the user either completes or abandons the challenge.
       const result = await creditCardFormRef.current.confirmCardPayment(
         clientSecret,
         paymentMethodId,
@@ -73,6 +75,28 @@ export default function CheckoutPayment() {
 
       if (result.error) {
         setError(result.error.message || "Payment confirmation failed.");
+        setIsProcessing(false);
+        return;
+      }
+
+      const piStatus = result.paymentIntent?.status;
+
+      // Only "succeeded" means the money actually moved. Any other status
+      // (requires_action, requires_payment_method, requires_confirmation,
+      // processing, canceled) means the customer hasn't paid yet — usually
+      // because they closed/failed the 3DS challenge.
+      if (piStatus !== "succeeded") {
+        if (piStatus === "requires_action" || piStatus === "requires_payment_method") {
+          setError(
+            "Your bank's verification step was not completed. Please try the payment again.",
+          );
+        } else if (piStatus === "processing") {
+          setError(
+            "Your payment is still processing. We will notify you once it completes.",
+          );
+        } else {
+          setError("Payment was not completed. Please try again.");
+        }
         setIsProcessing(false);
         return;
       }

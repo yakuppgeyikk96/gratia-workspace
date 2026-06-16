@@ -439,6 +439,41 @@ export const decreaseProductStock = async (
   );
 };
 
+/**
+ * Increase product stock (for refunds / cancellations)
+ */
+export const increaseProductStock = async (
+  items: { sku: string; quantity: number }[]
+): Promise<void> => {
+  if (items.length === 0) return;
+
+  await db.transaction(async (tx) => {
+    for (const item of items) {
+      const result = await tx.execute<{ stock: number }>(
+        sql`SELECT stock FROM products WHERE sku = ${item.sku} LIMIT 1 FOR UPDATE`
+      );
+
+      const product = result[0];
+
+      if (!product) {
+        throw new Error(`Product not found: ${item.sku}`);
+      }
+
+      await tx
+        .update(products)
+        .set({
+          stock: product.stock + item.quantity,
+          updatedAt: new Date(),
+        })
+        .where(eq(products.sku, item.sku));
+    }
+  });
+
+  productDetailCache.invalidate().catch((err) =>
+    console.error("Product detail cache invalidation failed:", err),
+  );
+};
+
 // ============================================================================
 // Conversion Helpers
 // ============================================================================

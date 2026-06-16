@@ -16,6 +16,7 @@ import type {
 import {
   findProductsBySkus,
   decreaseProductStock,
+  increaseProductStock,
 } from "../repositories/cart.repository";
 import { AppError, ErrorCode } from "../../../shared/errors/base.errors";
 
@@ -177,6 +178,18 @@ export const commitStockReservation = async (
 
   // Release locks (they would expire anyway, but clean up immediately)
   await releaseStockReservation(sessionId);
+};
+
+/**
+ * Restock items (for refunds or admin-initiated reversals).
+ *
+ * Increments DB stock back. No Redis locks are involved because at this point
+ * the items have already been committed (paid + decremented) and refunded.
+ */
+export const restockOrderItems = async (
+  items: StockReserveItem[]
+): Promise<void> => {
+  await increaseProductStock(items);
 };
 
 /**

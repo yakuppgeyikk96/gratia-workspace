@@ -1,7 +1,11 @@
 import type Stripe from "stripe";
 import { PaymentStatus, type OrderItem } from "../../db/schema/order.schema";
 import { sendMail } from "../../shared/services";
-import { commitStockReservation, releaseStockReservation } from "../cart";
+import {
+  commitStockReservation,
+  releaseStockReservation,
+  restockOrderItems,
+} from "../cart";
 import {
   findOrderByPaymentIntentId,
   updateOrderPaymentStatus,
@@ -125,6 +129,24 @@ export const handleStripeWebhookEvent = async (
     } catch (err) {
       console.error(
         "[stripe-webhook] Failed to release stock reservation for order:",
+        order.orderNumber,
+        err,
+      );
+    }
+  } else if (nextStatus === PaymentStatus.REFUNDED) {
+    // Stock was already committed (decremented) when the order was paid.
+    // On refund we put it back so inventory stays accurate.
+    const orderItems = order.items as OrderItem[];
+    const stockItems = orderItems.map((item) => ({
+      sku: item.sku,
+      quantity: item.quantity,
+    }));
+
+    try {
+      await restockOrderItems(stockItems);
+    } catch (err) {
+      console.error(
+        "[stripe-webhook] Failed to restock items for refunded order:",
         order.orderNumber,
         err,
       );

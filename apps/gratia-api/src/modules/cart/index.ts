@@ -53,6 +53,7 @@ export {
   reserveStockForCheckout,
   releaseStockReservation,
   commitStockReservation,
+  restockOrderItems,
   getLockedQuantityForSku,
   getReservationStatus,
   extendReservation,
