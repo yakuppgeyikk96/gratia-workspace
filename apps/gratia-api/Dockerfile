@@ -1,38 +1,56 @@
-# Stage 1: Build the Application
-# We use node:18-slim as the base for building and installing dependencies.
-FROM node:18-slim AS build
+# Base stage: install dependencies and copy source (used by dev override)
+FROM node:20-alpine AS base
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
+RUN npm install -g pnpm@10.20.0
 
-# Copy package.json and package-lock.json first to leverage Docker caching.
-# If these files don't change, subsequent builds can skip 'npm install'.
-COPY package*.json ./
+WORKDIR /app
 
-# Install dependencies
-RUN npm install
+# Copy workspace manifest and lockfile
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 
-# Copy the rest of the application source code
-COPY . .
+# Copy app and shared package manifests
+COPY apps/gratia-api/package.json ./apps/gratia-api/
+COPY packages/typescript-config/package.json ./packages/typescript-config/
+COPY packages/eslint-config/package.json ./packages/eslint-config/
 
-# Stage 2: Create the Final Production Image
-# We use node:18-slim as a minimal runtime image.
-FROM node:18-slim
+# Install dependencies for the whole workspace (filtered)
+RUN pnpm install --frozen-lockfile
 
-# Set the working directory
-WORKDIR /usr/src/app
+# Copy source
+COPY apps/gratia-api ./apps/gratia-api
+COPY packages/typescript-config ./packages/typescript-config
+COPY packages/eslint-config ./packages/eslint-config
 
-# Copy the node_modules and built application files from the 'build' stage
-COPY --from=build /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/package*.json ./
-COPY --from=build /usr/src/app .
+# Build TypeScript
+WORKDIR /app/apps/gratia-api
+RUN pnpm build
 
-# Expose the port your app runs on
+EXPOSE 8080
+
+CMD ["pnpm", "start"]
+
+# Production stage: lean runtime with only built output + prod deps
+FROM node:20-alpine AS production
+
+RUN npm install -g pnpm@10.20.0
+
+WORKDIR /app
+
+# Workspace manifests needed for pnpm to resolve workspace layout
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/gratia-api/package.json ./apps/gratia-api/
+
+# Install only production dependencies for the api
+RUN pnpm install --frozen-lockfile --prod --filter=gratia-api...
+
+# Copy compiled output from the base stage
+COPY --from=base /app/apps/gratia-api/dist ./apps/gratia-api/dist
+
+WORKDIR /app/apps/gratia-api
+
+ENV NODE_ENV=production
 ENV PORT=8080
-EXPOSE $PORT
+ENV HOST=0.0.0.0
+EXPOSE 8080
 
-# Run the application using the non-root user (recommended for security)
-USER node
-
-# Define the command to start your application
-CMD [ "node", "index.js" ]
+CMD ["node", "dist/app.js"]
