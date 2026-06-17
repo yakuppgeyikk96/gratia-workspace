@@ -13,3 +13,4 @@ export * from "./product.schema";
 export * from "./shipping.schema";
 export * from "./user.schema";
 export * from "./vendor.schema";
+export * from "./webhook-event.schema";

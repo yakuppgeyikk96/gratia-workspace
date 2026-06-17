@@ -41,8 +41,6 @@ yarn-error.log*
 *storybook.log
 storybook-static
 
-drizzle
-
 apps/gratia-mobile
 
 .pnpm-store/
