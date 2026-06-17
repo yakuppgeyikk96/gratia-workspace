@@ -1,0 +1,15 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: $spacing-md;
+  height: 100%;
+  min-height: 0;
+
+  @include media-sm {
+    gap: $spacing-sm;
+  }
+}

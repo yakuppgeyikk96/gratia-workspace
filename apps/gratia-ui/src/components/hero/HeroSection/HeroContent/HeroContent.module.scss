@@ -9,39 +9,37 @@ $hero-content-max-width: 600px;
 .heroContent {
   max-width: $hero-content-max-width;
   width: 100%;
-
-  @include media-md {
-    @include flex-center-column;
-  }
 }
 
 .heroTitle {
-  font-size: $text-6xl;
+  font-size: $text-5xl;
   font-weight: $font-bold;
-  color: $text-primary-color;
+  color: #fff;
   margin-bottom: $spacing-md;
   line-height: $leading-tight;
   text-align: left;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
 
   @include media-md {
-    font-size: $text-5xl;
-    text-align: center;
+    font-size: $text-4xl;
+    text-align: left;
   }
 
   @include media-sm {
-    font-size: $text-4xl;
+    font-size: $text-3xl;
   }
 }
 
 .heroDescription {
-  font-size: $text-2xl;
-  color: $text-secondary-color;
+  font-size: $text-xl;
+  color: rgba(255, 255, 255, 0.92);
   line-height: $leading-normal;
   text-align: left;
   margin-bottom: $spacing-xl;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.3);
 
   @include media-md {
-    font-size: $text-xl;
-    text-align: center;
+    font-size: $text-lg;
+    text-align: left;
   }
 }
