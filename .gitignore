@@ -51,3 +51,5 @@ load-tests
 .claude/agent-memory/
 .claude/agent-memory-local/
 CLAUDE.local.md
+
+.tmp
