@@ -45,7 +45,21 @@ export default function CartSummary() {
 
   const { mutate: createCheckoutSessionMutation, isPending } = useMutation({
     mutationFn: createCheckoutSession,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // The server action always resolves successfully (HTTP 200 wrap), so
+      // a 4xx from the API surfaces here as { success: false }. Treating
+      // that path as a win silently redirected to /checkout with no
+      // session, masking stock-lock failures behind a success toast.
+      if (!data?.success) {
+        addToast({
+          title: "Unable to start checkout",
+          description: data?.message || "Please try again in a moment.",
+          variant: "error",
+          duration: TOAST_DURATION,
+        });
+        return;
+      }
+
       addToast({
         title: "Payment Session Created",
         description: "You are being redirected to the payment page.",
