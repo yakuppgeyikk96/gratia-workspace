@@ -410,8 +410,14 @@ export const completeCheckoutService = async (
     // Overwrite "processing" claim with actual response
     await setRedisValue(completionCacheKey, response, 60 * 60);
 
-    /* Remove session from Redis after order is created */
-    await deleteCheckoutSessionService(sessionToken);
+    // Intentionally keep the Redis session until its TTL expires (20 min).
+    // Deleting it here used to race with the client-side 3DS modal: while
+    // Stripe's 3DS iframe was open, Next.js would re-render the checkout
+    // page (server actions invalidate cookie-dependent reads), see no
+    // session, and redirect to /cart with ?error=session_expired —
+    // unmounting CheckoutPayment so the user never saw the 3DS result.
+    // Duplicate completions are already blocked by the idempotency claim
+    // above (`checkout:complete:${sessionToken}` SET NX for 1h).
 
     return response;
   } catch (error) {
