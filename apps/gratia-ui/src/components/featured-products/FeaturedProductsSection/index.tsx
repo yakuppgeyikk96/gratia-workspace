@@ -1,44 +1,72 @@
 import { isAuthenticatedUser } from "@/actions/auth";
-import { getFeaturedProducts } from "@/actions/product";
+import { getProducts } from "@/actions/product";
 import Container from "@gratia/ui/components/Container";
-import { Suspense } from "react";
-import FeaturedProductsCarousel from "../FeaturedProductsCarousel";
-import FeaturedProductsSkeleton from "../FeaturedProductsSkeleton";
 
+import CategoryProductStrip from "../CategoryProductStrip";
 import styles from "./FeaturedProductsSection.module.scss";
 
+interface FeaturedCategory {
+  title: string;
+  categorySlug: string;
+  viewAllHref: string;
+}
+
+const FEATURED_CATEGORIES: FeaturedCategory[] = [
+  {
+    title: "Top in Electronics",
+    categorySlug: "electronics",
+    viewAllHref: "/products/category/electronics",
+  },
+  {
+    title: "Top in Fashion",
+    categorySlug: "fashion",
+    viewAllHref: "/products/category/fashion",
+  },
+  {
+    title: "Top in Home & Living",
+    categorySlug: "home-living",
+    viewAllHref: "/products/category/home-living",
+  },
+  {
+    title: "Top in Books",
+    categorySlug: "books",
+    viewAllHref: "/products/category/books",
+  },
+];
+
+const STRIP_LIMIT = 10;
+
 export default async function FeaturedProductsSection() {
-  const [productsResponse, isLoggedIn] = await Promise.all([
-    getFeaturedProducts(),
+  const [isLoggedIn, ...stripResponses] = await Promise.all([
     isAuthenticatedUser(),
+    ...FEATURED_CATEGORIES.map((cat) =>
+      getProducts({
+        categorySlug: cat.categorySlug,
+        sort: "newest",
+        limit: STRIP_LIMIT,
+      }),
+    ),
   ]);
 
-  if (!productsResponse.success || !productsResponse.data) {
-    return null;
-  }
+  const strips = FEATURED_CATEGORIES.map((cat, idx) => ({
+    config: cat,
+    products: stripResponses[idx]?.data?.products ?? [],
+  })).filter((s) => s.products.length > 0);
 
-  const products = productsResponse.data;
-
-  if (products.length === 0) {
-    return null;
-  }
+  if (strips.length === 0) return null;
 
   return (
     <section className={styles.featuredProductsSection}>
       <Container className={styles.container}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>Featured Products</h2>
-          <p className={styles.subtitle}>
-            Discover our handpicked selection of premium items
-          </p>
-        </div>
-
-        <Suspense fallback={<FeaturedProductsSkeleton />}>
-          <FeaturedProductsCarousel
+        {strips.map(({ config, products }) => (
+          <CategoryProductStrip
+            key={config.categorySlug}
+            title={config.title}
+            viewAllHref={config.viewAllHref}
             products={products}
             isLoggedIn={isLoggedIn}
           />
-        </Suspense>
+        ))}
       </Container>
     </section>
   );

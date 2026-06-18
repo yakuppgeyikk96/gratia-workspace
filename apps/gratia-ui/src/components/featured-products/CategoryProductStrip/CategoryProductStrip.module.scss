@@ -5,6 +5,65 @@
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 @use "@gratia/ui/styles/layout/_flex.scss" as *;
 
+.strip {
+  width: 100%;
+
+  + .strip {
+    margin-top: $spacing-10;
+
+    @include media-sm {
+      margin-top: $spacing-8;
+    }
+  }
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-4;
+  margin-bottom: $spacing-5;
+
+  @include media-sm {
+    margin-bottom: $spacing-4;
+  }
+}
+
+.title {
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+  margin: 0;
+
+  @include media-sm {
+    font-size: $text-lg;
+  }
+}
+
+.viewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: $text-sm;
+  font-weight: 500;
+  color: $text-secondary-color;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $primary-color;
+  }
+
+  svg {
+    transition: transform 0.15s ease;
+  }
+
+  &:hover svg {
+    transform: translateX(2px);
+  }
+}
+
 .carouselWrapper {
   position: relative;
   width: 100%;
@@ -22,23 +81,23 @@
 }
 
 .emblaSlide {
-  flex: 0 0 calc(25% - 18px); // Desktop: 4 products, gap included
+  flex: 0 0 calc(25% - 18px);
   min-width: 0;
 
   @include media-lg {
-    flex: 0 0 calc(33.333% - 16px); // Tablet: 3 products
+    flex: 0 0 calc(33.333% - 16px);
   }
 
   @include media-md {
-    flex: 0 0 calc(50% - 12px); // Mobile: 2 products
+    flex: 0 0 calc(50% - 12px);
   }
 
   @include media-sm {
-    flex: 0 0 calc(50% - 8px); // Small mobile: 2 products
+    flex: 0 0 calc(50% - 8px);
   }
 
   @include media-xs {
-    flex: 0 0 100%; // Very small mobile: 1 product
+    flex: 0 0 80%;
   }
 }
 
@@ -48,11 +107,11 @@
 
 .navButton {
   position: absolute;
-  top: 50%;
+  top: 40%;
   transform: translateY(-50%);
   z-index: $z-fixed;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   background-color: rgba(255, 255, 255, 0.95);
   @include border($border-1, $border-light);
   @include rounded-full;
@@ -62,15 +121,11 @@
   &:hover:not(.navButtonDisabled) {
     background-color: $bg-color;
     box-shadow: $shadow-lg;
-    transform: translateY(-50%) scale(1.1);
-  }
-
-  &:active:not(.navButtonDisabled) {
-    transform: translateY(-50%) scale(0.95);
+    transform: translateY(-50%) scale(1.08);
   }
 
   &.navButtonDisabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
     pointer-events: none;
   }
@@ -81,48 +136,25 @@
 }
 
 .navButtonPrev {
-  left: -24px;
+  left: -22px;
 
   @include media-md {
-    left: -16px;
+    left: -14px;
   }
 
   @include media-sm {
-    left: -8px;
-    width: 40px;
-    height: 40px;
-  }
-
-  @include media-xs {
-    left: -4px;
-    width: 36px;
-    height: 36px;
+    display: none;
   }
 }
 
 .navButtonNext {
-  right: -24px;
+  right: -22px;
 
   @include media-md {
-    right: -16px;
+    right: -14px;
   }
 
   @include media-sm {
-    right: -8px;
-    width: 40px;
-    height: 40px;
-  }
-
-  @include media-xs {
-    right: -4px;
-    width: 36px;
-    height: 36px;
-  }
-}
-
-// Hide navigation on very small screens if not needed
-@include media-xs {
-  .navButton {
     display: none;
   }
 }
