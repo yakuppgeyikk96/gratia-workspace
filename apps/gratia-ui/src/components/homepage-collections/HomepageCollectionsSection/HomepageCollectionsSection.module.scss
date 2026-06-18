@@ -1,0 +1,73 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.section {
+  @include py(10);
+  background-color: $bg-secondary-color;
+}
+
+.container {
+  width: 100%;
+}
+
+.header {
+  margin-bottom: $spacing-6;
+
+  @include media-sm {
+    margin-bottom: $spacing-4;
+  }
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+  margin: 0 0 $spacing-2 0;
+
+  @include media-sm {
+    font-size: $text-xl;
+  }
+}
+
+.subtitle {
+  font-size: $text-sm;
+  color: $text-secondary-color;
+  margin: 0;
+  max-width: 540px;
+}
+
+.scroller {
+  margin-inline: calc($spacing-4 * -1);
+  padding-inline: $spacing-4;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.list {
+  display: flex;
+  gap: $spacing-4;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  flex: 0 0 360px;
+  scroll-snap-align: start;
+
+  @include media-md {
+    flex: 0 0 300px;
+  }
+
+  @include media-sm {
+    flex: 0 0 76%;
+  }
+}
