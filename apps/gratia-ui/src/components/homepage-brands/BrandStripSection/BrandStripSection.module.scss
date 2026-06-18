@@ -1,0 +1,133 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.section {
+  @include py(10);
+  background-color: $bg-color;
+}
+
+.container {
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-4;
+  margin-bottom: $spacing-5;
+
+  @include media-sm {
+    margin-bottom: $spacing-4;
+  }
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $text-primary-color;
+  margin: 0;
+
+  @include media-sm {
+    font-size: $text-lg;
+  }
+}
+
+.viewAll {
+  font-size: $text-sm;
+  font-weight: 500;
+  color: $text-secondary-color;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.scroller {
+  margin-inline: calc($spacing-4 * -1);
+  padding-inline: $spacing-4;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.list {
+  display: flex;
+  gap: $spacing-3;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-2;
+  width: 110px;
+  padding: $spacing-3 $spacing-2;
+  background: $bg-color;
+  border: 1px solid $border-light;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: $primary-color;
+    box-shadow: $shadow-sm;
+  }
+
+  @include media-sm {
+    width: 96px;
+  }
+}
+
+.logoWrap {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: $bg-secondary-color;
+
+  @include media-sm {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+.logo {
+  object-fit: cover;
+}
+
+.name {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: $text-primary-color;
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}

@@ -1,5 +1,6 @@
 export * from "./Api.types";
 export * from "./Auth.types";
+export * from "./Brand.types";
 export * from "./Cart.types";
 export * from "./Category.types";
 export * from "./Checkout.types";
