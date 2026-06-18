@@ -1,0 +1,96 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.section {
+  @include py(8);
+  background-color: $bg-color;
+  border-block: 1px solid $border-light;
+}
+
+.container {
+  width: 100%;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-6;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  @include media-md {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-5;
+  }
+
+  @include media-sm {
+    gap: $spacing-4;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  min-width: 0;
+}
+
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: $primary-color-50;
+  color: $primary-color;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: $text-primary-color;
+  line-height: 1.2;
+}
+
+.description {
+  font-size: 0.82rem;
+  color: $text-muted-color;
+  line-height: 1.3;
+}
+
+@include media-sm {
+  .iconWrap {
+    width: 38px;
+    height: 38px;
+  }
+
+  .icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .title {
+    font-size: 0.88rem;
+  }
+
+  .description {
+    font-size: 0.76rem;
+  }
+}
