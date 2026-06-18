@@ -1,0 +1,166 @@
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.footer {
+  background-color: $bg-tertiary-color;
+  color: $text-secondary-color;
+  border-top: 1px solid $border-light;
+  padding-block: $spacing-10 $spacing-6;
+
+  @include media-sm {
+    padding-bottom: calc($spacing-6 + 70px);
+  }
+}
+
+.container {
+  width: 100%;
+}
+
+.topBar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-6;
+  padding-bottom: $spacing-8;
+  border-bottom: 1px solid $border-light;
+
+  @include media-sm {
+    flex-direction: column;
+    gap: $spacing-5;
+    padding-bottom: $spacing-6;
+  }
+}
+
+.brandBlock {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  max-width: 420px;
+}
+
+.brand {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: $text-primary-color;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  color: $text-muted-color;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.socials {
+  display: flex;
+  gap: $spacing-2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: $bg-color;
+  color: $text-secondary-color;
+  border: 1px solid $border-light;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    background: $primary-color;
+    color: #ffffff;
+    border-color: $primary-color;
+    transform: translateY(-2px);
+  }
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-8;
+  padding-block: $spacing-8;
+
+  @include media-lg {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-6;
+  }
+
+  @include media-sm {
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-5;
+    padding-block: $spacing-6;
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  min-width: 0;
+}
+
+.colTitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $text-primary-color;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.linkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.link {
+  font-size: 0.88rem;
+  color: $text-secondary-color;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.bottomBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-3;
+  padding-top: $spacing-5;
+  border-top: 1px solid $border-light;
+  font-size: 0.82rem;
+  color: $text-muted-color;
+
+  @include media-sm {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+.copyright {
+  margin: 0;
+}
+
+.paymentInfo {
+  margin: 0;
+}
