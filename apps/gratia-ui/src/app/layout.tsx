@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NextTopLoader from "nextjs-toploader";
 
 import { TanstackQueryClientProvider } from "@/components/providers";
 import { CartInitializer } from "@/components/providers/CartProvider";
@@ -25,6 +26,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
+        <NextTopLoader
+          color="#2563eb"
+          height={3}
+          showSpinner={false}
+          shadow="0 0 8px #2563eb"
+        />
         <TanstackQueryClientProvider>
           <ToastContextProvider>
             {children}
