@@ -248,20 +248,25 @@ li {
   margin: 0;
 }
 
-// Global link styles - only apply to general links, not navigation
-a:not([class*="link"]):not([class*="nav"]):not([class*="category"]) {
-  color: var(--link);
+// Base anchor reset for all links — color is left to each component's own class.
+a {
   text-decoration: none;
   transition: color var(--transition-fast);
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
 
+  &:visited {
+    color: inherit;
+  }
+}
+
+// Class-less anchors fall back to the global link color (rare; typical
+// component anchors override via their own CSS-module class).
+a:not([class]) {
+  color: var(--link);
+
   &:hover {
     color: var(--link-hover);
-  }
-
-  &:visited {
-    color: var(--link-visited);
   }
 
   &:active {
