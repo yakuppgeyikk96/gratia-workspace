@@ -8,12 +8,8 @@
 .productDetailInfoCard {
   width: 100%;
   height: fit-content;
-  border: 1px solid $border-light;
   @include flex-column;
-  @include gap(5);
-  @include p(4);
-  @include rounded($radius-lg);
-  background-color: $bg-color;
+  @include gap(6);
 }
 
 .productDetailInfoCardHeader {

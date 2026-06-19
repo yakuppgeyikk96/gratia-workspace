@@ -12,14 +12,12 @@ interface ProductVariantSelectorProps {
   variantType: VariantType;
   currentProduct: VariantSelectableProduct;
   variants: VariantSelectableProduct[];
-  currency?: string;
 }
 
 export default function ProductVariantSelector({
   variantType,
   currentProduct,
   variants,
-  currency = "USD",
 }: ProductVariantSelectorProps) {
   const currentSlug = currentProduct.slug;
   const currentVariantValue = getVariantValue(currentProduct, variantType);
@@ -52,7 +50,6 @@ export default function ProductVariantSelector({
         <ProductColorSelector
           variants={filteredVariants}
           currentSlug={currentSlug}
-          currency={currency}
         />
       ) : (
         <ProductGenericSelector

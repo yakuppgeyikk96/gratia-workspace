@@ -47,7 +47,6 @@ export default function ProductDetailInfoCard({
             variantType={variantType}
             currentProduct={productData}
             variants={productData.variants}
-            currency="USD"
           />
         );
       })}
