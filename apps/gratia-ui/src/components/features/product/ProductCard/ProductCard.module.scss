@@ -14,27 +14,13 @@
   overflow: hidden;
   position: relative;
   cursor: pointer;
-  transition:
-    transform $transition-smooth,
-    box-shadow $transition-smooth,
-    border-color $transition-smooth;
-  will-change: transform, box-shadow;
+  transition: border-color $transition-smooth;
   @include animate-fade-in-up($transition-slow);
 
-  // Modern hover effect with lift
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: $shadow-lg;
     border-color: $border-medium;
   }
 
-  // Active state for better feedback
-  &:active {
-    transform: translateY(-2px);
-    box-shadow: $shadow-md;
-  }
-
-  // Focus state for accessibility
   &:focus-visible {
     outline: 2px solid $interactive-focus-ring;
     outline-offset: 2px;

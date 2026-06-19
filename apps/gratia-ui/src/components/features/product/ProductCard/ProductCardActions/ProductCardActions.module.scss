@@ -39,17 +39,14 @@
   button {
     background-color: $bg-color !important;
     border: 1px solid $border-light !important;
+    transition:
+      background-color $transition-fast,
+      border-color $transition-fast,
+      color $transition-fast;
 
     &:hover {
-      transform: scale(1.1);
-      box-shadow: $shadow-md;
-      transition: all $transition-fast;
-    }
-
-    &:active {
-      transform: scale(1);
-      box-shadow: $shadow-sm;
-      transition: all $transition-fast;
+      background-color: $bg-secondary-color !important;
+      border-color: $border-medium !important;
     }
   }
 }
