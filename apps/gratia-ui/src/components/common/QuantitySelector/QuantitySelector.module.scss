@@ -13,35 +13,23 @@
     @include flex(row, center, center);
     @include rounded($radius-full);
     padding: $spacing-1;
-    border: 1px solid;
-    background-color: transparent;
+    border: 1px solid $border-light;
+    background-color: $bg-color;
+    color: $text-primary-color;
     cursor: pointer;
-    transition: all $transition-fast;
+    transition:
+      background-color $transition-fast,
+      border-color $transition-fast;
 
     &:hover:not(.disabled) {
-      box-shadow: $shadow-lg;
-    }
-
-    &:active:not(.disabled) {
-      box-shadow: $shadow-md;
+      background-color: $bg-secondary-color;
+      border-color: $border-medium;
     }
 
     &.disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
-  }
-
-  .decrementButton {
-    background-color: rgba($text-error-color, 0.1);
-    border-color: rgba($text-error-color, 0.2);
-    color: $text-error-color;
-  }
-
-  .incrementButton {
-    background-color: rgba($text-success-color, 0.1);
-    border-color: rgba($text-success-color, 0.2);
-    color: $text-success-color;
   }
 
   .quantityValue {
