@@ -2,7 +2,7 @@ substitutions:
   _REGION: us-central1
   _AR_REPO: cloud-run
   _SERVICE: gratia-api
-  _RUNTIME_SA: gratia-api-sa@gratia-483312.iam.gserviceaccount.com
+  _RUNTIME_SA: gratia-api-sa@gratia-api.iam.gserviceaccount.com
 
 steps:
   # Build (context = repo root)
@@ -31,11 +31,18 @@ steps:
         "--allow-unauthenticated",
         "--service-account","${_RUNTIME_SA}",
 
+        "--min-instances","0",
+        "--max-instances","3",
+        "--memory","512Mi",
+        "--cpu","1",
+        "--concurrency","80",
+        "--timeout","60",
+
         "--set-env-vars",
         "NODE_ENV=production",
 
         "--set-secrets",
-        "DATABASE_URL_PRODUCTION=DATABASE_URL_PRODUCTION:latest,JWT_SECRET=JWT_SECRET:latest,ENCRYPTION_SECRET_KEY=ENCRYPTION_SECRET_KEY:latest,EMAIL_SERVICE=EMAIL_SERVICE:latest,EMAIL_USER=EMAIL_USER:latest,EMAIL_PASSWORD=EMAIL_PASSWORD:latest,EMAIL_FROM=EMAIL_FROM:latest,REDIS_HOST=REDIS_HOST:latest,REDIS_PORT=REDIS_PORT:latest,REDIS_USERNAME=REDIS_USERNAME:latest,REDIS_PASSWORD=REDIS_PASSWORD:latest,STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,STRIPE_WEBHOOK_SECRET=STRIPE_WEBHOOK_SECRET:latest,FRONTEND_URL=FRONTEND_URL:latest,JWT_EXPIRES_IN=JWT_EXPIRES_IN:latest,REFRESH_TOKEN_EXPIRES_IN=REFRESH_TOKEN_EXPIRES_IN:latest"
+        "DATABASE_URL_PRODUCTION=DATABASE_URL_PRODUCTION:latest,JWT_SECRET=JWT_SECRET:latest,ENCRYPTION_SECRET_KEY=ENCRYPTION_SECRET_KEY:latest,RESEND_API_KEY=RESEND_API_KEY:latest,EMAIL_FROM=EMAIL_FROM:latest,REDIS_HOST=REDIS_HOST:latest,REDIS_PORT=REDIS_PORT:latest,REDIS_USERNAME=REDIS_USERNAME:latest,REDIS_PASSWORD=REDIS_PASSWORD:latest,STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,STRIPE_WEBHOOK_SECRET=STRIPE_WEBHOOK_SECRET:latest,FRONTEND_URL=FRONTEND_URL:latest,JWT_EXPIRES_IN=JWT_EXPIRES_IN:latest,REFRESH_TOKEN_EXPIRES_IN=REFRESH_TOKEN_EXPIRES_IN:latest"
       ]
 
 images:
