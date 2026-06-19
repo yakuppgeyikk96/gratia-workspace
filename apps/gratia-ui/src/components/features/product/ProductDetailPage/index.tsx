@@ -2,6 +2,7 @@ import ProductDetailInfoCard from "@/components/features/product/ProductDetailIn
 import { ProductDetailResponse } from "@/types/Product.types";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
+import ProductDetailMobilePurchaseBar from "../ProductDetailMobilePurchaseBar";
 import ProductSpecifications from "../ProductSpecifications";
 import styles from "./ProductDetailPage.module.scss";
 
@@ -29,24 +30,31 @@ export default function ProductDetailPage({
   }
 
   return (
-    <div className={styles.productDetailContainer}>
-      <div className={styles.imageGalleryContainer}>
-        <ProductDetailImageGallery
-          images={productData.images}
-          productName={productData.name}
-        />
-      </div>
+    <>
+      <div className={styles.productDetailTop}>
+        <div className={styles.imageGalleryContainer}>
+          <ProductDetailImageGallery
+            images={productData.images}
+            productName={productData.name}
+          />
+        </div>
 
-      <div className={styles.productInfoContainer}>
-        <ProductDetailInfoCard
-          productData={productData}
-          isLoggedIn={isLoggedIn}
-        />
+        <div className={styles.productInfoContainer}>
+          <ProductDetailInfoCard
+            productData={productData}
+            isLoggedIn={isLoggedIn}
+          />
+        </div>
       </div>
 
       <div className={styles.productSpecificationsContainer}>
         <ProductSpecifications attributes={productData.attributes} />
       </div>
-    </div>
+
+      <ProductDetailMobilePurchaseBar
+        productData={productData}
+        isLoggedIn={isLoggedIn}
+      />
+    </>
   );
 }

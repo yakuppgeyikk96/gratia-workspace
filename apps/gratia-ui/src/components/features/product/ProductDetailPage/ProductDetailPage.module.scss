@@ -2,10 +2,14 @@
 @use "@gratia/ui/styles/layout/_grid.scss" as *;
 @use "@gratia/ui/styles/core/_breakpoints.scss" as *;
 
-.productDetailContainer {
+.productDetailTop {
   @include grid-container;
   @include grid-cols-1;
   @include grid-gap-8;
+
+  @include media-sm {
+    padding-bottom: 80px;
+  }
 
   @include responsive(sm) {
     @include grid-cols-5;
@@ -50,6 +54,11 @@
 
   @include responsive(md) {
     @include col-span-7;
+    position: sticky;
+    top: 80px;
+    align-self: start;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
   }
 
   @include responsive(lg) {
@@ -62,14 +71,5 @@
 }
 
 .productSpecificationsContainer {
-  @include col-span-1;
-  margin-top: 2rem;
-
-  @include responsive(sm) {
-    @include col-span-5;
-  }
-
-  @include responsive(md) {
-    @include col-span-12;
-  }
+  margin-top: 3rem;
 }

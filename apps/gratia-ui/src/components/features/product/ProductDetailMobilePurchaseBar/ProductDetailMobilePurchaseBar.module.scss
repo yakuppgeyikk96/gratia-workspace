@@ -1,0 +1,33 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_border.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+
+.bar {
+  display: none;
+
+  @include media-sm {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(92px + env(safe-area-inset-bottom));
+    z-index: 40;
+    padding: $spacing-3 $spacing-4;
+    background-color: $bg-color;
+    border-top: 1px solid $border-light;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04);
+  }
+}
+
+.priceWrap {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.cta {
+  flex: 1;
+}
