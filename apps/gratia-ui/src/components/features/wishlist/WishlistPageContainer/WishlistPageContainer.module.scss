@@ -1,0 +1,111 @@
+@use "@gratia/ui/styles/core/_colors.scss" as *;
+@use "@gratia/ui/styles/core/_spacing.scss" as *;
+@use "@gratia/ui/styles/core/_variables.scss" as *;
+@use "@gratia/ui/styles/core/_breakpoints.scss" as *;
+@use "@gratia/ui/styles/layout/_flex.scss" as *;
+
+.wishlistContainer {
+  padding-bottom: $spacing-10;
+  @include flex-column;
+  @include gap(6);
+}
+
+.header {
+  @include flex-row;
+  @include align-center;
+  @include justify-between;
+  @include gap(3);
+  padding-bottom: $spacing-4;
+  border-bottom: 1px solid $border-light;
+
+  @include media-sm {
+    padding-bottom: $spacing-3;
+  }
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  margin: 0;
+
+  @include media-sm {
+    font-size: $text-xl;
+  }
+}
+
+.count {
+  font-size: $text-sm;
+  color: $text-muted-color;
+  font-weight: $font-medium;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-6;
+
+  @include media-xl {
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-5;
+  }
+
+  @include media-lg {
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-4;
+  }
+
+  @include media-md {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-4;
+  }
+
+  @include media-sm {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-3;
+  }
+
+  @include media-xs {
+    grid-template-columns: 1fr;
+    gap: $spacing-3;
+  }
+}
+
+.loadingContainer {
+  @include flex-row;
+  @include justify-center;
+  @include align-center;
+  min-height: 300px;
+}
+
+.emptyState {
+  @include flex-column;
+  @include align-center;
+  @include gap(4);
+  padding: $spacing-12 $spacing-4;
+  text-align: center;
+  min-height: 320px;
+  @include justify-center;
+}
+
+.emptyIcon {
+  color: $text-muted-color;
+}
+
+.emptyTitle {
+  font-size: $text-2xl;
+  font-weight: $font-semibold;
+  color: $text-primary-color;
+  margin: 0;
+
+  @include media-sm {
+    font-size: $text-xl;
+  }
+}
+
+.emptyText {
+  font-size: $text-sm;
+  color: $text-muted-color;
+  max-width: 360px;
+  margin: 0;
+}

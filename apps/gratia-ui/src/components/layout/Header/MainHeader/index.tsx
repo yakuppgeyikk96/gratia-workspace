@@ -23,10 +23,16 @@ export default function MainHeader(props: MainHeaderProps) {
         placeholder="Search your favorite products..."
       />
 
-      {/* Desktop Icons (Bell, Heart) - Hidden on tablet */}
-      <Flex gap={16} align="center" className={styles.mainHeaderDesktopIcons}>
-        <MainHeaderIcons />
-      </Flex>
+      {/* Desktop Icons (Bell, Heart) - Hidden on tablet, hidden for guests */}
+      {props.isLoggedIn && (
+        <Flex
+          gap={16}
+          align="center"
+          className={styles.mainHeaderDesktopIcons}
+        >
+          <MainHeaderIcons isLoggedIn={props.isLoggedIn} />
+        </Flex>
+      )}
 
       {/* Primary Actions - Hidden on mobile */}
       <Flex gap={16} align="center" className={styles.mainHeaderPrimaryActions}>

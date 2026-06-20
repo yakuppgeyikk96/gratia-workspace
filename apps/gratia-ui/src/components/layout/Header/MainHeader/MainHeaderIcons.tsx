@@ -1,16 +1,25 @@
 "use client";
 
+import { useWishlist } from "@/hooks/useWishlist";
 import IconButton from "@gratia/ui/components/IconButton";
 import IconBell from "@gratia/ui/icons/IconBell";
 import IconHeart from "@gratia/ui/icons/IconHeart";
+import { useRouter } from "next/navigation";
 
-export default function MainHeaderIcons() {
+interface MainHeaderIconsProps {
+  isLoggedIn: boolean;
+}
+
+export default function MainHeaderIcons({ isLoggedIn }: MainHeaderIconsProps) {
+  const router = useRouter();
+  const { wishlist } = useWishlist(isLoggedIn);
+
   const handleBellClick = () => {
-    // TODO: Implement bell click
+    // TODO: Implement notifications
   };
 
   const handleHeartClick = () => {
-    // TODO: Implement heart click
+    router.push("/wishlist");
   };
 
   return (
@@ -18,12 +27,14 @@ export default function MainHeaderIcons() {
       <IconButton
         icon={<IconBell />}
         onClick={handleBellClick}
-        ariaLabel="Bell"
+        ariaLabel="Notifications"
       />
       <IconButton
         icon={<IconHeart />}
         onClick={handleHeartClick}
-        ariaLabel="Heart"
+        ariaLabel="Wishlist"
+        badge={wishlist.count > 0 ? wishlist.count : undefined}
+        badgeColor="secondary"
       />
     </>
   );
