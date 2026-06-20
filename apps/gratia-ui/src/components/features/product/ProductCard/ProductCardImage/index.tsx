@@ -1,8 +1,6 @@
 "use client";
 
-import { COLORS } from "@/constants/colors";
-import IconButton from "@gratia/ui/components/IconButton";
-import IconHeart from "@gratia/ui/icons/IconHeart";
+import WishlistButton from "@/components/features/wishlist/WishlistButton";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -12,7 +10,8 @@ import styles from "./ProductCardImage.module.scss";
 export default function ProductCardImage({
   images,
   productName,
-  onAddToFavorites,
+  productId,
+  isLoggedIn,
 }: ProductCardImageProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -53,10 +52,6 @@ export default function ProductCardImage({
     [emblaApi]
   );
 
-  const handleFavoriteClick = () => {
-    onAddToFavorites?.();
-  };
-
   return (
     <div className={styles.imageContainer}>
       {/* Image Display */}
@@ -95,13 +90,12 @@ export default function ProductCardImage({
         </div>
       )}
 
-      {/* Favorite Button */}
+      {/* Wishlist Button */}
       <div className={styles.favoriteButton}>
-        <IconButton
-          icon={<IconHeart color={COLORS.ICON_DEFAULT} size={18} />}
+        <WishlistButton
+          productId={productId}
+          isLoggedIn={isLoggedIn}
           size="sm"
-          onClick={handleFavoriteClick}
-          ariaLabel="Add to favorites"
         />
       </div>
 

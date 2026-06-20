@@ -9,7 +9,8 @@ export interface ProductCardProps {
 export interface ProductCardImageProps {
   images: string[];
   productName: string;
-  onAddToFavorites?: () => void;
+  productId: number;
+  isLoggedIn: boolean;
 }
 
 export interface ProductCardInfoProps {

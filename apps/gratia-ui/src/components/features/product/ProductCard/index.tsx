@@ -16,10 +16,6 @@ export default function ProductCard({
 }: ProductCardProps) {
   const { handleAddToCart } = useCart(isLoggedIn);
 
-  const handleAddToFavorites = () => {
-    console.log("Add to favorites");
-  };
-
   const onAddToCart = () => {
     // Build CartableProduct from available product data
     const cartProduct: CartableProduct = {
@@ -45,7 +41,8 @@ export default function ProductCard({
       <ProductCardImage
         images={product.images ?? []}
         productName={product.name ?? ""}
-        onAddToFavorites={handleAddToFavorites}
+        productId={product.id!}
+        isLoggedIn={isLoggedIn}
       />
 
       <Link

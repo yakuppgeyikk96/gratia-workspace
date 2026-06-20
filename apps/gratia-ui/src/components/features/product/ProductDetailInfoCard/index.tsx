@@ -1,3 +1,4 @@
+import WishlistButton from "@/components/features/wishlist/WishlistButton";
 import { ProductDetailResponse } from "@/types/Product.types";
 import ProductDetailAddToCart from "../ProductDetailAddToCart";
 import ProductDetailPrice from "../ProductDetailPrice";
@@ -23,7 +24,14 @@ export default function ProductDetailInfoCard({
   return (
     <div className={styles.productDetailInfoCard}>
       <div className={styles.productDetailInfoCardHeader}>
-        <h1>{productData.name}</h1>
+        <div className={styles.titleRow}>
+          <h1>{productData.name}</h1>
+          <WishlistButton
+            productId={productData.id}
+            isLoggedIn={isLoggedIn}
+            size="md"
+          />
+        </div>
         <p>{productData.description}</p>
       </div>
 

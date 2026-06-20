@@ -16,7 +16,16 @@
   @include flex-column;
   @include gap(2);
 
+  .titleRow {
+    @include flex-row;
+    @include justify-between;
+    align-items: flex-start;
+    @include gap(3);
+  }
+
   h1 {
+    flex: 1;
+    min-width: 0;
     font-size: $text-2xl;
     font-weight: $font-semibold;
     line-height: $leading-tight;
