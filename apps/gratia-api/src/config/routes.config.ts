@@ -13,6 +13,7 @@ import { productRoutes } from "../modules/product";
 import seedRoutes from "../modules/seed/seed.routes";
 import { uploadRoutes } from "../modules/upload";
 import vendorRoutes from "../modules/vendor/vendor.routes";
+import wishlistRoutes from "../modules/wishlist/wishlist.routes";
 
 const basePath = "/api";
 
@@ -40,6 +41,9 @@ export const routesConfig = (app: Express) => {
 
   // Cart routes (guest + authenticated)
   router.use("/cart", cartRoutes);
+
+  // Authenticated-only routes
+  router.use("/wishlist", wishlistRoutes);
 
   app.use(`${basePath}`, router);
 };
