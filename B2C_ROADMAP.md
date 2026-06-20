@@ -8,7 +8,7 @@ Status: `[ ]` planned · `[~]` in progress · `[x]` done
 
 ## A. Hızlı kazanç paketi (storefront, görünür)
 
-- [ ] **Wishlist / favorites** — auth ile bağlı, ürün kart ikon, wishlist sayfası, "wishlist'ten sepete taşı"
+- [x] **Wishlist / favorites** — auth ile bağlı, ürün kart ikon, wishlist sayfası. "Wishlist'ten sepete taşı" sonraya bırakıldı.
 - [ ] **Recently viewed** — Redis list (son N ürün), home/category sayfasında strip
 - [ ] **Reviews & ratings** — yıldız + yorum + (opsiyonel) fotoğraf; aggregation (avg, count by star); "verified purchase" rozeti; sort/filter
 - [ ] **Search filters/facets** — fiyat aralığı, brand, color, size, rating; sort (price asc/desc, newest, top rated); pagination
