@@ -68,6 +68,10 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   experimental: {
     optimizePackageImports: ["@gratia/ui"],
+    // Per-route opt-in via `export const experimental_ppr = true`. Lets us try
+    // Partial Pre-Rendering on hot listing pages without flipping the entire
+    // app at once.
+    ppr: "incremental",
   },
 };
 
