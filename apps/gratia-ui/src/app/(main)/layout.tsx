@@ -1,3 +1,4 @@
+import AuthQuerySync from "@/components/auth/AuthQuerySync";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import dynamic from "next/dynamic";
@@ -9,6 +10,7 @@ const BottomBar = dynamic(() => import("@/components/layout/BottomBar"), {
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
+      <AuthQuerySync />
       <Header />
       <main>{children}</main>
       <Footer />
