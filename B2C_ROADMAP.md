@@ -45,4 +45,5 @@ Status: `[ ]` planned · `[~]` in progress · `[x]` done
 - [ ] CI: GitHub Actions (lint + types + test + build gates)
 - [ ] Sentry + structured logging (pino) + minimum bir OpenTelemetry trace
 - [ ] Playwright E2E: login → add to cart → checkout golden path
+- [ ] **Migrate product images from picsum → GCS** — picsum free tier intermittent 502'ler (`OPTIMIZED_EXTERNAL_IMAGE_REQUEST_FAILED`) atıyor, özellikle paginasyonda. Script: picsum'dan retry+ratelimit ile indir → `gs://<bucket>/products/<slug>/{1,2,3}.jpg` upload → `products.images` JSON UPDATE → uzun cache header'ı ile serve. Picsum server düzeldikten sonra çalıştır.
 - [ ] Admin panel (B2C tamamlandıktan sonra)
