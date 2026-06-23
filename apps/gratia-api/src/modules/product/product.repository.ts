@@ -179,39 +179,39 @@ export const findProducts = async (
   // Build ORDER BY clause
   const orderByClause = buildOrderByClause(sort);
 
-  // Main query: Use selectDistinctOn for deduplication
-  // PostgreSQL DISTINCT ON requires the distinct column to be first in ORDER BY
-  const productRows = await db
-    .selectDistinctOn([products.productGroupId], {
-      id: products.id,
-      name: products.name,
-      slug: products.slug,
-      description: products.description,
-      sku: products.sku,
-      price: products.price,
-      discountedPrice: products.discountedPrice,
-      images: products.images,
-      productGroupId: products.productGroupId,
-      createdAt: products.createdAt,
-      brandId: brands.id,
-      brandName: brands.name,
-      brandSlug: brands.slug,
-    })
-    .from(products)
-    .leftJoin(brands, eq(products.brandId, brands.id))
-    .where(whereCondition)
-    .orderBy(products.productGroupId, orderByClause)
-    .offset(offset)
-    .limit(limit);
-
-  // Count query: Count distinct product groups
-  const countResult = await db
-    .select({
-      count: sql<number>`COUNT(DISTINCT ${products.productGroupId})`,
-    })
-    .from(products)
-    .leftJoin(brands, eq(products.brandId, brands.id))
-    .where(whereCondition);
+  // Main + count queries run in parallel — both share whereCondition and are independent.
+  // Sequential awaits cost 2 round-trips; Promise.all collapses to the slowest one.
+  const [productRows, countResult] = await Promise.all([
+    db
+      .selectDistinctOn([products.productGroupId], {
+        id: products.id,
+        name: products.name,
+        slug: products.slug,
+        description: products.description,
+        sku: products.sku,
+        price: products.price,
+        discountedPrice: products.discountedPrice,
+        images: products.images,
+        productGroupId: products.productGroupId,
+        createdAt: products.createdAt,
+        brandId: brands.id,
+        brandName: brands.name,
+        brandSlug: brands.slug,
+      })
+      .from(products)
+      .leftJoin(brands, eq(products.brandId, brands.id))
+      .where(whereCondition)
+      .orderBy(products.productGroupId, orderByClause)
+      .offset(offset)
+      .limit(limit),
+    db
+      .select({
+        count: sql<number>`COUNT(DISTINCT ${products.productGroupId})`,
+      })
+      .from(products)
+      .leftJoin(brands, eq(products.brandId, brands.id))
+      .where(whereCondition),
+  ]);
 
   // Map to response format
   const mappedProducts: ProductListItem[] = productRows.map((row) => ({
@@ -301,44 +301,42 @@ export const searchProducts = async (
   const outerOrderBy =
     sort === "relevance" ? sql`rank DESC` : buildOrderByClause(sort);
 
-  // CTE approach: deduplicate first, then sort by relevance
-  // Step 1: Get deduplicated rows with rank
-  // Note: No table aliases used so Drizzle's generated "products"/"brands" references work
-  const deduplicatedRows = await db.execute(sql`
-    WITH deduplicated AS (
-      SELECT DISTINCT ON ("products"."product_group_id")
-        "products"."id",
-        "products"."name",
-        "products"."slug",
-        "products"."description",
-        "products"."sku",
-        "products"."price",
-        "products"."discounted_price",
-        "products"."images",
-        "products"."product_group_id",
-        "products"."created_at",
-        "brands"."id" AS "brand_id",
-        "brands"."name" AS "brand_name",
-        "brands"."slug" AS "brand_slug",
-        ${rankExpression} AS rank
-      FROM "products"
-      LEFT JOIN "brands" ON "products"."brand_id" = "brands"."id"
-      WHERE ${whereCondition}
-      ORDER BY "products"."product_group_id", ${rankExpression} DESC
-    )
-    SELECT * FROM deduplicated
-    ORDER BY ${outerOrderBy}
-    LIMIT ${limit} OFFSET ${offset}
-  `);
-
-  // Step 2: Count distinct product groups
-  const countResult = await db
-    .select({
-      count: sql<number>`COUNT(DISTINCT ${products.productGroupId})`,
-    })
-    .from(products)
-    .leftJoin(brands, eq(products.brandId, brands.id))
-    .where(whereCondition);
+  // CTE search + count run in parallel — independent queries sharing whereCondition.
+  const [deduplicatedRows, countResult] = await Promise.all([
+    db.execute(sql`
+      WITH deduplicated AS (
+        SELECT DISTINCT ON ("products"."product_group_id")
+          "products"."id",
+          "products"."name",
+          "products"."slug",
+          "products"."description",
+          "products"."sku",
+          "products"."price",
+          "products"."discounted_price",
+          "products"."images",
+          "products"."product_group_id",
+          "products"."created_at",
+          "brands"."id" AS "brand_id",
+          "brands"."name" AS "brand_name",
+          "brands"."slug" AS "brand_slug",
+          ${rankExpression} AS rank
+        FROM "products"
+        LEFT JOIN "brands" ON "products"."brand_id" = "brands"."id"
+        WHERE ${whereCondition}
+        ORDER BY "products"."product_group_id", ${rankExpression} DESC
+      )
+      SELECT * FROM deduplicated
+      ORDER BY ${outerOrderBy}
+      LIMIT ${limit} OFFSET ${offset}
+    `),
+    db
+      .select({
+        count: sql<number>`COUNT(DISTINCT ${products.productGroupId})`,
+      })
+      .from(products)
+      .leftJoin(brands, eq(products.brandId, brands.id))
+      .where(whereCondition),
+  ]);
 
   // Map to response format
   const mappedProducts: ProductListItem[] = (deduplicatedRows as any[]).map(
