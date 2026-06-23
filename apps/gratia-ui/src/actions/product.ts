@@ -12,6 +12,9 @@ import {
   SearchSuggestionsResponse,
   SortOptions,
 } from "@/types/Product.types";
+import { unstable_cache } from "next/cache";
+
+const CACHE_TTL_SECONDS = 60;
 
 /**
  * Builds URL query string from options and filters
@@ -67,7 +70,17 @@ export async function getProducts(
 ): Promise<IApiResponse<ProductListResponse>> {
   const queryString = buildQueryString(options, filters);
   const url = queryString ? `/products?${queryString}` : "/products";
-  return await apiClient.get(url);
+
+  const tags = ["products"];
+  if (options.categorySlug) tags.push(`category:${options.categorySlug}`);
+  if (options.collectionSlug) tags.push(`collection:${options.collectionSlug}`);
+
+  const cached = unstable_cache(
+    () => apiClient.get<ProductListResponse>(url),
+    ["products:list", url],
+    { revalidate: CACHE_TTL_SECONDS, tags },
+  );
+  return await cached();
 }
 
 /**
@@ -76,7 +89,15 @@ export async function getProducts(
 export async function getProductBySlug(
   slug: string,
 ): Promise<IApiResponse<ProductDetailResponse>> {
-  return await apiClient.get(`/products/${slug}`);
+  const cached = unstable_cache(
+    () => apiClient.get<ProductDetailResponse>(`/products/${slug}`),
+    ["products:detail", slug],
+    {
+      revalidate: CACHE_TTL_SECONDS,
+      tags: ["products", `product:${slug}`],
+    },
+  );
+  return await cached();
 }
 
 /**
@@ -88,7 +109,12 @@ export async function getFeaturedProducts(
   const url = limit
     ? `/products/featured?limit=${limit}`
     : "/products/featured";
-  return await apiClient.get(url);
+  const cached = unstable_cache(
+    () => apiClient.get<ProductListItem[]>(url),
+    ["products:featured", url],
+    { revalidate: CACHE_TTL_SECONDS, tags: ["products", "featured"] },
+  );
+  return await cached();
 }
 
 /**
@@ -190,5 +216,14 @@ export async function getFilterOptions(
     ? `/products/filters?${queryString}`
     : "/products/filters";
 
-  return await apiClient.get(url);
+  const tags = ["filters"];
+  if (categorySlug) tags.push(`category:${categorySlug}`);
+  if (collectionSlug) tags.push(`collection:${collectionSlug}`);
+
+  const cached = unstable_cache(
+    () => apiClient.get<FilterOptionsResponse>(url),
+    ["products:filters", url],
+    { revalidate: CACHE_TTL_SECONDS, tags },
+  );
+  return await cached();
 }
