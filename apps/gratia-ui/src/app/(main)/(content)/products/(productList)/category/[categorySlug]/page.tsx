@@ -10,12 +10,11 @@ import {
 import { SortOptions } from "@/types/Product.types";
 import { Suspense } from "react";
 
-// Opt-in to Partial Pre-Rendering for this route. The page component only
-// renders a Suspense shell — Next.js prerenders that shell at build/idle time
-// (CDN-cached), and streams in the data-driven body once searchParams resolve
-// at request time.
-export const experimental_ppr = true;
-
+// Streaming SSR via Suspense: the page component renders only the boundary,
+// so the skeleton ships in the first chunk and the data-driven body streams
+// in once params + searchParams + the API call resolve. Without PPR (stable
+// only on Next.js canary) we don't get a fully prerendered shell, but the
+// progressive UX is still a clear win over the old single-shot render.
 interface CategoryProductsPageProps {
   params: Promise<{ categorySlug: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
