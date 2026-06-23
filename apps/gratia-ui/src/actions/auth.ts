@@ -3,6 +3,8 @@
 import { apiClient } from "@/lib/apiClient";
 import { COOKIE_TOKEN_KEY, COOKIE_USER_KEY } from "@/constants";
 import {
+  IAuthUser,
+  IGetCurrentUserResponse,
   ILoginUserRequest,
   ILoginUserResponse,
   IRegisterUserRequest,
@@ -90,4 +92,26 @@ export async function isAuthenticatedUser(): Promise<boolean> {
   const token = cookieStore.get(COOKIE_TOKEN_KEY)?.value;
 
   return !!token;
+}
+
+// Server-authoritative auth state lookup. Reads the HttpOnly token from
+// cookies (allowed in a server action without forcing the page tree to be
+// dynamic) and asks the API to validate signature + expiry. The client
+// useAuthQuery hook caches the result and revalidates on focus/navigation.
+export async function getCurrentUser(): Promise<IGetCurrentUserResponse> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(COOKIE_TOKEN_KEY)?.value;
+
+  if (!token) {
+    return {
+      success: false,
+      message: "Not authenticated",
+      errorCode: "UNAUTHORIZED",
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  return await apiClient.get<IAuthUser>("/auth/me", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 }

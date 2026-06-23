@@ -1,5 +1,8 @@
+"use client";
+
 import Logo from "@/components/common/Logo";
 import SearchInput from "@/components/common/SearchInput";
+import { useAuthQuery } from "@/hooks/useAuthQuery";
 import Container from "@gratia/ui/components/Container";
 import Flex from "@gratia/ui/components/Flex";
 import HeaderCartButton from "./HeaderCartButton";
@@ -7,11 +10,10 @@ import HeaderLoginButton from "./HeaderLoginButton";
 import styles from "./MainHeader.module.scss";
 import MainHeaderIcons from "./MainHeaderIcons";
 
-interface MainHeaderProps {
-  isLoggedIn: boolean;
-}
+export default function MainHeader() {
+  const { data: user } = useAuthQuery();
+  const isLoggedIn = !!user;
 
-export default function MainHeader(props: MainHeaderProps) {
   return (
     <Container className={styles.mainHeader}>
       {/* Logo */}
@@ -24,20 +26,20 @@ export default function MainHeader(props: MainHeaderProps) {
       />
 
       {/* Desktop Icons (Bell, Heart) - Hidden on tablet, hidden for guests */}
-      {props.isLoggedIn && (
+      {isLoggedIn && (
         <Flex
           gap={16}
           align="center"
           className={styles.mainHeaderDesktopIcons}
         >
-          <MainHeaderIcons isLoggedIn={props.isLoggedIn} />
+          <MainHeaderIcons isLoggedIn={isLoggedIn} />
         </Flex>
       )}
 
       {/* Primary Actions - Hidden on mobile */}
       <Flex gap={16} align="center" className={styles.mainHeaderPrimaryActions}>
         <HeaderCartButton />
-        <HeaderLoginButton isLoggedIn={props.isLoggedIn} />
+        <HeaderLoginButton isLoggedIn={isLoggedIn} />
       </Flex>
     </Container>
   );

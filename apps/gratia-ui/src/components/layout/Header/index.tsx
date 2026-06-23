@@ -4,16 +4,12 @@ import styles from "./Header.module.scss";
 import MainHeader from "./MainHeader";
 import TopHeader from "./TopHeader";
 
-interface HeaderProps {
-  isLoggedIn: boolean;
-}
-
-export default function Header(props: HeaderProps) {
+export default function Header() {
   return (
     <header className={styles.header}>
       <TopHeader />
       <Divider />
-      <MainHeader isLoggedIn={props.isLoggedIn} />
+      <MainHeader />
       <BottomHeader />
       <Divider />
     </header>

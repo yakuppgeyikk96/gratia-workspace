@@ -1,4 +1,5 @@
 import { logoutUser } from "@/actions";
+import { AUTH_QUERY_KEY } from "@/hooks/useAuthQuery";
 import Drawer, { type DrawerItem } from "@gratia/ui/components/Drawer";
 
 import IconBox from "@gratia/ui/icons/IconBox";
@@ -9,6 +10,7 @@ import IconHeart from "@gratia/ui/icons/IconHeart";
 import IconPerson from "@gratia/ui/icons/IconPerson";
 import IconTranslate from "@gratia/ui/icons/IconTranslate";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import styles from "./BottomBarItems.module.scss";
@@ -19,11 +21,14 @@ interface BottomBarProfileItemProps {
 
 export default function BottomBarProfileItem(props: BottomBarProfileItemProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const handleLogout = useCallback(() => {
+    // Optimistic UI flip — Set-Cookie + redirect from logoutUser catches up.
+    queryClient.setQueryData(AUTH_QUERY_KEY, null);
     logoutUser();
     router.refresh();
-  }, [router]);
+  }, [queryClient, router]);
 
   const profileItems: DrawerItem[] = useMemo(() => {
     const items: DrawerItem[] = [];

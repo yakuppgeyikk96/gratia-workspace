@@ -1,6 +1,7 @@
 "use client";
 
 import { logoutUser } from "@/actions/auth";
+import { AUTH_QUERY_KEY } from "@/hooks/useAuthQuery";
 import { useCartStore } from "@/store/cartStore";
 import { useVendorStatus } from "@/hooks/useVendorStatus";
 import Button from "@gratia/ui/components/Button";
@@ -10,11 +11,13 @@ import IconChevronDown from "@gratia/ui/icons/IconChevronDown";
 import IconBox from "@gratia/ui/icons/IconBox";
 import IconPerson from "@gratia/ui/icons/IconPerson";
 import IconShoppingBag from "@gratia/ui/icons/IconShoppingBag";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
 export default function ProfileDropdown() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const clearCart = useCartStore((state) => state.clearCart);
   const setSessionId = useCartStore((state) => state.setSessionId);
   const { isVendor, isLoading } = useVendorStatus();
@@ -29,6 +32,8 @@ export default function ProfileDropdown() {
     } else if (value === "vendor-dashboard") {
       window.location.href = "/vendor";
     } else if (value === "logout") {
+      // Optimistic UI flip — server's Set-Cookie + redirect catches up shortly.
+      queryClient.setQueryData(AUTH_QUERY_KEY, null);
       logoutUser();
       clearCart();
       setSessionId(null);

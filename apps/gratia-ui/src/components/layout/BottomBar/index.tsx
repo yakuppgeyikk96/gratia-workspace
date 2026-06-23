@@ -1,12 +1,9 @@
 "use client";
 
 import { ScreenBreakpoints } from "@/constants/breakpoints";
+import { useAuthQuery } from "@/hooks/useAuthQuery";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-
-interface BottomBarProps {
-  isLoggedIn: boolean;
-}
 
 const MOBILE_BREAKPOINT = ScreenBreakpoints.Mobile;
 
@@ -15,8 +12,10 @@ const BottomBarItems = dynamic(() => import("./BottomBarItems"), {
   ssr: false,
 });
 
-export default function BottomBar(props: BottomBarProps) {
+export default function BottomBar() {
   const [isMobile, setIsMobile] = useState(false);
+  const { data: user } = useAuthQuery();
+  const isLoggedIn = !!user;
 
   useEffect(() => {
     const checkMobile = () => {
@@ -36,5 +35,5 @@ export default function BottomBar(props: BottomBarProps) {
     return null;
   }
 
-  return <BottomBarItems isLoggedIn={props.isLoggedIn} />;
+  return <BottomBarItems isLoggedIn={isLoggedIn} />;
 }

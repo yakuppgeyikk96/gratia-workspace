@@ -1,7 +1,9 @@
 import { Router } from "express";
+import { authMiddleware } from "../../shared/middlewares/auth.middleware";
 import { validateBody } from "../../shared/middlewares/validation.middleware";
 import { createUserSchema } from "../user/user.validation";
 import {
+  getCurrentUserController,
   loginUserController,
   registerUserController,
   verifyEmailController,
@@ -26,5 +28,7 @@ router.post(
 );
 
 router.post("/login", validateBody(loginUserSchema), loginUserController);
+
+router.get("/me", authMiddleware, getCurrentUserController);
 
 export default router;
