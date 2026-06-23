@@ -7,6 +7,7 @@ import categoryAttributeTemplateRoutes from "../modules/category-attribute-templ
 import checkoutRoutes from "../modules/checkout/checkout.routes";
 import collectionRoutes from "../modules/collection/collection.routes";
 import locationRoutes from "../modules/location/location.routes";
+import metricsRoutes from "../modules/metrics/metrics.routes";
 import navigationRoutes from "../modules/navigation/navigation.routes";
 import orderRoutes from "../modules/order/order.routes";
 import { productRoutes } from "../modules/product";
@@ -44,6 +45,9 @@ export const routesConfig = (app: Express) => {
 
   // Authenticated-only routes
   router.use("/wishlist", wishlistRoutes);
+
+  // Observability — gated by METRICS_TOKEN (or dev-only)
+  router.use("/metrics", metricsRoutes);
 
   app.use(`${basePath}`, router);
 };

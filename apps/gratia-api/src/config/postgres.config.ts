@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
+import { instrumentPostgresClient } from "../shared/metrics/db-tracer";
 
 // Select connection string based on environment
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -27,8 +28,10 @@ const client = postgres(connectionString, {
   connect_timeout: 10,
 });
 
+const tracedClient = instrumentPostgresClient(client);
+
 // Create drizzle instance
-export const db = drizzle(client);
+export const db = drizzle(tracedClient);
 
 // Close all connections gracefully
 export const disconnectPostgres = async () => {
