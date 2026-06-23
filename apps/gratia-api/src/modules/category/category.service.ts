@@ -1,5 +1,18 @@
 import { Category } from "../../db/schema/category.schema";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
+import {
+  activeKey,
+  allKey,
+  bySlugKey,
+  byIdKey,
+  categoryItemCache,
+  categoryListCache,
+  categoryTreeCache,
+  invalidateAllCategoryCaches,
+  rootKey,
+  subKey,
+  treeKey,
+} from "./category.cache";
 import { CATEGORY_MESSAGES } from "./category.constants";
 import {
   createCategory,
@@ -12,6 +25,18 @@ import {
 } from "./category.repository";
 import { CategoryTreeNode } from "./category.types";
 import type { CreateCategoryDto } from "./category.validations";
+
+const writeListCache = (key: string, value: Category[]): void => {
+  categoryListCache.set(key, value).catch((err) =>
+    console.error("Category list cache write failed:", err),
+  );
+};
+
+const writeItemCache = (key: string, value: Category): void => {
+  categoryItemCache.set(key, value).catch((err) =>
+    console.error("Category item cache write failed:", err),
+  );
+};
 
 export const createCategoryService = async (
   data: CreateCategoryDto
@@ -56,22 +81,45 @@ export const createCategoryService = async (
     );
   }
 
+  invalidateAllCategoryCaches().catch((err) =>
+    console.error("Category cache invalidation failed:", err),
+  );
+
   return category;
 };
 
 export const getAllCategoriesService = async (): Promise<Category[]> => {
-  return await findAllCategories();
+  const cached = await categoryListCache.get(allKey());
+  if (cached) return cached;
+
+  const result = await findAllCategories();
+  writeListCache(allKey(), result);
+  return result;
 };
 
 export const getActiveCategoriesService = async (): Promise<Category[]> => {
-  return await findActiveCategories();
+  const cached = await categoryListCache.get(activeKey());
+  if (cached) return cached;
+
+  const result = await findActiveCategories();
+  writeListCache(activeKey(), result);
+  return result;
 };
 
 export const getActiveRootCategoriesService = async (): Promise<Category[]> => {
-  return await findActiveRootCategories();
+  const cached = await categoryListCache.get(rootKey());
+  if (cached) return cached;
+
+  const result = await findActiveRootCategories();
+  writeListCache(rootKey(), result);
+  return result;
 };
 
 export const getCategoryByIdService = async (id: number): Promise<Category> => {
+  const cacheKey = byIdKey(id);
+  const cached = await categoryItemCache.get(cacheKey);
+  if (cached) return cached;
+
   const category = await findCategoryById(id);
 
   if (!category) {
@@ -81,12 +129,17 @@ export const getCategoryByIdService = async (id: number): Promise<Category> => {
     );
   }
 
+  writeItemCache(cacheKey, category);
   return category;
 };
 
 export const getCategoryBySlugService = async (
   slug: string
 ): Promise<Category> => {
+  const cacheKey = bySlugKey(slug);
+  const cached = await categoryItemCache.get(cacheKey);
+  if (cached) return cached;
+
   const category = await findCategoryBySlug(slug);
 
   if (!category) {
@@ -95,16 +148,27 @@ export const getCategoryBySlugService = async (
       ErrorCode.NOT_FOUND
     );
   }
+
+  writeItemCache(cacheKey, category);
   return category;
 };
 
 export const getSubCategoriesService = async (
   parentId: number | null
 ): Promise<Category[]> => {
-  return await findCategoriesByParentId(parentId);
+  const cacheKey = subKey(parentId);
+  const cached = await categoryListCache.get(cacheKey);
+  if (cached) return cached;
+
+  const result = await findCategoriesByParentId(parentId);
+  writeListCache(cacheKey, result);
+  return result;
 };
 
 export const getCategoryTreeService = async (): Promise<CategoryTreeNode[]> => {
+  const cached = await categoryTreeCache.get(treeKey());
+  if (cached) return cached;
+
   const allCategories = await findAllCategories();
 
   const buildTree = (parentId: number | null = null): CategoryTreeNode[] => {
@@ -121,5 +185,10 @@ export const getCategoryTreeService = async (): Promise<CategoryTreeNode[]> => {
       }));
   };
 
-  return buildTree();
+  const tree = buildTree();
+  categoryTreeCache.set(treeKey(), tree).catch((err) =>
+    console.error("Category tree cache write failed:", err),
+  );
+
+  return tree;
 };

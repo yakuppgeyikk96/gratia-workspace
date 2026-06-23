@@ -1,5 +1,14 @@
 import { Brand } from "../../db/schema/brand.schema";
 import { AppError, ErrorCode } from "../../shared/errors/base.errors";
+import {
+  activeKey,
+  allKey,
+  brandItemCache,
+  brandListCache,
+  byIdKey,
+  bySlugKey,
+  invalidateAllBrandCaches,
+} from "./brand.cache";
 import { BRAND_MESSAGES } from "./brand.constants";
 import {
   createBrand,
@@ -10,6 +19,18 @@ import {
   updateBrand,
 } from "./brand.repository";
 import type { CreateBrandDto, UpdateBrandDto } from "./brand.validations";
+
+const writeListCache = (key: string, value: Brand[]): void => {
+  brandListCache.set(key, value).catch((err) =>
+    console.error("Brand list cache write failed:", err),
+  );
+};
+
+const writeItemCache = (key: string, value: Brand): void => {
+  brandItemCache.set(key, value).catch((err) =>
+    console.error("Brand item cache write failed:", err),
+  );
+};
 
 export const createBrandService = async (
   data: CreateBrandDto
@@ -37,34 +58,58 @@ export const createBrandService = async (
     );
   }
 
+  invalidateAllBrandCaches().catch((err) =>
+    console.error("Brand cache invalidation failed:", err),
+  );
+
   return brand;
 };
 
 export const getBrandsService = async (): Promise<Brand[]> => {
-  return await findAllBrands();
+  const cached = await brandListCache.get(allKey());
+  if (cached) return cached;
+
+  const result = await findAllBrands();
+  writeListCache(allKey(), result);
+  return result;
 };
 
 export const getActiveBrandsService = async (): Promise<Brand[]> => {
-  return await findActiveBrands();
+  const cached = await brandListCache.get(activeKey());
+  if (cached) return cached;
+
+  const result = await findActiveBrands();
+  writeListCache(activeKey(), result);
+  return result;
 };
 
 export const getBrandByIdService = async (id: number): Promise<Brand> => {
+  const cacheKey = byIdKey(id);
+  const cached = await brandItemCache.get(cacheKey);
+  if (cached) return cached;
+
   const brand = await findBrandById(id);
 
   if (!brand) {
     throw new AppError(BRAND_MESSAGES.BRAND_NOT_FOUND, ErrorCode.NOT_FOUND);
   }
 
+  writeItemCache(cacheKey, brand);
   return brand;
 };
 
 export const getBrandBySlugService = async (slug: string): Promise<Brand> => {
+  const cacheKey = bySlugKey(slug);
+  const cached = await brandItemCache.get(cacheKey);
+  if (cached) return cached;
+
   const brand = await findBrandBySlug(slug);
 
   if (!brand) {
     throw new AppError(BRAND_MESSAGES.BRAND_NOT_FOUND, ErrorCode.NOT_FOUND);
   }
 
+  writeItemCache(cacheKey, brand);
   return brand;
 };
 
@@ -96,6 +141,10 @@ export const updateBrandService = async (
       ErrorCode.INTERNAL_SERVER_ERROR
     );
   }
+
+  invalidateAllBrandCaches().catch((err) =>
+    console.error("Brand cache invalidation failed:", err),
+  );
 
   return brand;
 };
