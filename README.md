@@ -1,167 +1,126 @@
-# Gratia E-Commerce Platform
+# Gratia — E-Commerce Platform
 
-I'm developing this project in my spare time to improve my end-to-end full-stack application development and architectural thinking skills. I chose an e-commerce project because it contains complex flows and provides opportunities to challenge myself with diverse business logic.
-On the backend, I'm building a REST API using Node.js, Express.js, and MongoDB. It includes JWT-based authentication and an email verification system. I use SendGrid for email delivery.
-On the frontend, I'm working with a monorepo architecture using Turborepo. I chose monorepo because I plan to develop a separate CMS application in the future, and both projects will share a common component library. For the component library, I'm using Radix UI + SCSS. Core technologies include Next.js, TypeScript, Zustand, and TanStack Query.
+A full-stack e-commerce platform I build in my spare time to work through the problems a real
+storefront actually has: stock integrity under concurrent checkout, idempotent payments, and
+enough observability to know what the system is doing.
 
-## 🚀 Quick Start
+**Live demo:** [gratia-ui.vercel.app](https://gratia-ui.vercel.app)
 
-### Prerequisites
+|              |                                                   |
+| ------------ | ------------------------------------------------- |
+| Demo account | `demo@gratia.dev` / `DemoPass123!`                |
+| Test card    | `4242 4242 4242 4242`, any future expiry, any CVC |
 
-- Node.js 18+
-- pnpm (recommended package manager)
+---
 
-### Installation
+## What's interesting here
 
-```bash
-# Install dependencies
-pnpm install
+Most of the surface area is ordinary — products, cart, checkout, orders. These are the parts
+that were not.
 
-# Start development server
-pnpm dev
-```
+**Overselling under concurrency.** Two customers reserving the last unit at the same moment must
+not both succeed. Stock reads happen inside a transaction with a row-level pessimistic lock
+(`SELECT stock … FOR UPDATE`), so the second transaction blocks until the first commits.
 
-The application will be available at `http://localhost:3000`
+**Duplicate orders.** A double-clicked "Pay" button, or a client retry on a slow response, must
+not create two orders. Checkout completion takes an atomic claim in Redis (`SET key … NX EX`);
+only the first concurrent request proceeds, and the rest wait for its result.
 
-## 📦 Project Structure
+**Payment idempotency.** Outbound Stripe calls carry an idempotency key. Inbound Stripe webhooks
+are de-duplicated by persisting every delivery to a `webhook_event` table with a unique constraint
+on `event_id` — Stripe retries, and the second delivery becomes a no-op instead of a second order.
 
-This is a monorepo containing:
+**Observability.** A small hand-written metrics registry: histograms, plus tracing wrappers around
+the Postgres and Redis clients. Exposed at `/api/metrics`, gated behind `METRICS_TOKEN` outside
+development.
+
+**Search.** Product search runs on a Postgres `tsvector` column (migration
+`0002_product_search_vector.sql`) rather than `ILIKE '%…%'`.
+
+---
+
+## Stack
+
+| Layer              |                                                                      |
+| ------------------ | -------------------------------------------------------------------- |
+| **Monorepo**       | pnpm workspaces + Turborepo                                          |
+| **Frontend**       | Next.js, TypeScript, Zustand, TanStack Query, SCSS modules, Radix UI |
+| **Backend**        | Node.js, Express 5, TypeScript, Zod, Helmet                          |
+| **Database**       | PostgreSQL via Drizzle ORM + drizzle-kit migrations                  |
+| **Cache & locks**  | Redis                                                                |
+| **Payments**       | Stripe (Checkout + webhooks)                                         |
+| **Email**          | Resend                                                               |
+| **Object storage** | Google Cloud Storage (`fake-gcs-server` locally)                     |
+| **Deployment**     | API → Cloud Run (Cloud Build) · UI → Vercel                          |
+
+---
+
+## Structure
 
 ```
 gratia-workspace/
 ├── apps/
-│   └── gratia-ui/          # Main Next.js application
-├── packages/
-│   ├── ui/                 # Shared UI component library
-│   ├── eslint-config/      # Shared ESLint configurations
-│   └── typescript-config/  # Shared TypeScript configurations
+│   ├── gratia-api/                # Express + Drizzle REST API
+│   ├── gratia-ui/                 # Next.js storefront
+│   └── gratia-vendor-dashboard/   # Next.js vendor console
+└── packages/
+    ├── ui/                        # Shared component library (Radix UI + SCSS)
+    ├── eslint-config/
+    └── typescript-config/
 ```
 
-## ✨ Features
+The API is organised by module — `auth`, `cart`, `checkout`, `order`, `product`, `vendor`,
+`webhooks`, `metrics` and others — each with its own routes, controller, service and repository.
 
-### Currently Implemented
+---
 
-- ✅ **Authentication System**
-  - User registration
-  - Email verification
-  - Login/Logout functionality
-  - Protected routes
+## Quick start
 
-- ✅ **Product Catalog**
-  - Browse products by category
-  - Browse products by collection
-  - Product listing with cards
-  - Responsive product grid
-
-- ✅ **Navigation & Layout**
-  - Multi-tier header (Top, Main, Bottom)
-  - Responsive category navigation
-  - Dynamic overflow menu for categories
-  - Search functionality
-
-- ✅ **UI Component Library**
-  - Button, Badge, Dropdown components
-  - Form components (Input, Checkbox, FormField)
-  - Toast notifications
-  - Icon system
-
-### 🚧 In Progress
-
-- ⚠️ **Mobile Responsive Design**
-  - Bottom navigation bar implemented
-  - Header responsive behavior in development
-  - Full mobile optimization in progress
-
-- 🔜 **Upcoming Features**
-  - Product detail pages
-  - Shopping cart
-  - Checkout flow
-  - User profile management
-  - Order history
-  - Wishlist functionality
-
-## 🛠️ Technology Stack
-
-- **Framework:** Next.js 14 (App Router)
-- **Language:** TypeScript
-- **Styling:** SCSS Modules
-- **UI Components:** Custom component library + Radix UI
-- **Build Tool:** Turborepo
-- **Package Manager:** pnpm
-
-## 📱 Responsive Breakpoints
-
-```scss
-$breakpoint-xs: 480px;
-$breakpoint-sm: 640px; // Mobile
-$breakpoint-md: 768px; // Tablet
-$breakpoint-lg: 1024px; // Desktop
-$breakpoint-xl: 1280px; // Large Desktop
-$breakpoint-2xl: 1536px; // Extra Large
-```
-
-## 🧪 Development
-
-### Run specific package
+Requires Docker and pnpm.
 
 ```bash
-# Run only the main UI app
-pnpm dev --filter=gratia-ui
+cp .env.example .env
+cp apps/gratia-api/.env.example apps/gratia-api/.env
+pnpm install
 
-# Build the UI component library
-pnpm build --filter=@gratia/ui
+pnpm docker:up                          # api, ui, vendor dashboard, postgres, redis, fake-gcs
 ```
 
-### Project Commands
+Then, in a second shell:
 
 ```bash
-# Development
-pnpm dev              # Start all apps in development mode
-pnpm dev:ui           # Start only the main UI app
-
-# Build
-pnpm build            # Build all packages and apps
-pnpm build:ui         # Build only the main UI app
-
-# Linting
-pnpm lint             # Run ESLint on all packages
+pnpm --filter=gratia-api db:migrate     # apply migrations
+pnpm --filter=gratia-api db:seed        # populate products, categories, brands
 ```
 
-# Tunnel stripe webhooks
+|                  |                       |
+| ---------------- | --------------------- |
+| Storefront       | http://localhost:3001 |
+| Vendor dashboard | http://localhost:3100 |
+| API              | http://localhost:8080 |
 
+The local Postgres runs in Docker. From your host, reach it at `localhost:5432`; the API container
+reaches the same database at `postgres:5432`, which `docker-compose.yml` sets for you. Production
+runs on Supabase, and is only selected when `NODE_ENV=production` — so a local run can never write
+to it by accident.
+
+To exercise Stripe webhooks locally:
+
+```bash
 stripe listen --forward-to http://localhost:8080/api/webhooks/stripe
-
-## 🎨 UI Component Library
-
-The project includes a custom UI component library (`@gratia/ui`) with:
-
-- **Layout:** Container, Flex, Divider
-- **Forms:** Input, Checkbox, FormField, OneTimePassword
-- **Actions:** Button, IconButton, Dropdown
-- **Feedback:** Badge, Toast, LoadingSpinner
-- **Icons:** Custom SVG icon system
-
-## 📝 Environment Variables
-
-Create a `.env.local` file in `apps/gratia-ui/`:
-
-```env
-# API Configuration
-NEXT_PUBLIC_API_URL=your_api_url
-
-# Add other environment variables as needed
 ```
 
-## 🤝 Contributing
+---
 
-This is an active development project. Features and implementations are subject to change.
+## Status
 
-## 📄 License
+A learning project, actively developed. Known gaps I'm working on:
 
-[Add your license here]
-
-## 🔗 Useful Resources
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Turborepo Documentation](https://turborepo.com/docs)
-- [TypeScript Documentation](https://www.typescriptlang.org/docs)
+- **No automated tests on the API yet.** The locking and idempotency paths are the first target —
+  they are the code that most needs them.
+- **No CI pipeline** beyond the Cloud Build config for the API. Lint, types and build should run
+  on every pull request.
+- **No load tests.** The concurrency claims above are reasoned, not yet measured under load.
+- **The checkout Redis claim is not well designed.** It holds a one-hour TTL, so a request that
+  claims the lock and then crashes leaves that session unusable for an hour; and a waiting request
+  sleeps a fixed two seconds before reading the result once. Both deserve a better approach.
