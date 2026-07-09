@@ -12,6 +12,23 @@ services:
       timeout: 5s
       retries: 3
 
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: gratia
+      POSTGRES_PASSWORD: gratia
+      POSTGRES_DB: gratia_dev
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gratia -d gratia_dev"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   fake-gcs:
     image: fsouza/fake-gcs-server
     ports:
@@ -33,7 +50,7 @@ services:
       - PORT=8080
       - HOST=0.0.0.0
       - MONGO_URI=${MONGO_URI}
-      - DATABASE_URL_LOCAL=${DATABASE_URL_PRODUCTION}
+      - DATABASE_URL_LOCAL=postgresql://gratia:gratia@postgres:5432/gratia_dev
       - DATABASE_URL_PRODUCTION=${DATABASE_URL_PRODUCTION}
       - ENCRYPTION_SECRET_KEY=${ENCRYPTION_SECRET_KEY}
       - JWT_SECRET=${JWT_SECRET}
@@ -56,6 +73,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+      postgres:
+        condition: service_healthy
       fake-gcs:
         condition: service_started
     restart: unless-stopped
@@ -73,7 +92,7 @@ services:
       args:
         - VENDOR_DASHBOARD_URL=http://gratia-vendor-dashboard:3100
     ports:
-      - "3010:3000"
+      - "3001:3000"
     environment:
       - NODE_ENV=production
       - API_URL=http://gratia-api:8080
@@ -115,4 +134,5 @@ services:
 
 volumes:
   redis-data:
+  postgres-data:
   gcs-data:
