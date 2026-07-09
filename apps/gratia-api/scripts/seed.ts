@@ -3,7 +3,8 @@
 //
 // Usage: pnpm db:seed
 //
-// Assumes NODE_ENV=development so postgres.config picks DATABASE_URL_LOCAL.
+// postgres.config only selects the production database when NODE_ENV=production,
+// so this seeds the local Postgres unless you explicitly opt in to production.
 // Redis is contacted for cache invalidation at the end; failure there is
 // non-fatal (data is already in Postgres).
 

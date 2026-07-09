@@ -2,20 +2,22 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { instrumentPostgresClient } from "../shared/metrics/db-tracer";
 
-// Select connection string based on environment
-const isDevelopment = process.env.NODE_ENV === "development";
-const connectionString = isDevelopment
-  ? process.env.DATABASE_URL_LOCAL
-  : process.env.DATABASE_URL_PRODUCTION;
+// Production is opt-in: only NODE_ENV=production selects the production
+// database. Cloud Run and the Dockerfile's production stage both set it
+// explicitly; anything else resolves to the local Postgres.
+const isProduction = process.env.NODE_ENV === "production";
+const connectionString = isProduction
+  ? process.env.DATABASE_URL_PRODUCTION
+  : process.env.DATABASE_URL_LOCAL;
 
 if (!connectionString) {
   throw new Error(
-    `DATABASE_URL_${isDevelopment ? "LOCAL" : "PRODUCTION"} environment variable is not set`
+    `DATABASE_URL_${isProduction ? "PRODUCTION" : "LOCAL"} environment variable is not set`
   );
 }
 
 console.log(
-  `🗄️  Using ${isDevelopment ? "LOCAL" : "PRODUCTION"} PostgreSQL database`
+  `🗄️  Using ${isProduction ? "PRODUCTION" : "LOCAL"} PostgreSQL database`
 );
 
 // Create postgres client
