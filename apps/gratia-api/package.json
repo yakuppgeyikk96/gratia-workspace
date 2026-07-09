@@ -14,20 +14,19 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
-    "load-test:browse": "k6 run load-tests/scenarios/browse-products.js",
-    "load-test:stock-race": "k6 run load-tests/scenarios/concurrent-stock-reserve.js",
-    "load-test:idempotency": "k6 run load-tests/scenarios/concurrent-checkout-complete.js",
-    "load-test:checkout-flow": "k6 run load-tests/scenarios/checkout-flow-load.js"
+    "db:studio": "drizzle-kit studio"
   },
   "keywords": [
     "api",
     "nodejs",
     "typescript",
     "express",
-    "mongodb"
+    "postgresql",
+    "redis",
+    "stripe",
+    "cloud run"
   ],
-  "author": "Your Name",
+  "author": "Yakup Geyik",
   "license": "ISC",
   "packageManager": "pnpm@10.27.0+sha512.72d699da16b1179c14ba9e64dc71c9a40988cbdc65c264cb0e489db7de917f20dcf4d64d8723625f2969ba52d4b7e2a1170682d9ac2a5dcaeaab732b7e16f04a",
   "engines": {
@@ -44,7 +43,6 @@
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.18.2",
     "multer": "^2.0.2",
     "picocolors": "^1.1.1",
     "postgres": "^3.4.7",
