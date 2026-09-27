@@ -61,10 +61,11 @@ export default function HeroBackground({
                 src={imageSrc}
                 alt={`${imageAlt} - Slide ${index + 1}`}
                 fill
-                priority={index <= 1}
+                priority={index === 0}
+                loading={index === 0 ? undefined : "lazy"}
                 className={styles.backgroundImage}
                 sizes="50vw"
-                fetchPriority={index <= 1 ? "high" : "auto"}
+                fetchPriority={index === 0 ? "high" : "auto"}
               />
             </div>
           ))}
