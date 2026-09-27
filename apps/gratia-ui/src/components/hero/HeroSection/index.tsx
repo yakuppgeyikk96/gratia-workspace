@@ -1,4 +1,4 @@
-import Container from "@gratia/ui/components/Container/";
+import Container from "@gratia/ui/components/Container";
 import {
   Bed,
   Camera,

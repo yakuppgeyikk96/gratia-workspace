@@ -2,9 +2,9 @@ import { COOKIE_TOKEN_KEY, COOKIE_USER_KEY } from "@/constants";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import Container from "@gratia/ui/components/Container";
+import Flex from "@gratia/ui/components/Flex";
 import type { IUser } from "@/types/User.types";
 import BecomeVendorForm from "@/components/features/vendor/BecomeVendorForm";
-import { Flex } from "@gratia/ui";
 
 export default async function BecomeVendorPage() {
   const cookieStore = await cookies();

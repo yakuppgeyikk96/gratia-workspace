@@ -3,7 +3,7 @@
 import QuantitySelector from "@/components/common/QuantitySelector";
 import { useCartContext } from "@/components/providers/CartProvider";
 import { CartItem as CartItemType } from "@/types/Cart.types";
-import LoadingSpinner from "@gratia/ui/components/LoadingSpinner/";
+import LoadingSpinner from "@gratia/ui/components/LoadingSpinner";
 import Image from "next/image";
 import { memo, useCallback } from "react";
 import styles from "./CartItem.module.scss";
