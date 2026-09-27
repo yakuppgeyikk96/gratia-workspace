@@ -16,6 +16,11 @@ interface CategoryProductStripProps {
   viewAllHref: string;
   products: ProductListItem[];
   isLoggedIn: boolean;
+  /**
+   * How many leading cards load their image eagerly. Defaults to 0: strips sit
+   * below the hero, so their images must not compete with LCP and CSS.
+   */
+  priorityCount?: number;
 }
 
 export default function CategoryProductStrip({
@@ -23,6 +28,7 @@ export default function CategoryProductStrip({
   viewAllHref,
   products,
   isLoggedIn,
+  priorityCount = 0,
 }: CategoryProductStripProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -72,12 +78,13 @@ export default function CategoryProductStrip({
       <div className={styles.carouselWrapper}>
         <div className={styles.emblaViewport} ref={emblaRef}>
           <div className={styles.emblaContainer}>
-            {products.map((product) => (
+            {products.map((product, index) => (
               <div key={product.id} className={styles.emblaSlide}>
                 <ProductCard
                   product={product}
                   isLoggedIn={isLoggedIn}
                   className={styles.productCard}
+                  priority={index < priorityCount}
                 />
               </div>
             ))}

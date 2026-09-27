@@ -12,6 +12,7 @@ export default function ProductCardImage({
   productName,
   productId,
   isLoggedIn,
+  priority = false,
 }: ProductCardImageProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -60,6 +61,7 @@ export default function ProductCardImage({
           <div className={styles.emblaContainer}>
             {displayImages.map((image, index) => {
               const shouldLoad = loadedImages.has(index);
+              const isEager = priority && index === 0;
 
               return (
                 <div key={index} className={styles.emblaSlide}>
@@ -72,8 +74,8 @@ export default function ProductCardImage({
                         className={styles.image}
                         sizes="(max-width: 640px) 45vw, (max-width: 1024px) 33vw, 280px"
                         quality={70}
-                        priority={index === 0}
-                        loading={index === 0 ? undefined : "lazy"}
+                        priority={isEager}
+                        loading={isEager ? undefined : "lazy"}
                       />
                     ) : (
                       <div className={styles.imagePlaceholder} />

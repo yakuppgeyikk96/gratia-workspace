@@ -4,6 +4,12 @@ export interface ProductCardProps {
   product: ProductListItem | Partial<Product>;
   className?: string;
   isLoggedIn: boolean;
+  /**
+   * Eagerly load (and preload) the first image. Only set this for cards that
+   * are above the fold; every priority image competes with render-blocking
+   * CSS for bandwidth on initial load.
+   */
+  priority?: boolean;
 }
 
 export interface ProductCardImageProps {
@@ -11,6 +17,7 @@ export interface ProductCardImageProps {
   productName: string;
   productId: number;
   isLoggedIn: boolean;
+  priority?: boolean;
 }
 
 export interface ProductCardInfoProps {

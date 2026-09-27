@@ -13,6 +13,7 @@ export default function ProductCard({
   product,
   className = "",
   isLoggedIn,
+  priority = false,
 }: ProductCardProps) {
   const { handleAddToCart } = useCart(isLoggedIn);
 
@@ -43,6 +44,7 @@ export default function ProductCard({
         productName={product.name ?? ""}
         productId={product.id!}
         isLoggedIn={isLoggedIn}
+        priority={priority}
       />
 
       <Link
