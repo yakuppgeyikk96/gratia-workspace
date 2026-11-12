@@ -1,10 +1,35 @@
 "use client";
 
-import { useEffect } from "react";
-import { Toast, useToastContext } from "../index";
+import { useEffect, useState, type ComponentType } from "react";
+import { useToastContext } from "./ToastContext";
+import type { ToastListProps } from "./ToastList";
 
 export default function ToastContainer() {
-  const { toasts, removeToast } = useToastContext();
+  const { toasts, removeToast, swipeDirection } = useToastContext();
+  const [ToastList, setToastList] =
+    useState<ComponentType<ToastListProps> | null>(null);
+
+  const hasToasts = toasts.length > 0;
+
+  // Radix Toast is only needed once something is shown, so keep it out of the
+  // initial bundle and load it with the first toast.
+  useEffect(() => {
+    if (!hasToasts || ToastList) return;
+
+    let cancelled = false;
+
+    import("./ToastList")
+      .then((module) => {
+        if (!cancelled) setToastList(() => module.default);
+      })
+      .catch((error: unknown) => {
+        console.error("Failed to load toast UI", error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [hasToasts, ToastList]);
 
   useEffect(() => {
     const timers: NodeJS.Timeout[] = [];
@@ -23,19 +48,13 @@ export default function ToastContainer() {
     };
   }, [toasts, removeToast]);
 
+  if (!ToastList) return null;
+
   return (
-    <>
-      {toasts.map((toast) => (
-        <Toast
-          key={toast.id}
-          title={toast.title}
-          description={toast.description}
-          variant={toast.variant}
-          duration={toast.duration}
-          action={toast.action}
-          onClose={() => removeToast(toast.id)}
-        />
-      ))}
-    </>
+    <ToastList
+      toasts={toasts}
+      swipeDirection={swipeDirection}
+      onRemove={removeToast}
+    />
   );
 }

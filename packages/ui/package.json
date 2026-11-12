@@ -21,6 +21,10 @@
       "types": "./src/components/*/index.tsx",
       "default": "./src/components/*/index.tsx"
     },
+    "./hooks/*": {
+      "types": "./src/hooks/*.ts",
+      "default": "./src/hooks/*.ts"
+    },
     "./icons": {
       "types": "./src/icons/index.ts",
       "default": "./src/icons/index.ts"

@@ -1,79 +1,99 @@
 "use client";
 
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import classNames from "classnames";
-import { ReactNode } from "react";
-import { IconChevronDown } from "../../icons";
+import { cloneElement, type ComponentType } from "react";
+import {
+  useDeferredMenu,
+  type DeferredMenuTriggerProps,
+} from "../../hooks/useDeferredMenu";
 import styles from "./Dropdown.module.scss";
 import { DropdownOption, DropdownProps } from "./Dropdown.types";
+import type { DropdownMenuProps } from "./DropdownMenu";
+import DropdownTriggerContent from "./DropdownTriggerContent";
 
-export default function Dropdown({
-  options,
-  value,
-  placeholder = "Select an option",
-  disabled = false,
-  onValueChange,
-  triggerClassName,
-  contentClassName,
-  icon,
-  customTrigger,
-}: DropdownProps) {
-  const selectedOption = options.find((option) => option.value === value);
+const loadDropdownMenu = (): Promise<ComponentType<DropdownMenuProps>> =>
+  import("./DropdownMenu").then((module) => module.default);
 
-  const renderIcon = (icon: string | ReactNode, isString: boolean) => (
-    <span className={isString ? styles.iconText : styles.icon}>{icon}</span>
-  );
+type TriggerHandlerName =
+  | "onPointerEnter"
+  | "onPointerDown"
+  | "onClick"
+  | "onKeyDown";
 
-  const triggerContent = customTrigger || (
-    <>
-      {selectedOption ? (
-        <>
-          {selectedOption.icon &&
-            renderIcon(
-              selectedOption.icon,
-              typeof selectedOption.icon === "string"
-            )}
-          <span className={styles.label}>{selectedOption.label}</span>
-        </>
-      ) : (
-        <span className={styles.placeholder}>{placeholder}</span>
-      )}
-      {icon || <IconChevronDown />}
-    </>
-  );
+const TRIGGER_HANDLER_NAMES: TriggerHandlerName[] = [
+  "onPointerEnter",
+  "onPointerDown",
+  "onClick",
+  "onKeyDown",
+];
 
-  const triggerClass = classNames(styles.trigger, triggerClassName, {
-    [styles.disabled as string]: disabled,
-  });
+/** Adds our handlers to a custom trigger without dropping its own. */
+function mergeTriggerProps(
+  ownProps: Record<string, unknown>,
+  triggerProps: DeferredMenuTriggerProps,
+): Record<string, unknown> {
+  const merged: Record<string, unknown> = { ...triggerProps };
 
-  const contentClass = classNames(styles.content, contentClassName);
+  for (const name of TRIGGER_HANDLER_NAMES) {
+    const own = ownProps[name];
+    if (typeof own !== "function") continue;
+
+    const ours = triggerProps[name] as (event: unknown) => void;
+    merged[name] = (event: unknown): void => {
+      own(event);
+      ours(event);
+    };
+  }
+
+  return merged;
+}
+
+/**
+ * Renders only the trigger until the user interacts with it; the Radix menu
+ * (`DropdownMenu`) is loaded on hover/press and mounts already open if the
+ * press came first.
+ */
+export default function Dropdown(props: DropdownProps) {
+  const { Menu, openOnLoad, triggerProps } =
+    useDeferredMenu<DropdownMenuProps>(loadDropdownMenu);
+
+  if (Menu) {
+    return <Menu {...props} defaultOpen={openOnLoad} />;
+  }
+
+  const {
+    options,
+    value,
+    placeholder,
+    disabled = false,
+    triggerClassName,
+    icon,
+    customTrigger,
+  } = props;
+
+  if (customTrigger) {
+    return cloneElement(
+      customTrigger,
+      mergeTriggerProps(customTrigger.props, triggerProps),
+    );
+  }
 
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger
-        className={!customTrigger ? triggerClass : undefined}
-        disabled={disabled}
-        asChild={!!customTrigger}
-      >
-        {triggerContent}
-      </DropdownMenu.Trigger>
-
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content className={contentClass} sideOffset={5}>
-          {options.map((option) => (
-            <DropdownMenu.Item
-              key={option.value}
-              className={styles.item}
-              onSelect={() => onValueChange?.(option.value)}
-            >
-              {option.icon &&
-                renderIcon(option.icon, typeof option.icon === "string")}
-              <span className={styles.label}>{option.label}</span>
-            </DropdownMenu.Item>
-          ))}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+    <button
+      type="button"
+      className={classNames(styles.trigger, triggerClassName, {
+        [styles.disabled as string]: disabled,
+      })}
+      disabled={disabled}
+      {...triggerProps}
+    >
+      <DropdownTriggerContent
+        options={options}
+        value={value}
+        placeholder={placeholder}
+        icon={icon}
+      />
+    </button>
   );
 }
 

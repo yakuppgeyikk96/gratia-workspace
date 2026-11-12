@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 
 export interface DropdownOption {
   value: string;
@@ -15,5 +15,9 @@ export interface DropdownProps {
   triggerClassName?: string;
   contentClassName?: string;
   icon?: ReactNode;
-  customTrigger?: ReactNode;
+  /**
+   * Replaces the default trigger button. Must be a single element that
+   * forwards the props it receives (event handlers, aria attributes, ref).
+   */
+  customTrigger?: ReactElement<Record<string, unknown>>;
 }

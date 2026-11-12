@@ -22,12 +22,12 @@ export { default as Pagination } from "./Pagination";
 export type { PaginationInfo } from "./Pagination";
 export { default as Select } from "./Select";
 export type { SelectOption, SelectProps } from "./Select";
-export { Toast, ToastContainer, ToastProvider } from "./Toast";
+export { ToastContainer } from "./Toast";
 export type { ToastProps, ToastVariant } from "./Toast";
+export { Toast, ToastProvider } from "./Toast/Toast";
 export {
   ToastProvider as ToastContextProvider,
-  useToastContext
+  useToastContext,
 } from "./Toast/ToastContext";
 export { useToast } from "./Toast/useToast";
 export type { ToastMessage } from "./Toast/useToast";
-
