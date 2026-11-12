@@ -1,7 +1,7 @@
 "use client";
 
 import { completeCheckout } from "@/actions";
-import { StripeElementsProvider } from "@/components/providers";
+import StripeElementsProvider from "@/components/providers/StripeElementsProvider";
 import Button from "@gratia/ui/components/Button";
 import { useRef, useState } from "react";
 import styles from "./CheckoutPayment.module.scss";

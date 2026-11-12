@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 
-import { TanstackQueryClientProvider } from "@/components/providers";
+import TanstackQueryClientProvider from "@/components/providers/TanstackQueryClientProvider";
 import { CartInitializer } from "@/components/providers/CartProvider";
 import { isAuthenticated } from "@/lib/utils/auth";
 import {
